@@ -332,7 +332,7 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 
 ### 已产出 APK
 
-- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.6.apk`
+- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.7.apk`
 - 大小：14,784,108 bytes
 - SHA256：`8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`
 - 版本：`749c1e2.11041301`（arm64-v8a，Release 签名）
@@ -490,6 +490,15 @@ Lite Release 包名：`moe.ouom.nerilite`
 - 自动下载日志标签 `AutoDownload`，记录候选歌曲、跳过原因和实际网络类型，便于真机排查。
 - 验证：模拟器连接 `AndroidWifi` 后开启开关播放 `SKY CITY`，自动下载并写入下载目录；切换移动数据时模拟器蜂窝网络为 `PARTIAL_CONNECTIVITY`，下载策略按设计等待已验证网络。真机移动数据需为已联网状态。
 - v1.6 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.6.apk`，SHA256 `0B21F2A2FDC1645F0D854835F13CCB997845925C1ADA21E3E7321CEDE0530093`，版本 `0f91ba9.11042212`。
+
+### 2026-11-04（第八轮）
+
+- 修复「边听边下」导致的播放卡顿：
+  - 自动下载从播放后 3 秒推迟到 15 秒，给在线流留出缓冲时间。
+  - 同一时间只允许一个自动下载任务：若已有下载在跑，最多等待 2 分钟；期间切歌或暂停则放弃当前歌曲。
+  - 自动下载仍使用现有下载音质与目录；播放页只在设置开启时入队。
+- 验证：Wi-Fi 下播放 `Nowhere`，15 秒后自动开始下载并正常完成；日志 `AutoDownload` 记录候选、网络和等待原因。
+- v1.7 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.7.apk`，SHA256 `2E5A0AD2A261B4F7FF2193C15597E3FA68CBBEBCCCA6515D7E7F27EECDD0C6DE`，版本 `87b0f74.11042337`。
 
 验证方式：
 
