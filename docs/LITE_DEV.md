@@ -332,7 +332,7 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 
 ### 已产出 APK
 
-- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.3.apk`
+- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.4.apk`
 - 大小：14,784,108 bytes
 - SHA256：`8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`
 - 版本：`749c1e2.11041301`（arm64-v8a，Release 签名）
@@ -463,6 +463,12 @@ Lite Release 包名：`moe.ouom.nerilite`
 - 顺带修复：把播放页音频信息选项收集收敛为 `rememberNowPlayingAudioInfoDisplayOptions`，避免逐项开关变化时不触发重组，同时把 `NowPlayingScreen.kt` 压回 2000 行预算以内。
 - 验证：`assembleDebug`、`assembleRelease` 通过；封面 URL、播放信息、设置个人化、设置搜索、存储用量相关单测通过；模拟器实测音质页 / 播放源页 / 播放设置仅剩网易云与本地相关项，搜索 `bilibili` 返回「没有匹配的设置」。
 - v1.3 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.3.apk`，SHA256 `7C36FE5F0956F0EBF8922E991010F6F561D395C9209B3C3BA05323F77DFBA47C`，版本 `ea7a882.11041937`。
+
+### 2026-11-04（第五轮）
+
+- 歌词偏移页只保留网易云：QQ 音乐、酷狗、LRCLIB、AMLL TTML 与哔哩哔哩 CC 的校准滑块全部隐藏，相关设置键也从 Lite 搜索中移除。
+- 验证：`assembleDebug`、`assembleRelease` 通过；模拟器「设置 → 歌词 → 歌词偏移」只剩「网易云默认歌词偏移」。
+- v1.4 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.4.apk`，SHA256 `3EE9261EB14407C8874E3A99EA766EC36ACD01DDF6D882EBB548FDB90B145BD7`，版本 `2068a51.11042001`。
 
 验证方式：
 

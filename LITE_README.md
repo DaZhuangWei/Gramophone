@@ -53,12 +53,12 @@ $env:ANDROID_SDK_ROOT=$env:ANDROID_HOME
 
 - Debug：`app/build/outputs/apk/debug/app-debug.apk`
 - Release：`app/build/outputs/apk/release/*.apk`
-- 已复制真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.3.apk`
-  - 大小：14,785,736 bytes
-  - SHA256：`7C36FE5F0956F0EBF8922E991010F6F561D395C9209B3C3BA05323F77DFBA47C`
-  - 版本：`ea7a882.11041937`（arm64-v8a）
+- 已复制真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.4.apk`
+  - 大小：14,785,668 bytes
+  - SHA256：`3EE9261EB14407C8874E3A99EA766EC36ACD01DDF6D882EBB548FDB90B145BD7`
+  - 版本：`2068a51.11042001`（arm64-v8a）
 
-> v1.2 / v1.1 真机包与更早的 `NeriLite-arm64-v1.0.apk` 仍保留，便于回滚；日常使用请安装 v1.3。
+> v1.3 / v1.2 / v1.1 真机包与更早的 `NeriLite-arm64-v1.0.apk` 仍保留，便于回滚；日常使用请安装 v1.4。
 
 > 远端网易云流通常不提供位深元数据，位深只在文件或解码器给出时显示；采样率、声道数和码率会从 Media3 解码器输入格式自动补齐。
 
