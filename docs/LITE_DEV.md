@@ -429,6 +429,22 @@ Lite Release 包名：`moe.ouom.nerilite`
   - 高刷新率设置文案更新。
 - v1.1 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.1.apk`，SHA256 `8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`，版本 `749c1e2.11041301`。
 
+### 2026-11-04（第三轮）
+
+- 播放页音频参数增强：
+  - 进度条上方信息行新增采样率、位深、码率、声道数，示例：`极高 · MP3 · 48 kHz | 320 kbps | 2 ch`。
+  - 声道格式化：1/2 声道显示 `1 ch`/`2 ch`，6/8 声道显示 `5.1`/`7.1`。
+  - 远端流缺失参数时，用 Media3 `onAudioInputFormatChanged` 的 `Format` 补齐采样率、声道、码率、MIME/解码格式；只填空值，不覆盖解析结果。
+  - 网易云响应通常没有位深字段，因此远端 MP3/AAC 的位深一般留空，不做猜测；本地文件从 MediaMetadataRetriever 读取。
+- 新增设置项（`Settings → 播放页`，均用 `AutoSettingsSchema` 生成）：
+  - 总开关 `nowplaying_progress_show_audio_spec`。
+  - 子开关 `nowplaying_progress_show_audio_sample_rate`、`_bit_depth`、`_bitrate`、`_channels`；总开关关闭时子开关置灰。
+  - 生成的 DataStore key 为 `NOW_PLAYING_PROGRESS_SHOW_AUDIO_*`（注意前缀是 `NOW_PLAYING_`，不是 `NOWPLAYING_`）。
+  - 设置搜索索引补充 sample rate / bit depth / bitrate / channels 关键词。
+- 展示逻辑收敛到 `NowPlayingAudioInfoDisplayOptions`，并用 `buildPlaybackSpecLabel(includeXxx=...)` 按字段拼接，避免多处条件分支。
+- 验证：`:app:assembleDebug`、`:app:assembleRelease` 通过；`NowPlayingPlaybackControlsTest`、`PlaybackAudioInfoFormattingTest` 通过；模拟器实测 `一张相片` 显示 `极高 · MP3 · 48 kHz | 320 kbps | 2 ch`，设置页四个子开关可独立切换。
+- v1.2 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.2.apk`，SHA256 `D1A94B9C4D1C7D8C1BE9B2AE76050EE5BC124C6D7A931909CC7D2B7C1136B802`，版本 `29cc7c4.11041328`。
+
 验证方式：
 
 ```powershell
