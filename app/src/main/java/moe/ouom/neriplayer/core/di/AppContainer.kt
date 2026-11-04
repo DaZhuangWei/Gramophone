@@ -266,7 +266,9 @@ object AppContainer {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private const val YOUTUBE_DOWNLOAD_PLAYBACK_CALL_TIMEOUT_MS = 20_000L
-    private const val AUTO_DOWNLOAD_DELAY_MS = 3_000L
+    private const val AUTO_DOWNLOAD_DELAY_MS = 15_000L
+    private const val AUTO_DOWNLOAD_QUEUE_WAIT_MS = 120_000L
+    private const val AUTO_DOWNLOAD_QUEUE_POLL_MS = 5_000L
     private var autoDownloadObserverStarted = false
 
     val subsonicAccounts by lazy { SubsonicAccounts(application) }
@@ -551,6 +553,7 @@ object AppContainer {
     internal fun startAutoDownloadObserver() {
         if (autoDownloadObserverStarted) return
         autoDownloadObserverStarted = true
+        NPLogger.d("AutoDownload", "observer started")
         scope.launch {
             combine(
                 settingsRepo.downloadWhilePlayingFlow,
@@ -591,6 +594,22 @@ object AppContainer {
                         "network=$networkType allowMobile=$allowMobileData allowed=$networkAllowed song=$songKey"
                     )
                     if (!networkAllowed) return@collectLatest
+                    var waitedForQueueMs = 0L
+                    while (GlobalDownloadManager.activeDownloadOperationsFlow.value) {
+                        if (waitedForQueueMs >= AUTO_DOWNLOAD_QUEUE_WAIT_MS) {
+                            NPLogger.d(
+                                "AutoDownload",
+                                "skip because another download is still active song=$songKey"
+                            )
+                            return@collectLatest
+                        }
+                        delay(AUTO_DOWNLOAD_QUEUE_POLL_MS)
+                        waitedForQueueMs += AUTO_DOWNLOAD_QUEUE_POLL_MS
+                        if (!PlayerManager.isPlayingFlow.value) return@collectLatest
+                        if (PlayerManager.currentSongFlow.value?.stableKey() != songKey) {
+                            return@collectLatest
+                        }
+                    }
                     GlobalDownloadManager.startAutomaticDownload(application, song)
                 }
         }
