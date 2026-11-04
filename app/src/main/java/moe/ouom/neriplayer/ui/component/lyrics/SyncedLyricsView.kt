@@ -112,7 +112,7 @@ import kotlin.math.floor
 import kotlin.math.roundToLong
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.withFrameNanos
-import moe.ouom.neriplayer.ui.animation.AMBIENT_ANIMATION_FRAME_INTERVAL_NANOS
+import moe.ouom.neriplayer.ui.animation.GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS
 import moe.ouom.neriplayer.ui.animation.isNewAmbientFrameSlot
 
 private const val LYRIC_TIME_SMOOTHING_DURATION_MS = 96
@@ -535,7 +535,7 @@ private fun rememberSmoothedLyricTimeMs(
         while (displayedTimeMs != targetTimeMs) {
             withFrameNanos { frameNanos ->
                 if (startFrameNanos == 0L) startFrameNanos = frameNanos
-                if (!isNewAmbientFrameSlot(lastRenderedFrameNanos, frameNanos, AMBIENT_ANIMATION_FRAME_INTERVAL_NANOS)) {
+                if (!isNewAmbientFrameSlot(lastRenderedFrameNanos, frameNanos, GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS)) {
                     return@withFrameNanos
                 }
                 lastRenderedFrameNanos = frameNanos

@@ -3,7 +3,7 @@
     <ImageView android:id="@+id/widget_fallback_background" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="@null" android:scaleType="fitXY" android:src="@drawable/widget_playback_background" android:visibility="gone" />
     <ImageView android:id="@+id/widget_theme_background" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="@null" android:scaleType="fitXY" android:src="@drawable/widget_playback_clip" android:visibility="gone" />
     <FrameLayout android:id="@+id/widget_album_shell" android:layout_width="match_parent" android:layout_height="match_parent">
-        <ImageView android:id="@+id/widget_album_art" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="@string/widget_album_art" android:scaleType="fitXY" android:src="@drawable/ic_neriplayer_round" />
+        <ImageView android:id="@+id/widget_album_art" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="@string/widget_album_art" android:scaleType="fitXY" android:src="@drawable/ic_gramophone_record" />
         <ImageView android:id="@+id/widget_album_scrim" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="@null" android:scaleType="fitXY" android:src="@drawable/widget_compact_scrim" />
     </FrameLayout>
     <RelativeLayout android:id="@+id/widget_main_content" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingStart="6dp" android:paddingTop="8dp" android:paddingEnd="6dp" android:paddingBottom="6dp">

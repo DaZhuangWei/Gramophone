@@ -5,7 +5,7 @@
     <string name="disclaimer_intro">请确认应用如何连接第三方服务、保存数据与请求权限</string>
     <string name="disclaimer_last_updated">更新于 2026 年 8 月 8 日</string>
     <string name="disclaimer_summary_content_title">内容来自第三方</string>
-    <string name="disclaimer_summary_content_body">NeriLite 用于浏览和播放你主动访问的平台内容，不托管音视频文件。</string>
+    <string name="disclaimer_summary_content_body">Gramophone 用于浏览和播放你主动访问的平台内容，不托管音视频文件。</string>
     <string name="disclaimer_summary_data_title">数据默认留在设备</string>
     <string name="disclaimer_summary_data_body">设置、历史、下载记录和本地诊断默认保存在设备中，不用于广告或行为画像。</string>
     <string name="disclaimer_summary_sync_title">同步由你决定</string>
@@ -21,10 +21,10 @@
     <string name="disclaimer_section7_title">地区和服务条款</string>
     <string name="disclaimer_section8_title">说明更新</string>
     <string name="disclaimer_section9_title">确认使用</string>
-    <string name="disclaimer_agree_countdown">我已阅读并同意</string>
+    <string name="disclaimer_agree_countdown">同意并继续</string>
     <string name="disclaimer_read_countdown">请阅读（%d 秒）</string>
     <string name="onboarding_badge">初次设置</string>
-    <string name="onboarding_title">NeriLite，按你的习惯设置</string>
+    <string name="onboarding_title">Gramophone，按你的习惯设置</string>
     <string name="onboarding_subtitle">用几步完成常用偏好；所有可选项之后仍可在设置中调整</string>
     <string name="onboarding_step_counter">第 %1$d 步 / 共 %2$d 步</string>
     <string name="onboarding_language_title">选择语言</string>
@@ -83,7 +83,7 @@
     <string name="onboarding_permission_granted">已允许</string>
     <string name="onboarding_permissions_hint">你可以跳过任一授权，之后在相关功能或系统设置中再调整</string>
     <string name="onboarding_notification_permission_warning_title">建议允许播放通知</string>
-    <string name="onboarding_notification_permission_warning_desc">不授予通知权限可能影响播放体验，例如锁屏控制和播放状态显示。NeriLite 不会自动推送与播放无关的内容。要现在授予通知权限吗？</string>
+    <string name="onboarding_notification_permission_warning_desc">不授予通知权限可能影响播放体验，例如锁屏控制和播放状态显示。Gramophone 不会自动推送与播放无关的内容。要现在授予通知权限吗？</string>
     <string name="onboarding_notification_permission_request_again">去授予</string>
     <string name="onboarding_notification_permission_skip">暂不授予</string>
     <string name="onboarding_notification_permission_final_warning_title">最后确认：需要播放通知权限吗？</string>
@@ -93,7 +93,7 @@
     <string name="onboarding_controls_title">调整播放界面</string>
     <string name="onboarding_controls_desc">选择控件大小和位置，预览会立即反映你的选择</string>
     <string name="onboarding_controls_preview_song">夜航</string>
-    <string name="onboarding_controls_preview_artist">NeriLite</string>
+    <string name="onboarding_controls_preview_artist">Gramophone</string>
     <string name="onboarding_controls_preview_lyric_1">昨夜小楼又东风</string>
     <string name="onboarding_controls_preview_lyric_2">恰似一江春水向东流</string>
     <string name="onboarding_controls_preview_lyric_3">问君能有几多愁</string>
@@ -141,7 +141,7 @@
     <string name="onboarding_learning_queue_title">播放队列</string>
     <string name="onboarding_learning_queue_desc">在正在播放页打开队列可以查看、拖动调整顺序，并使用播放模式和定时停止</string>
     <string name="onboarding_learning_enter_app">进入音理音理</string>
-    <string name="disclaimer_section1_body">NeriLite 是本地优先的音视频播放器，用于整合和播放你主动访问的第三方内容。应用不会托管、上传或分发音视频文件；在线播放、搜索、登录和下载会直接连接相应平台或你选择的服务。</string>
+    <string name="disclaimer_section1_body">Gramophone 是本地优先的音视频播放器，用于整合和播放你主动访问的第三方内容。应用不会托管、上传或分发音视频文件；在线播放、搜索、登录和下载会直接连接相应平台或你选择的服务。</string>
     <string name="disclaimer_section2_bullet1">可播放内容的版权及相关权益归原作者、权利人或对应平台所有。</string>
     <string name="disclaimer_section2_bullet2">你应确认访问、下载、分享或使用内容的来源合法，并具备必要的使用权限。</string>
     <string name="disclaimer_section2_bullet3">请勿利用本应用侵犯第三方内容、商标、隐私或其他合法权益。</string>

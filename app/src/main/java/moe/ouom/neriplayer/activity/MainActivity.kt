@@ -1718,18 +1718,8 @@ class MainActivity : ComponentActivity() {
      */
     private fun updateWindowRefreshRate() {
         refreshRateHandler.removeCallbacks(refreshRateCheck)
-        val resumed = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
-        val idleForMs = SystemClock.uptimeMillis() - lastTouchAtMs
-        val ambientIdle = isAmbientRefreshRateIdle(
-            nowPlayingShown = nowPlayingShownForRefreshRate,
-            resumed = resumed,
-            touching = touchInProgress,
-            idleForMs = idleForMs
-        )
-        ambientRefreshRateActive = applyPreferredHighRefreshRate(preferHighRefreshRate, ambientIdle)
-        if (nowPlayingShownForRefreshRate && resumed && !touchInProgress && !ambientIdle) {
-            refreshRateHandler.postDelayed(refreshRateCheck, AMBIENT_REFRESH_RATE_IDLE_MS - idleForMs)
-        }
+        // Gramophone 前台始终请求设备最高刷新率；不再在播放页静置 3 秒后降到 60 Hz
+        applyPreferredHighRefreshRate(preferHighRefreshRate, ambientIdle = false)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -1903,11 +1893,9 @@ private fun StartupCrashReportDialog(
 
 @Composable
 fun DisclaimerScreen(
-    onAgree: () -> Unit,
-    initialCountdownSeconds: Int = 5
+    onAgree: () -> Unit
 ) {
     StartupDisclaimerContent(
-        onAgree = onAgree,
-        initialCountdownSeconds = initialCountdownSeconds
+        onAgree = onAgree
     )
 }

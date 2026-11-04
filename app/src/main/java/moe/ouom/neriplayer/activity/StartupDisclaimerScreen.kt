@@ -28,9 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,12 +39,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.ui.haptic.HapticButton
 import moe.ouom.neriplayer.ui.haptic.HapticTextButton
 import moe.ouom.neriplayer.ui.onboarding.StartupOnboardingLayout
-import kotlin.time.Duration.Companion.milliseconds
 import moe.ouom.neriplayer.R as AppR
 
 private val DisclaimerCardShape = RoundedCornerShape(16.dp)
@@ -54,20 +50,9 @@ private val DisclaimerControlShape = RoundedCornerShape(12.dp)
 
 @Composable
 internal fun StartupDisclaimerContent(
-    onAgree: () -> Unit,
-    initialCountdownSeconds: Int
+    onAgree: () -> Unit
 ) {
-    var countdown by remember(initialCountdownSeconds) {
-        mutableIntStateOf(initialCountdownSeconds.coerceAtLeast(0))
-    }
     var detailsExpanded by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(countdown) {
-        if (countdown > 0) {
-            delay(1_000L.milliseconds)
-            countdown--
-        }
-    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -81,16 +66,11 @@ internal fun StartupDisclaimerContent(
             actions = {
                 HapticButton(
                     onClick = onAgree,
-                    enabled = countdown == 0,
                     shape = DisclaimerControlShape,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = if (countdown == 0) {
-                            stringResource(AppR.string.disclaimer_agree_countdown)
-                        } else {
-                            stringResource(AppR.string.disclaimer_read_countdown, countdown)
-                        },
+                        text = stringResource(AppR.string.disclaimer_agree_countdown),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }

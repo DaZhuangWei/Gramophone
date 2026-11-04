@@ -8,8 +8,8 @@
     </style>
 
     <style name="Theme.NeriPlayer.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#FFFFFFFF</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_neriplayer_splash</item>
+        <item name="windowSplashScreenBackground">#FF050505</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_gramophone_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.NeriPlayer</item>
     </style>
 </resources>

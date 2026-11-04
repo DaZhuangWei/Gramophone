@@ -24,7 +24,7 @@ package moe.ouom.neriplayer.common
  */
 
 /**
- * NeriLite build profile.
+ * Gramophone build profile.
  *
  * The Lite edition keeps the upstream implementation intact and hides
  * non-NetEase entry points at the presentation layer. This makes it possible
@@ -32,5 +32,5 @@ package moe.ouom.neriplayer.common
  */
 object LiteEdition {
     const val ENABLED: Boolean = true
-    const val DISPLAY_NAME: String = "NeriLite"
+    const val DISPLAY_NAME: String = "Gramophone"
 }

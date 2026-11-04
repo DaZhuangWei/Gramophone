@@ -413,7 +413,14 @@ private fun seekToLyricSafely(
     songDurationMs: Long
 ) {
     val knownDurationMs = maxOf(playbackDurationMs, songDurationMs)
-    resolveLyricSeekPosition(positionMs, knownDurationMs)?.let(PlayerManager::seekTo)
+    val safePositionMs = resolveLyricSeekPosition(positionMs, knownDurationMs) ?: return
+    // 最后 2 秒的歌词行不直接跳到歌曲末尾，避免 Media3 立刻 ENDED 后自动切下一首
+    val guardedPositionMs = if (knownDurationMs > 0L) {
+        safePositionMs.coerceAtMost((knownDurationMs - 2_000L).coerceAtLeast(0L))
+    } else {
+        safePositionMs
+    }
+    PlayerManager.seekTo(guardedPositionMs)
 }
 
 @Composable

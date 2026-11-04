@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- About -->
-    <string name="about_app_footer">NeriLite • GPLv3 • Based on NeriPlayer</string>
+    <string name="about_app_footer">Gramophone • GPLv3 • Based on NeriPlayer</string>
 </resources>

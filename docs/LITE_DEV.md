@@ -1,6 +1,6 @@
-# NeriLite 开发记录
+# Gramophone 开发记录
 
-> 本文件是 NeriPlayer → NeriLite 精简分支的长期开发文档。
+> 本文件是 NeriPlayer → Gramophone 精简分支的长期开发文档。
 > 每次改动请更新「改动记录」和「下一步」，不要只依赖聊天记录。
 
 ---
@@ -241,6 +241,41 @@ object LiteEdition {
 
 先用“默认关闭重效果”验证收益，再考虑改动画时长或重组。
 
+### 120 fps 与帧数
+
+Compose 的动画是**时间驱动**的，不是写死帧数：
+
+```text
+帧数 ≈ 动画时长(ms) ÷ (1000 / 刷新率)
+120Hz：每帧 8.33ms
+60Hz： 每帧 16.67ms
+```
+
+因此同一个 300ms 页面转场：
+
+- 120Hz：约 36 帧
+- 60Hz：约 18 帧
+- 掉帧时实际渲染帧数会更少
+
+当前代码的帧率策略：
+
+- 主界面转场、滚动、按压反馈：跟随设备刷新率，Android 15+ 会为 View 图层请求最高帧率。
+- 波形、歌词高亮、歌词插值：`GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS = 1e9 / 120`，120Hz 屏幕上按 120fps 推进；60Hz 屏幕自然降到 60fps。
+- 低电量模式下歌词插值降到 60fps，避免省电模式卡顿。
+- 动态背景仍按 60fps 上限，减少 GPU 压力；默认关闭。
+- 播放页不再在静置 3 秒后自动降到 60Hz；只要系统允许，前台保持最高刷新率。
+
+参考时长：
+
+| 动画 | 时长 | 120Hz 帧数 | 60Hz 帧数 |
+| --- | ---: | ---: | ---: |
+| 歌词/封面页切换 | 300ms | ~36 | ~18 |
+| 主题颜色过渡 | 420ms | ~50 | ~25 |
+| 播放状态颜色过渡 | 220ms | ~26 | ~13 |
+| 波形一个周期 | 2000ms | 240 | 120 |
+
+注意：手机系统省电模式、温控、开发者选项里的“峰值刷新率/动画缩放”仍可能把实际帧率压到 60Hz 或更低。
+
 ---
 
 ## 7. 当前进度
@@ -277,9 +312,9 @@ object LiteEdition {
 - [x] 设置第三方平台只显示网易云
 - [x] 默认黑金深色主题（Clean 风格 + 香槟金 + 近黑背景）
 - [x] 默认关闭液体玻璃、模糊、音频响应、动态背景、歌词模糊
-- [x] 应用名改为 NeriLite / NeriLite DEBUG
+- [x] 应用名改为 Gramophone / Gramophone DEBUG
 - [x] Debug APK 安装到模拟器并验证入口
-- [x] 首次引导页金色主题、NeriLite 文案
+- [x] 首次引导页金色主题、Gramophone 文案
 - [x] 隐藏一起听、云同步入口
 - [x] 播放设置里的 Bilibili 专属项隐藏（SponsorBlock）
 
@@ -297,7 +332,7 @@ object LiteEdition {
 
 ### 已产出 APK
 
-- 真机包：`D:\WorkSpace\muisc\NeriLite-arm64-v1.0.apk`
+- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.0.apk`
 - 大小：14,879,607 bytes
 - SHA256：`B7E1C5BD85750D83C46D3BBFDFF563CF29DB4D5958E4F2933CB4C7FCCB72785A`
 - 版本：`a7debf9.11041225`（arm64-v8a，Release 签名）
@@ -367,16 +402,31 @@ Lite Release 包名：`moe.ouom.nerilite`
 - 默认主题改为 Clean + 深色 + 香槟金 `C8A45D` + `Fidelity` 调色；动态取色默认关闭。
 - Clean 深色背景改为近黑 `#050505`，正文改为暖白 `#F2EFE6`，卡片圆角收紧。
 - 默认关闭液体玻璃、高级模糊、音频响应、动态背景、歌词模糊。
-- 应用名改为 NeriLite / NeriLite DEBUG。
+- 应用名改为 Gramophone / Gramophone DEBUG。
 - 设置页第三方登录副标题改为只提网易云。
 - 播放设置隐藏 BilibiliSponsorBlock（Lite 下）。
 - 引导页隐藏同步说明卡；引导步骤去掉「播放源」和「备份与恢复」，从 9 步减为 7 步。
 - 设置首页隐藏「备份与恢复」「一起听」入口。
 - 应用包名改为 `moe.ouom.nerilite`（Debug 为 `moe.ouom.nerilite.debug`），避免覆盖官方 NeriPlayer。
-- 首页品牌标题改为 NeriLite；关于页、网易云扫码提示统一 NeriLite。
+- 首页品牌标题改为 Gramophone；关于页、网易云扫码提示统一 Gramophone。
 - 首次编译成功；Debug APK 已安装到模拟器，验证首页 / 媒体库 / 搜索 / 设置入口。
 - Release 签名构建成功；x86_64 Release 在模拟器完成引导并验证主要页面。
-- arm64 真机包输出到 `D:\WorkSpace\muisc\NeriLite-arm64-v1.0.apk`，SHA256 `B7E1C5BD85750D83C46D3BBFDFF563CF29DB4D5958E4F2933CB4C7FCCB72785A`。
+- arm64 真机包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.0.apk`，SHA256 `B7E1C5BD85750D83C46D3BBFDFF563CF29DB4D5958E4F2933CB4C7FCCB72785A`。
+
+### 2026-11-04（第二轮）
+
+- 移除首次免责声明 4 秒阅读倒计时；按钮改为立即可点「同意并继续」。
+- 应用显示名统一改为 **Gramophone**；包名仍为 `moe.ouom.nerilite`，保证已安装用户可直接覆盖升级。
+- 新增 Gramophone 品牌图标：黑金黑胶唱片 + 唱臂；替换启动页图标和自适应桌面图标，启动背景改为近黑。
+- 修复歌词跳转导致切歌：
+  - `PlayerManager.seekToImpl` 增加 `resolveSafeSeekPosition`，禁止 seek 到 duration 本身或之后，避免 Media3 进入 `STATE_ENDED` 后自动下一首。
+  - 歌词行点击增加最后 2 秒保护，最后一行不会直接跳到歌曲末尾。
+  - 新增 `SeekPositionPolicyTest` 单测覆盖负数、正常、越界、未知时长。
+- 动画帧率提升：
+  - 新增 `GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS = 1e9 / 120`。
+  - 波形、歌词高亮、歌词插值在 120Hz 屏幕上按 120fps 推进；低电量模式歌词降到 60fps。
+  - Android 15+ 为 View 图层请求设备最高帧率；取消播放页静置 3 秒降 60Hz 的逻辑，前台保持高刷。
+  - 高刷新率设置文案更新。
 
 验证方式：
 
@@ -388,8 +438,9 @@ adb shell pm clear moe.ouom.nerilite.debug
 
 遗留：
 
-- 首次引导页顶部标题此前仍为「音理音理」，已改为 NeriLite，待下次构建验证。
-- 播放页、设置中的一起听/同步入口还未隐藏。
+- 启动页图标为手绘矢量，后续可以再精修。
+- 120fps 需要真机 120Hz 屏幕验证；模拟器只有 60Hz。
+- 歌词切歌问题如果仍复现，请提供复现时的歌曲、点击的歌词行和 `adb logcat | findstr NERI-PlayerManager` 日志。
 - 搜索需要登录网易云；未登录时会提示登录。
 - 当前是 Debug 包，动画性能不代表 Release。
 

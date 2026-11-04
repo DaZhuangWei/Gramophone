@@ -22,7 +22,7 @@
     <string name="settings_playback_idle_shutdown">Exit playback service when paused</string>
     <string name="settings_playback_idle_shutdown_desc">Remove notification after timeout; keep queue and progress</string>
     <string name="settings_prefer_high_refresh_rate">High Refresh Rate</string>
-    <string name="settings_prefer_high_refresh_rate_desc">Request the highest refresh rate supported by this device. Power, thermal, and system settings can still limit it.</string>
+    <string name="settings_prefer_high_refresh_rate_desc">Request and keep the highest refresh rate supported by this device. On a 120 Hz screen animations render at 120 Hz; power saving, thermal, and system settings can still limit it.</string>
     <string name="settings_playback_idle_shutdown_dialog_title">Exit after being paused for</string>
     <string name="settings_playback_idle_shutdown_off">Never</string>
     <string name="settings_clear_config">Clear Configuration</string>

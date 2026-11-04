@@ -57,7 +57,7 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/widget_album_art"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_neriplayer_round" />
+                    android:src="@drawable/ic_gramophone_record" />
             </FrameLayout>
 
             <LinearLayout

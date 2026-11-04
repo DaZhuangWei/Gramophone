@@ -9,6 +9,6 @@
     <style name="Theme.NeriPlayer" parent="Base.Theme.NeriPlayer" />
 
     <style name="Theme.NeriPlayer.Starting" parent="Theme.NeriPlayer">
-        <item name="android:windowBackground">#FF121212</item>
+        <item name="android:windowBackground">#FF050505</item>
     </style>
 </resources>

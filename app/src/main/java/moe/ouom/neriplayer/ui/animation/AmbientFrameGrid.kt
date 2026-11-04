@@ -7,6 +7,12 @@ package moe.ouom.neriplayer.ui.animation
  */
 internal const val AMBIENT_ANIMATION_FRAME_INTERVAL_NANOS = 1_000_000_000L / 60L
 
+/**
+ * Gramophone 视觉动画的帧间隔。120 Hz 屏幕上波形、歌词高亮和插值会按 120 fps 推进；
+ * 60 Hz 屏幕仍由系统 vsync 自然降到 60 fps。
+ */
+internal const val GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS = 1_000_000_000L / 120L
+
 internal fun ambientFrameSlot(frameNanos: Long, intervalNanos: Long): Long =
     frameNanos / intervalNanos.coerceAtLeast(1L)
 

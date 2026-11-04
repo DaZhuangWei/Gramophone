@@ -1,6 +1,6 @@
-# NeriLite
+# Gramophone
 
-NeriLite 是基于 [NeriPlayer](https://github.com/cwuom/NeriPlayer) 的**网易云音乐专属精简分支**。
+Gramophone 是基于 [NeriPlayer](https://github.com/cwuom/NeriPlayer) 的**网易云音乐专属精简分支**。
 
 目标：
 
@@ -46,7 +46,7 @@ $env:ANDROID_SDK_ROOT=$env:ANDROID_HOME
 
 - Debug：`app/build/outputs/apk/debug/app-debug.apk`
 - Release：`app/build/outputs/apk/release/*.apk`
-- 已复制真机包：`D:\WorkSpace\muisc\NeriLite-arm64-v1.0.apk`
+- 已复制真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.0.apk`
   - 大小：14,879,607 bytes
   - SHA256：`B7E1C5BD85750D83C46D3BBFDFF563CF29DB4D5958E4F2933CB4C7FCCB72785A`
   - 版本：`a7debf9.11041225`（arm64-v8a）

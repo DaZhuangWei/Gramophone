@@ -1529,12 +1529,24 @@ internal fun PlayerManager.seekToImpl(
 ) {
     ensureInitialized()
     if (!acceptSeekCommand(commandSource)) return
-    val resolvedPositionMs = positionMs.coerceAtLeast(0L)
+    val durationHintMs = knownSeekDuration(_currentSongFlow.value)
+    val resolvedPositionMs = resolveSafeSeekPosition(positionMs, durationHintMs)
     playbackPositionGeneration += 1L
     logSeekRequested(resolvedPositionMs, commandSource)
     val preparedSeek = preparePlaybackSeek(resolvedPositionMs)
     applyPlaybackSeek(resolvedPositionMs, commandSource, preparedSeek)
     refreshPlaybackUrlAfterSeek(resolvedPositionMs, commandSource, preparedSeek)
+}
+
+/**
+ * 进度/歌词跳转的安全边界：
+ * - 负数归零；
+ * - 已知时长时不允许落在 duration 本身或之后，否则 Media3 可能直接进入 ENDED 并自动切歌。
+ */
+internal fun resolveSafeSeekPosition(positionMs: Long, durationMs: Long): Long {
+    val nonNegativeMs = positionMs.coerceAtLeast(0L)
+    if (durationMs <= 0L) return nonNegativeMs
+    return nonNegativeMs.coerceAtMost((durationMs - 1L).coerceAtLeast(0L))
 }
 
 private fun PlayerManager.logSeekRequested(positionMs: Long, commandSource: PlaybackCommandSource) {

@@ -12,14 +12,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.isActive
-import moe.ouom.neriplayer.ui.animation.AMBIENT_ANIMATION_FRAME_INTERVAL_NANOS
+import moe.ouom.neriplayer.ui.animation.GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS
 import moe.ouom.neriplayer.ui.animation.isNewAmbientFrameSlot
 import kotlin.math.abs
 
 private const val InterpolatedPlaybackResyncThresholdMs = 220L
 private const val InterpolatedPlaybackBackwardToleranceMs = 24L
-internal const val InterpolatedPlaybackDefaultFrameIntervalNanos = AMBIENT_ANIMATION_FRAME_INTERVAL_NANOS * 2L
-internal const val InterpolatedPlaybackLowPowerFrameIntervalNanos = AMBIENT_ANIMATION_FRAME_INTERVAL_NANOS * 4L
+internal const val InterpolatedPlaybackDefaultFrameIntervalNanos = GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS
+internal const val InterpolatedPlaybackLowPowerFrameIntervalNanos = GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS * 2L
 
 @Stable
 internal class InterpolatedPlaybackPositionState(initialPositionMs: Long) {

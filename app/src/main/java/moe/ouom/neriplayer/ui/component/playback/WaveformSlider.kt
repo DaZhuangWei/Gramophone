@@ -54,7 +54,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.isActive
-import moe.ouom.neriplayer.ui.animation.AMBIENT_ANIMATION_FRAME_INTERVAL_NANOS
+import moe.ouom.neriplayer.ui.animation.GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS
 import moe.ouom.neriplayer.ui.animation.isNewAmbientFrameSlot
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -163,7 +163,7 @@ fun WaveformSlider(
             while (isActive) {
                 // 状态必须在帧回调内写入，协程恢复后再写会落到下一帧，和其它动画错开一个 vsync
                 withFrameNanos { frameNs ->
-                    if (!isNewAmbientFrameSlot(lastRenderedFrameNs, frameNs, AMBIENT_ANIMATION_FRAME_INTERVAL_NANOS)) {
+                    if (!isNewAmbientFrameSlot(lastRenderedFrameNs, frameNs, GRAMOPHONE_ANIMATION_FRAME_INTERVAL_NANOS)) {
                         return@withFrameNanos
                     }
                     lastRenderedFrameNs = frameNs

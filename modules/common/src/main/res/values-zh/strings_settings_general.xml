@@ -22,7 +22,7 @@
     <string name="settings_playback_idle_shutdown">暂停后退出播放服务</string>
     <string name="settings_playback_idle_shutdown_desc">暂停超时后移除通知，保留队列和进度</string>
     <string name="settings_prefer_high_refresh_rate">高刷新率</string>
-    <string name="settings_prefer_high_refresh_rate_desc">请求设备支持的最高刷新率；省电、温控和系统设置仍可能限制刷新率</string>
+    <string name="settings_prefer_high_refresh_rate_desc">请求并保持设备支持的最高刷新率；120Hz 屏幕会以 120Hz 渲染动画，省电、温控和系统设置仍可能限制</string>
     <string name="settings_playback_idle_shutdown_dialog_title">暂停多久后退出</string>
     <string name="settings_playback_idle_shutdown_off">不自动退出</string>
     <string name="settings_clear_config">清除配置</string>

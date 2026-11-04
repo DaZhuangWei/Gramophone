@@ -59,7 +59,10 @@ internal fun Activity.applyPreferredHighRefreshRate(
     // 静置降频时同时指定显示模式，并在 Android 15+ 给视图图层投 60 fps 的票
     val preferredModeId = ambientRefreshRate?.let { rate -> display?.matchingModeId(rate) } ?: 0
     applyPreferredRefreshRate(preferredRefreshRate, preferredModeId)
-    applyRequestedViewFrameRate(ambientRefreshRate)
+    // 高刷开启时同时给 View 图层投最高帧率票（Android 15+），避免只停留在默认帧率
+    val requestedViewFrameRate = ambientRefreshRate ?: preferredRefreshRate
+        .takeIf { highRefreshRateEnabled && it > 0f }
+    applyRequestedViewFrameRate(requestedViewFrameRate)
     return ambientRefreshRate != null
 }
 
