@@ -21,6 +21,10 @@ v0.1 可运行版本（Debug / Release APK 均已构建）：
 - 性能：默认关闭高级模糊、液体玻璃、音频响应、动态背景、歌词模糊
 - 音效：保留 10 段 EQ、音效与倍速
 - 包名：`moe.ouom.nerilite`（Debug 为 `moe.ouom.nerilite.debug`），不覆盖官方 NeriPlayer
+- 启动：无 4 秒阅读倒计时，点击「同意并继续」立即进入
+- 品牌：Gramophone + 黑金黑胶唱片/唱臂桌面图标与启动图标
+- 动画：120Hz 屏幕上波形、歌词高亮、歌词插值按 120fps 推进；前台保持高刷
+- 播放修复：seek 不再越过歌曲时长，最后一行歌词跳转不会自动切下一首
 
 ## 构建
 
@@ -46,10 +50,12 @@ $env:ANDROID_SDK_ROOT=$env:ANDROID_HOME
 
 - Debug：`app/build/outputs/apk/debug/app-debug.apk`
 - Release：`app/build/outputs/apk/release/*.apk`
-- 已复制真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.0.apk`
-  - 大小：14,879,607 bytes
-  - SHA256：`B7E1C5BD85750D83C46D3BBFDFF563CF29DB4D5958E4F2933CB4C7FCCB72785A`
-  - 版本：`a7debf9.11041225`（arm64-v8a）
+- 已复制真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.1.apk`
+  - 大小：14,785,236 bytes
+  - SHA256：`20EB429FE82C34541762DEB077F943B3A34A11C18E602977E568BD8424AF2C89`
+  - 版本：`3fe9e9c.11041254`（arm64-v8a）
+
+> 旧版 `NeriLite-arm64-v1.0.apk` 仍保留，便于回滚；日常使用请安装 v1.1。
 
 ## 文档
 

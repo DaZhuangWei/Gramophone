@@ -1596,7 +1596,8 @@ private fun LyricsProgressSection(
                 context.performHapticFeedback(HapticFeedbackEffect.Click)
             },
             onValueChangeFinished = {
-                val previewTarget = sliderPosition.toLong()
+                val maxSeekTargetMs = if (durationMs > 2_000L) durationMs - 2_000L else durationMs
+                val previewTarget = sliderPosition.toLong().coerceAtMost(maxSeekTargetMs)
                 pendingSeekPreviewPositionMs = previewTarget
                 onSeekTo(previewTarget)
                 isUserDraggingSlider = false
