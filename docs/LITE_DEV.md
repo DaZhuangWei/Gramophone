@@ -332,7 +332,7 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 
 ### 已产出 APK
 
-- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.4.apk`
+- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.5.apk`
 - 大小：14,784,108 bytes
 - SHA256：`8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`
 - 版本：`749c1e2.11041301`（arm64-v8a，Release 签名）
@@ -469,6 +469,18 @@ Lite Release 包名：`moe.ouom.nerilite`
 - 歌词偏移页只保留网易云：QQ 音乐、酷狗、LRCLIB、AMLL TTML 与哔哩哔哩 CC 的校准滑块全部隐藏，相关设置键也从 Lite 搜索中移除。
 - 验证：`assembleDebug`、`assembleRelease` 通过；模拟器「设置 → 歌词 → 歌词偏移」只剩「网易云默认歌词偏移」。
 - v1.4 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.4.apk`，SHA256 `3EE9261EB14407C8874E3A99EA766EC36ACD01DDF6D882EBB548FDB90B145BD7`，版本 `2068a51.11042001`。
+
+### 2026-11-04（第六轮）
+
+- 下载目录入口前移：`设置 → 下载管理` 顶部新增「下载目录」卡片，可直接选择 SAF 目录；支持外置存储 / SD 卡下的子目录（Android 不允许直接选存储根目录，需选如 `Music/Gramophone` 的子文件夹）。
+- 新增「边听边下」：
+  - 设置键 `download_while_playing`，默认关闭，位于下载管理卡片。
+  - `AppContainer.startAutoDownloadObserver()` 组合监听开关、当前歌曲与播放状态。
+  - 播放开始后延迟 3 秒确认仍是同一首歌，避免快速切歌时误下载。
+  - 仅 Wi-Fi 执行；本地歌曲、已下载歌曲、下载队列中歌曲自动跳过。
+  - 通过现有 `GlobalDownloadManager.startDownload` 入队，沿用下载音质、目录、元信息后处理与通知。
+- 验证：模拟器连接 `AndroidWifi` 后开启开关并播放 `SKY CITY`，日志确认自动入队并写入 `files/Music/NeriPlayer`（mp3、lrc、trans.lrc、封面与索引齐全）；SAF 目录选择器可正常打开。
+- v1.5 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.5.apk`，SHA256 `D374D7A15EB7F6C66B8164FBFB832BEDD21FC2445CF25F33BDB0520EC0098E55`，版本 `71767e3.11042121`。
 
 验证方式：
 
