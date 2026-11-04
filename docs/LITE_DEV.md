@@ -332,7 +332,7 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 
 ### 已产出 APK
 
-- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.5.apk`
+- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.6.apk`
 - 大小：14,784,108 bytes
 - SHA256：`8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`
 - 版本：`749c1e2.11041301`（arm64-v8a，Release 签名）
@@ -481,6 +481,15 @@ Lite Release 包名：`moe.ouom.nerilite`
   - 通过现有 `GlobalDownloadManager.startDownload` 入队，沿用下载音质、目录、元信息后处理与通知。
 - 验证：模拟器连接 `AndroidWifi` 后开启开关并播放 `SKY CITY`，日志确认自动入队并写入 `files/Music/NeriPlayer`（mp3、lrc、trans.lrc、封面与索引齐全）；SAF 目录选择器可正常打开。
 - v1.5 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.5.apk`，SHA256 `D374D7A15EB7F6C66B8164FBFB832BEDD21FC2445CF25F33BDB0520EC0098E55`，版本 `71767e3.11042121`。
+
+### 2026-11-04（第七轮）
+
+- 「边听边下」新增子开关 `download_while_playing_allow_mobile_data`，默认关闭；主开关关闭时置灰。
+- 网络策略：Wi-Fi 始终允许；开启子开关后已验证的移动数据（`TrafficNetworkType.MOBILE`）也允许；漫游和网络未验证时仍跳过。
+- 新增 `GlobalDownloadManager.startAutomaticDownload()`，自动下载跳过逐首移动流量确认框（流量策略由设置开关显式确认），避免每首歌弹窗。
+- 自动下载日志标签 `AutoDownload`，记录候选歌曲、跳过原因和实际网络类型，便于真机排查。
+- 验证：模拟器连接 `AndroidWifi` 后开启开关播放 `SKY CITY`，自动下载并写入下载目录；切换移动数据时模拟器蜂窝网络为 `PARTIAL_CONNECTIVITY`，下载策略按设计等待已验证网络。真机移动数据需为已联网状态。
+- v1.6 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.6.apk`，SHA256 `0B21F2A2FDC1645F0D854835F13CCB997845925C1ADA21E3E7321CEDE0530093`，版本 `0f91ba9.11042212`。
 
 验证方式：
 
