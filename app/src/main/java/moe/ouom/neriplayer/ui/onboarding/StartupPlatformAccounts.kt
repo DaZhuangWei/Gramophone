@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.core.di.AppContainer
 import moe.ouom.neriplayer.data.model.youtube.auth.YouTubeAuthBundle
@@ -105,32 +106,40 @@ internal fun StartupPlatformAccounts(
         }
     }
     StartupPlatformAccountsContent(
-        accounts = listOf(
-            SettingsAccountCardUiState(
-                platform = SettingsAccountPlatform.Netease,
-                hasSavedAuthorization = neteaseState.hasSavedCookies,
-                authorizationComplete = hasValidSavedCookieHealth(neteaseState.health.state),
-                savedAtLabel = startupAccountSavedAtText(neteaseState.health.savedAt),
-                profile = profiles.netease.profile,
-                profileLoading = profiles.netease.loading
-            ),
-            SettingsAccountCardUiState(
-                platform = SettingsAccountPlatform.Bilibili,
-                hasSavedAuthorization = biliState.hasSavedCookies,
-                authorizationComplete = hasValidSavedCookieHealth(biliState.health.state),
-                savedAtLabel = startupAccountSavedAtText(biliState.health.savedAt),
-                profile = profiles.bili.profile,
-                profileLoading = profiles.bili.loading
-            ),
-            SettingsAccountCardUiState(
-                platform = SettingsAccountPlatform.YouTube,
-                hasSavedAuthorization = youTubeState.hasSavedAuth,
-                authorizationComplete = hasValidYouTubeAuthHealth(youTubeState.health.state),
-                savedAtLabel = startupAccountSavedAtText(youTubeState.health.savedAt),
-                profile = profiles.youtube.profile,
-                profileLoading = profiles.youtube.loading
+        accounts = buildList {
+            add(
+                SettingsAccountCardUiState(
+                    platform = SettingsAccountPlatform.Netease,
+                    hasSavedAuthorization = neteaseState.hasSavedCookies,
+                    authorizationComplete = hasValidSavedCookieHealth(neteaseState.health.state),
+                    savedAtLabel = startupAccountSavedAtText(neteaseState.health.savedAt),
+                    profile = profiles.netease.profile,
+                    profileLoading = profiles.netease.loading
+                )
             )
-        ),
+            if (!LiteEdition.ENABLED) {
+                add(
+                    SettingsAccountCardUiState(
+                        platform = SettingsAccountPlatform.Bilibili,
+                        hasSavedAuthorization = biliState.hasSavedCookies,
+                        authorizationComplete = hasValidSavedCookieHealth(biliState.health.state),
+                        savedAtLabel = startupAccountSavedAtText(biliState.health.savedAt),
+                        profile = profiles.bili.profile,
+                        profileLoading = profiles.bili.loading
+                    )
+                )
+                add(
+                    SettingsAccountCardUiState(
+                        platform = SettingsAccountPlatform.YouTube,
+                        hasSavedAuthorization = youTubeState.hasSavedAuth,
+                        authorizationComplete = hasValidYouTubeAuthHealth(youTubeState.health.state),
+                        savedAtLabel = startupAccountSavedAtText(youTubeState.health.savedAt),
+                        profile = profiles.youtube.profile,
+                        profileLoading = profiles.youtube.loading
+                    )
+                )
+            }
+        },
         inlineMessage = inlineMessage,
         onInlineMessageChange = onInlineMessageChange,
         onLogin = onLogin,

@@ -89,6 +89,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.core.di.AppContainer
 import moe.ouom.neriplayer.data.settings.appearance.UiDensityScalePreference
@@ -227,7 +228,14 @@ fun StartupOnboardingScreen(
     val scope = rememberCoroutineScope()
     val repo = AppContainer.settingsRepo
 
-    val steps = remember { StartupStep.entries }
+    val steps = remember {
+        StartupStep.entries.filterNot { step ->
+            LiteEdition.ENABLED && (
+                step == StartupStep.BackupRestore ||
+                    step == StartupStep.PlaybackSources
+                )
+        }
+    }
     var stepIndex by rememberSaveable { mutableIntStateOf(0) }
     val stepTransitionState = rememberStartupOnboardingLayerTransitionState(
         initialStepIndex = stepIndex

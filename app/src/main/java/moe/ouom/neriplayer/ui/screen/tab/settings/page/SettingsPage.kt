@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material.icons.outlined.Usb
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.vector.ImageVector
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.data.settings.AutoSettingsSchema
 import moe.ouom.neriplayer.ksp.annotations.AutoSettingsSectionEntry
@@ -162,42 +163,55 @@ internal enum class SettingsPage(
 /** Lets nested settings rows open a second-level page without threading callbacks through. */
 internal val LocalSettingsPageNavigator = staticCompositionLocalOf<((SettingsPage) -> Unit)?> { null }
 
-internal val SettingsHomePageGroups: List<List<SettingsPage>> = listOf(
-    listOf(SettingsPage.Accounts),
-    listOf(
-        SettingsPage.General,
-        SettingsPage.Language
-    ),
-    listOf(
-        SettingsPage.Playback,
-        SettingsPage.AudioQuality,
-        SettingsPage.AudioEffects,
-        SettingsPage.PlaybackSource,
-        SettingsPage.UsbExclusive
-    ),
-    listOf(
-        SettingsPage.Theme,
-        SettingsPage.NowPlaying,
-        SettingsPage.Background,
-        SettingsPage.Personalization,
-        SettingsPage.Motion
-    ),
-    listOf(
-        SettingsPage.Lyrics,
-        SettingsPage.ExternalLyrics
-    ),
-    listOf(
-        SettingsPage.Downloads,
-        SettingsPage.Storage,
-        SettingsPage.Network,
-        SettingsPage.TrafficManagement
-    ),
-    listOf(
-        SettingsPage.Backup,
-        SettingsPage.ListenTogether
-    ),
-    listOf(SettingsPage.About)
-)
+internal val SettingsHomePageGroups: List<List<SettingsPage>> = run {
+    val groups = listOf(
+        listOf(SettingsPage.Accounts),
+        listOf(
+            SettingsPage.General,
+            SettingsPage.Language
+        ),
+        listOf(
+            SettingsPage.Playback,
+            SettingsPage.AudioQuality,
+            SettingsPage.AudioEffects,
+            SettingsPage.PlaybackSource,
+            SettingsPage.UsbExclusive
+        ),
+        listOf(
+            SettingsPage.Theme,
+            SettingsPage.NowPlaying,
+            SettingsPage.Background,
+            SettingsPage.Personalization,
+            SettingsPage.Motion
+        ),
+        listOf(
+            SettingsPage.Lyrics,
+            SettingsPage.ExternalLyrics
+        ),
+        listOf(
+            SettingsPage.Downloads,
+            SettingsPage.Storage,
+            SettingsPage.Network,
+            SettingsPage.TrafficManagement
+        ),
+        listOf(
+            SettingsPage.Backup,
+            SettingsPage.ListenTogether
+        ),
+        listOf(SettingsPage.About)
+    )
+    if (LiteEdition.ENABLED) {
+        groups
+            .map { group ->
+                group.filterNot {
+                    it == SettingsPage.Backup || it == SettingsPage.ListenTogether
+                }
+            }
+            .filter { it.isNotEmpty() }
+    } else {
+        groups
+    }
+}
 
 /** Card indices of the shared lyrics section rendered on each lyrics page, in display order. */
 internal val LyricsPageCards = listOf(4, 1, 3)

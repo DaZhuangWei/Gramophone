@@ -23,6 +23,7 @@ package moe.ouom.neriplayer.ui.screen.tab.explore
  * Created: 2025/8/8
  */
 
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.ui.i18n.UiText
 import moe.ouom.neriplayer.ui.i18n.asString
 import moe.ouom.neriplayer.ui.component.common.NeriSearchFieldGlass
@@ -204,6 +205,9 @@ internal fun exploreSearchSourceDisplayOrder(
     isInternational: Boolean,
     youtubeEnabled: Boolean
 ): List<SearchSource> {
+    if (LiteEdition.ENABLED) {
+        return listOf(SearchSource.NETEASE)
+    }
     return if (!youtubeEnabled) {
         listOf(SearchSource.NETEASE, SearchSource.BILIBILI, SearchSource.LINK_RECOGNITION)
     } else if (isInternational) {

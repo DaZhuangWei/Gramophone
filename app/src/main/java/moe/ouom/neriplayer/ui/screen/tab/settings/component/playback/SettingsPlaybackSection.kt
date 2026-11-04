@@ -23,6 +23,7 @@ package moe.ouom.neriplayer.ui.screen.tab.settings.component.playback
  * Updated: 2026/3/23
  */
 
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.ui.screen.tab.settings.component.ExpandableHeader
 import moe.ouom.neriplayer.ui.screen.tab.settings.component.LazyAnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -248,31 +249,33 @@ internal fun SettingsPlaybackSection(
                     onHighlightFinished = onHighlightFinished
                 )
 
-                PlaybackSwitchItem(
-                    setting = AutoSettingsMetadata.requireSetting(
-                        AutoSettingsKeys.BILI_SPONSOR_BLOCK_ENABLED
-                    ),
-                    checked = biliSponsorBlockEnabled,
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.FastForward,
-                            contentDescription = stringResource(CoreCommonR.string.settings_bili_sponsor_block),
-                            modifier = Modifier.size(24.dp),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    },
-                    onToggle = {
-                        scope.launch {
-                            autoSettingsRepository.setBiliSponsorBlockEnabled(!biliSponsorBlockEnabled)
-                        }
-                    },
-                    onCheckedChange = { enabled ->
-                        scope.launch { autoSettingsRepository.setBiliSponsorBlockEnabled(enabled) }
-                    },
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
+                if (!LiteEdition.ENABLED) {
+                    PlaybackSwitchItem(
+                        setting = AutoSettingsMetadata.requireSetting(
+                            AutoSettingsKeys.BILI_SPONSOR_BLOCK_ENABLED
+                        ),
+                        checked = biliSponsorBlockEnabled,
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.FastForward,
+                                contentDescription = stringResource(CoreCommonR.string.settings_bili_sponsor_block),
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        },
+                        onToggle = {
+                            scope.launch {
+                                autoSettingsRepository.setBiliSponsorBlockEnabled(!biliSponsorBlockEnabled)
+                            }
+                        },
+                        onCheckedChange = { enabled ->
+                            scope.launch { autoSettingsRepository.setBiliSponsorBlockEnabled(enabled) }
+                        },
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
+                }
 
                 PlaybackSwitchItem(
                     setting = AutoSettingsMetadata.requireSetting(AutoSettingsKeys.KEEP_PLAYBACK_MODE_STATE),

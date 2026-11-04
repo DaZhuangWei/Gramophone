@@ -42,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.ui.haptic.HapticButton
 import moe.ouom.neriplayer.ui.haptic.HapticTextButton
 import moe.ouom.neriplayer.ui.onboarding.StartupOnboardingLayout
@@ -111,11 +112,13 @@ internal fun StartupDisclaimerContent(
                     title = stringResource(AppR.string.disclaimer_summary_data_title),
                     body = stringResource(AppR.string.disclaimer_summary_data_body)
                 )
-                DisclaimerFact(
-                    icon = Icons.Outlined.CloudSync,
-                    title = stringResource(AppR.string.disclaimer_summary_sync_title),
-                    body = stringResource(AppR.string.disclaimer_summary_sync_body)
-                )
+                if (!LiteEdition.ENABLED) {
+                    DisclaimerFact(
+                        icon = Icons.Outlined.CloudSync,
+                        title = stringResource(AppR.string.disclaimer_summary_sync_title),
+                        body = stringResource(AppR.string.disclaimer_summary_sync_body)
+                    )
+                }
                 HapticTextButton(
                     onClick = { detailsExpanded = !detailsExpanded },
                     modifier = Modifier.align(Alignment.Start)

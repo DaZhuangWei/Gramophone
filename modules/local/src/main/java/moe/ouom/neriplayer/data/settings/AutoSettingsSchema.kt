@@ -81,7 +81,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "force_dark",
             type = SettingValueType.Boolean,
-            defaultBoolean = false,
+            defaultBoolean = true,
             order = 20,
             access = SettingAccessMode.KeyOnly
         )
@@ -90,7 +90,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "follow_system_dark",
             type = SettingValueType.Boolean,
-            defaultBoolean = true,
+            defaultBoolean = false,
             order = 30,
             access = SettingAccessMode.KeyOnly
         )
@@ -220,7 +220,7 @@ object AutoSettingsSchema {
         )
         val youtubeEnabled = autoSwitchSetting(
             key = "youtube_enabled",
-            defaultValue = true,
+            defaultValue = false,
             titleRes = CoreCommonR.string.settings_youtube_enabled,
             descriptionRes = CoreCommonR.string.settings_youtube_enabled_desc,
             iconRes = CoreCommonR.drawable.ic_youtube
@@ -256,7 +256,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "dynamic_color",
             type = SettingValueType.Boolean,
-            defaultBoolean = true,
+            defaultBoolean = false,
             order = 5,
             ui = SettingUiType.Switch,
             access = SettingAccessMode.KeyOnly
@@ -533,7 +533,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "home_card_bilibili",
             type = SettingValueType.Boolean,
-            defaultBoolean = true,
+            defaultBoolean = false,
             order = 70,
             ui = SettingUiType.Custom
         )
@@ -853,7 +853,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "liquid_glass_enabled",
             type = SettingValueType.Boolean,
-            defaultBoolean = true,
+            defaultBoolean = false,
             order = 22,
             ui = SettingUiType.Custom
         )
@@ -866,7 +866,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "advanced_blur_enabled",
             type = SettingValueType.Boolean,
-            defaultBoolean = true,
+            defaultBoolean = false,
             order = 20,
             ui = SettingUiType.Custom
         )
@@ -924,7 +924,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "nowplaying_audio_reactive_enabled",
             type = SettingValueType.Boolean,
-            defaultBoolean = true,
+            defaultBoolean = false,
             order = 30,
             ui = SettingUiType.Custom
         )
@@ -937,7 +937,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "nowplaying_dynamic_background_enabled",
             type = SettingValueType.Boolean,
-            defaultBoolean = true,
+            defaultBoolean = false,
             order = 40,
             ui = SettingUiType.Custom
         )
@@ -985,7 +985,7 @@ object AutoSettingsSchema {
         @AutoSetting(
             key = "lyric_blur_enabled",
             type = SettingValueType.Boolean,
-            defaultBoolean = true,
+            defaultBoolean = false,
             order = 80,
             ui = SettingUiType.Custom
         )

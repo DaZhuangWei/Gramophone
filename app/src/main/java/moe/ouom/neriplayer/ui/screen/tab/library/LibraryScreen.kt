@@ -24,6 +24,7 @@ package moe.ouom.neriplayer.ui.screen.tab.library
  */
 
 import androidx.compose.runtime.CompositionLocalProvider
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.ui.theme.neriRoundedShape
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -195,6 +196,13 @@ internal fun libraryTabDisplayOrder(
     isInternational: Boolean,
     youtubeEnabled: Boolean = true
 ): List<LibraryTab> {
+    if (LiteEdition.ENABLED) {
+        return listOf(
+            LibraryTab.LOCAL,
+            LibraryTab.FAVORITE,
+            LibraryTab.NETEASE
+        )
+    }
     val orderedTabs = if (isInternational && youtubeEnabled) {
         listOf(
             LibraryTab.LOCAL,

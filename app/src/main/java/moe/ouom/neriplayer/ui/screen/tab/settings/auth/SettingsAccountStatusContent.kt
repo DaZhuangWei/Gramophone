@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.core.di.AppContainer
 import moe.ouom.neriplayer.data.model.auth.SavedCookieAuthState
@@ -92,7 +93,7 @@ internal fun SettingsLoginExpandedContent(
     )
     val biliProfile = rememberSettingsAccountProfile(
         request = SettingsAccountProfileRequest(bili.hasSavedCookies, bili.health.savedAt, biliAuthorization.identity),
-        isActive = isActive
+        isActive = isActive && !LiteEdition.ENABLED
     ) { loadBiliAccountProfile(biliAuthorization) }
     val neteaseProfile = rememberSettingsAccountProfile(
         request = SettingsAccountProfileRequest(netease.hasSavedCookies, netease.health.savedAt, neteaseAuthorization.identity),
@@ -100,7 +101,7 @@ internal fun SettingsLoginExpandedContent(
     ) { loadNeteaseAccountProfile(neteaseAuthorization) }
     val youtubeProfile = rememberSettingsAccountProfile(
         request = SettingsAccountProfileRequest(youtube.hasSavedAuth, youtubeAuthorization.savedAt, youtubeAuthorization.identity),
-        isActive = isActive && youtubeEnabled
+        isActive = isActive && youtubeEnabled && !LiteEdition.ENABLED
     ) { loadYouTubeAccountProfile(youtubeAuthorization) }
 
     LaunchedEffect(biliVm, youtubeVm, neteaseVm) {
@@ -111,39 +112,49 @@ internal fun SettingsLoginExpandedContent(
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         SettingsAccountCardsContent(
-            accounts = listOf(
-                SettingsAccountCardUiState(
-                    platform = SettingsAccountPlatform.Netease,
-                    hasSavedAuthorization = netease.hasSavedCookies,
-                    authorizationComplete = hasValidSavedCookieHealth(netease.health.state),
-                    savedAtLabel = accountSavedAtText(netease.health.savedAt),
-                    profile = neteaseProfile.profile,
-                    profileLoading = neteaseProfile.loading
-                ),
-                SettingsAccountCardUiState(
-                    platform = SettingsAccountPlatform.Bilibili,
-                    hasSavedAuthorization = bili.hasSavedCookies,
-                    authorizationComplete = hasValidSavedCookieHealth(bili.health.state),
-                    savedAtLabel = accountSavedAtText(bili.health.savedAt),
-                    profile = biliProfile.profile,
-                    profileLoading = biliProfile.loading
-                ),
-                SettingsAccountCardUiState(
-                    platform = SettingsAccountPlatform.YouTube,
-                    hasSavedAuthorization = youtube.hasSavedAuth,
-                    authorizationComplete = hasValidYouTubeAuthHealth(youtube.health.state),
-                    savedAtLabel = accountSavedAtText(youtube.health.savedAt),
-                    profile = youtubeProfile.profile,
-                    profileLoading = youtubeProfile.loading
+            accounts = buildList {
+                add(
+                    SettingsAccountCardUiState(
+                        platform = SettingsAccountPlatform.Netease,
+                        hasSavedAuthorization = netease.hasSavedCookies,
+                        authorizationComplete = hasValidSavedCookieHealth(netease.health.state),
+                        savedAtLabel = accountSavedAtText(netease.health.savedAt),
+                        profile = neteaseProfile.profile,
+                        profileLoading = neteaseProfile.loading
+                    )
                 )
-            ),
+                if (!LiteEdition.ENABLED) {
+                    add(
+                        SettingsAccountCardUiState(
+                            platform = SettingsAccountPlatform.Bilibili,
+                            hasSavedAuthorization = bili.hasSavedCookies,
+                            authorizationComplete = hasValidSavedCookieHealth(bili.health.state),
+                            savedAtLabel = accountSavedAtText(bili.health.savedAt),
+                            profile = biliProfile.profile,
+                            profileLoading = biliProfile.loading
+                        )
+                    )
+                    add(
+                        SettingsAccountCardUiState(
+                            platform = SettingsAccountPlatform.YouTube,
+                            hasSavedAuthorization = youtube.hasSavedAuth,
+                            authorizationComplete = hasValidYouTubeAuthHealth(youtube.health.state),
+                            savedAtLabel = accountSavedAtText(youtube.health.savedAt),
+                            profile = youtubeProfile.profile,
+                            profileLoading = youtubeProfile.loading
+                        )
+                    )
+                }
+            },
             onLogin = controller.actions::openPlatformLogin,
             onManageSaved = controller.actions::openPlatformSavedAuthorization,
             highlightTargetId = highlightTargetId,
             highlightPulse = highlightPulse,
             onHighlightFinished = onHighlightFinished
         )
-        SettingsMusicServerCard(onOpenMusicServers)
+        if (!LiteEdition.ENABLED) {
+            SettingsMusicServerCard(onOpenMusicServers)
+        }
     }
 }
 

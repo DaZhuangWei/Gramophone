@@ -26,8 +26,8 @@ package moe.ouom.neriplayer.data.settings.appearance
 import java.util.Locale
 
 object ThemeDefaults {
-    const val DEFAULT_SEED_COLOR_HEX = "0061A4"
-    const val DEFAULT_PALETTE_STYLE = "TonalSpot"
+    const val DEFAULT_SEED_COLOR_HEX = "C8A45D"
+    const val DEFAULT_PALETTE_STYLE = "Fidelity"
     const val DEFAULT_COLOR_SPEC = "SPEC_2021"
     val PALETTE_STYLES = listOf(
         "TonalSpot",

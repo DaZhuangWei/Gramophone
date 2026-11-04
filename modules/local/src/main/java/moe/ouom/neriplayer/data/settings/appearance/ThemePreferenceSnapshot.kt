@@ -56,9 +56,9 @@ fun readThemePreferenceSnapshotSync(context: Context): ThemePreferenceSnapshot {
         runBlocking {
             val prefs = context.dataStore.data.first()
             ThemePreferenceSnapshot(
-                dynamicColor = prefs[SettingsKeys.DYNAMIC_COLOR] ?: true,
-                forceDark = prefs[SettingsKeys.FORCE_DARK] ?: false,
-                followSystemDark = prefs[SettingsKeys.FOLLOW_SYSTEM_DARK] ?: true,
+                dynamicColor = prefs[SettingsKeys.DYNAMIC_COLOR] ?: false,
+                forceDark = prefs[SettingsKeys.FORCE_DARK] ?: true,
+                followSystemDark = prefs[SettingsKeys.FOLLOW_SYSTEM_DARK] ?: false,
                 uiStyle = UiStyle.fromStorage(prefs[SettingsKeys.UI_STYLE])
             )
         }
@@ -75,9 +75,9 @@ private fun warmThemePreferenceSnapshot(context: Context) {
         runCatching {
             val prefs = appContext.dataStore.data.first()
             ThemePreferenceSnapshot(
-                dynamicColor = prefs[SettingsKeys.DYNAMIC_COLOR] ?: true,
-                forceDark = prefs[SettingsKeys.FORCE_DARK] ?: false,
-                followSystemDark = prefs[SettingsKeys.FOLLOW_SYSTEM_DARK] ?: true,
+                dynamicColor = prefs[SettingsKeys.DYNAMIC_COLOR] ?: false,
+                forceDark = prefs[SettingsKeys.FORCE_DARK] ?: true,
+                followSystemDark = prefs[SettingsKeys.FOLLOW_SYSTEM_DARK] ?: false,
                 uiStyle = UiStyle.fromStorage(prefs[SettingsKeys.UI_STYLE])
             )
         }.onSuccess { snapshot ->
@@ -129,7 +129,7 @@ internal fun persistThemeModeSnapshot(
 ) {
     val prefs = context.getSharedPreferences(THEME_SNAPSHOT_PREFS, Context.MODE_PRIVATE)
     prefs.edit {
-        putBoolean(THEME_DYNAMIC_COLOR_KEY, prefs.getBoolean(THEME_DYNAMIC_COLOR_KEY, true))
+        putBoolean(THEME_DYNAMIC_COLOR_KEY, prefs.getBoolean(THEME_DYNAMIC_COLOR_KEY, false))
         putBoolean(THEME_FORCE_DARK_KEY, forceDark)
         putBoolean(THEME_FOLLOW_SYSTEM_DARK_KEY, followSystemDark)
     }
@@ -145,9 +145,9 @@ private fun readCachedThemePreferenceSnapshot(context: Context): ThemePreference
         return null
     }
     return ThemePreferenceSnapshot(
-        dynamicColor = prefs.getBoolean(THEME_DYNAMIC_COLOR_KEY, true),
-        forceDark = prefs.getBoolean(THEME_FORCE_DARK_KEY, false),
-        followSystemDark = prefs.getBoolean(THEME_FOLLOW_SYSTEM_DARK_KEY, true),
+        dynamicColor = prefs.getBoolean(THEME_DYNAMIC_COLOR_KEY, false),
+        forceDark = prefs.getBoolean(THEME_FORCE_DARK_KEY, true),
+        followSystemDark = prefs.getBoolean(THEME_FOLLOW_SYSTEM_DARK_KEY, false),
         uiStyle = UiStyle.fromStorage(prefs.getString(THEME_UI_STYLE_KEY, null))
     )
 }

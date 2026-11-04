@@ -61,19 +61,19 @@ internal val MaterialDesignTokens = NeriDesignTokens(
 
 internal val CleanDesignTokens = NeriDesignTokens(
     style = UiStyle.Clean,
-    cardShape = ContinuousRoundedCornerShape(20.dp),
-    groupShape = ContinuousRoundedCornerShape(22.dp),
+    cardShape = ContinuousRoundedCornerShape(10.dp),
+    groupShape = ContinuousRoundedCornerShape(12.dp),
     controlShape = CircleShape,
     chipShape = CircleShape,
-    coverSmallShape = ContinuousRoundedCornerShape(10.dp),
-    coverLargeShape = ContinuousRoundedCornerShape(18.dp),
-    dialogShape = ContinuousRoundedCornerShape(30.dp),
-    sheetShape = ContinuousRoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
-    menuShape = ContinuousRoundedCornerShape(18.dp),
-    miniPlayerShape = ContinuousRoundedCornerShape(22.dp),
+    coverSmallShape = ContinuousRoundedCornerShape(6.dp),
+    coverLargeShape = ContinuousRoundedCornerShape(10.dp),
+    dialogShape = ContinuousRoundedCornerShape(16.dp),
+    sheetShape = ContinuousRoundedCornerShape(topStart = 18.dp, topEnd = 18.dp),
+    menuShape = ContinuousRoundedCornerShape(12.dp),
+    miniPlayerShape = ContinuousRoundedCornerShape(12.dp),
     pageHorizontalPadding = 20.dp,
-    sectionSpacing = 28.dp,
-    hairlineAlpha = 0.06f,
+    sectionSpacing = 24.dp,
+    hairlineAlpha = 0.08f,
     pressScaleEnabled = true
 )
 

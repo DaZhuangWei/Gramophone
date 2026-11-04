@@ -153,6 +153,7 @@ import moe.ouom.neriplayer.ui.viewmodel.tab.AlbumSummary
 import moe.ouom.neriplayer.ui.viewmodel.tab.PlaylistSummary
 import moe.ouom.neriplayer.ui.viewmodel.tab.YouTubeMusicPlaylist
 import moe.ouom.neriplayer.util.media.CoverArtColorCache
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.logging.NPLogger
 import moe.ouom.neriplayer.ui.debug.appDebugCrashActionOwner
 import moe.ouom.neriplayer.ui.dialog.AppTrafficRiskDialogHost
@@ -455,7 +456,8 @@ private fun NeriAppContent(
     val showHomeRecommendedCard by repo.homeCardRecommendedFlow.collectAsStateWithLifecycle(initialValue = true)
     val homeBilibiliCardEnabled by repo.homeCardBilibiliFlow.collectAsStateWithLifecycle(initialValue = true)
     val internationalizationEnabled by repo.internationalizationEnabledFlow.collectAsStateWithLifecycle(initialValue = false)
-    val showHomeBilibiliCard = homeBilibiliCardEnabled && !internationalizationEnabled
+    val showHomeBilibiliCard =
+        !LiteEdition.ENABLED && homeBilibiliCardEnabled && !internationalizationEnabled
     val storedUsbExclusivePlayback by repo.usbExclusivePlaybackFlow
         .collectAsStateWithLifecycle(initialValue = null)
     val usbExclusivePlayback = storedUsbExclusivePlayback

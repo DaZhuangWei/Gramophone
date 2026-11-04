@@ -70,6 +70,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -1780,7 +1781,41 @@ fun NeriTheme(
         }
 
         else -> {
-            if (useDark) darkColorScheme() else lightColorScheme()
+            if (useDark) {
+                darkColorScheme(
+                    primary = Color(0xFFD4AF6A),
+                    onPrimary = Color(0xFF1A1305),
+                    primaryContainer = Color(0xFF3A2C12),
+                    onPrimaryContainer = Color(0xFFF2DCA8),
+                    secondary = Color(0xFFC8A45D),
+                    onSecondary = Color(0xFF1A1305),
+                    secondaryContainer = Color(0xFF2A2114),
+                    onSecondaryContainer = Color(0xFFE8D3A4),
+                    background = Color(0xFF050505),
+                    onBackground = Color(0xFFF2EFE6),
+                    surface = Color(0xFF050505),
+                    onSurface = Color(0xFFF2EFE6),
+                    surfaceVariant = Color(0xFF222226),
+                    onSurfaceVariant = Color(0xFFB8B2A5),
+                    outline = Color(0xFF8C8678)
+                )
+            } else {
+                lightColorScheme(
+                    primary = Color(0xFF8A6A2A),
+                    onPrimary = Color.White,
+                    primaryContainer = Color(0xFFF0D9A7),
+                    onPrimaryContainer = Color(0xFF2A1F0A),
+                    secondary = Color(0xFF8A6A2A),
+                    onSecondary = Color.White,
+                    background = Color(0xFFF7F4EC),
+                    onBackground = Color(0xFF1C1A16),
+                    surface = Color(0xFFF7F4EC),
+                    onSurface = Color(0xFF1C1A16),
+                    surfaceVariant = Color(0xFFEAE4D6),
+                    onSurfaceVariant = Color(0xFF5E5748),
+                    outline = Color(0xFF8C8678)
+                )
+            }
         }
     }
     MaterialTheme(

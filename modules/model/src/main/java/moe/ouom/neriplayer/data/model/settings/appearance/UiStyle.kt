@@ -9,9 +9,9 @@ enum class UiStyle(val storageValue: String) {
     Clean("clean");
 
     companion object {
-        const val DEFAULT_STORAGE_VALUE = "material"
+        const val DEFAULT_STORAGE_VALUE = "clean"
 
         fun fromStorage(value: String?): UiStyle =
-            entries.firstOrNull { it.storageValue == value } ?: Material
+            entries.firstOrNull { it.storageValue == value } ?: Clean
     }
 }

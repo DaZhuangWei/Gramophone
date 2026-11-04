@@ -4,7 +4,7 @@ import java.io.IOException
 
 object YouTubeFeatureGate {
     @Volatile
-    private var enabled = true
+    private var enabled = false
 
     fun isEnabled(): Boolean = enabled
 

@@ -53,18 +53,18 @@ private val CleanLightNeutrals = CleanNeutrals(
 )
 
 private val CleanDarkNeutrals = CleanNeutrals(
-    background = Color(0xFF0E0E10),
-    surfaceDim = Color(0xFF0A0A0C),
+    background = Color(0xFF050505),
+    surfaceDim = Color(0xFF000000),
     surfaceBright = Color(0xFF2B2B30),
-    containerLowest = Color(0xFF09090B),
-    containerLow = Color(0xFF17171A),
-    container = Color(0xFF1B1B1E),
-    containerHigh = Color(0xFF212125),
-    containerHighest = Color(0xFF2A2A2F),
-    onSurface = Color(0xFFF2F2F5),
-    onSurfaceVariant = Color(0xFFADADB5),
-    outline = Color(0xFF8A8A93),
-    outlineVariant = Color(0xFF2E2E34),
+    containerLowest = Color(0xFF000000),
+    containerLow = Color(0xFF0C0C0E),
+    container = Color(0xFF111113),
+    containerHigh = Color(0xFF18181B),
+    containerHighest = Color(0xFF222226),
+    onSurface = Color(0xFFF2EFE6),
+    onSurfaceVariant = Color(0xFFB8B2A5),
+    outline = Color(0xFF8C8678),
+    outlineVariant = Color(0xFF2E2C27),
     inverseSurface = Color(0xFFE6E6EB),
     inverseOnSurface = Color(0xFF1C1C1F)
 )
@@ -148,9 +148,9 @@ internal val CleanTypography = Typography(
 )
 
 internal val CleanShapes = Shapes(
-    extraSmall = ContinuousRoundedCornerShape(14.dp),
-    small = ContinuousRoundedCornerShape(16.dp),
-    medium = ContinuousRoundedCornerShape(18.dp),
-    large = ContinuousRoundedCornerShape(24.dp),
-    extraLarge = ContinuousRoundedCornerShape(30.dp)
+    extraSmall = ContinuousRoundedCornerShape(8.dp),
+    small = ContinuousRoundedCornerShape(10.dp),
+    medium = ContinuousRoundedCornerShape(12.dp),
+    large = ContinuousRoundedCornerShape(16.dp),
+    extraLarge = ContinuousRoundedCornerShape(20.dp)
 )

@@ -191,7 +191,7 @@ internal fun updateBootstrapDownloadFollowPlaybackAudioQuality(
 fun Preferences.toBootstrapSettingsSnapshot(): BootstrapSettingsSnapshot {
     return BootstrapSettingsSnapshot(
         bypassProxy = this[SettingsKeys.BYPASS_PROXY] ?: true,
-        youtubeEnabled = this[SettingsKeys.YOUTUBE_ENABLED] ?: true,
+        youtubeEnabled = this[SettingsKeys.YOUTUBE_ENABLED] ?: false,
         preferHighRefreshRate = valueOf(AutoSettingsSchema.general.preferHighRefreshRate),
         downloadDirectoryUri = this[SettingsKeys.DOWNLOAD_DIRECTORY_URI],
         downloadDirectoryLabel = this[SettingsKeys.DOWNLOAD_DIRECTORY_LABEL],
@@ -245,7 +245,7 @@ private fun readCachedBootstrapSettingsSnapshot(context: Context): BootstrapSett
         ?: DEFAULT_DOWNLOAD_PARALLELISM
     return BootstrapSettingsSnapshot(
         bypassProxy = prefs.getBoolean(BOOTSTRAP_BYPASS_PROXY_KEY, true),
-        youtubeEnabled = prefs.getBoolean(BOOTSTRAP_YOUTUBE_ENABLED_KEY, true),
+        youtubeEnabled = prefs.getBoolean(BOOTSTRAP_YOUTUBE_ENABLED_KEY, false),
         preferHighRefreshRate = prefs.getBoolean(
             BOOTSTRAP_PREFER_HIGH_REFRESH_RATE_KEY,
             BootstrapSettingsSnapshot().preferHighRefreshRate

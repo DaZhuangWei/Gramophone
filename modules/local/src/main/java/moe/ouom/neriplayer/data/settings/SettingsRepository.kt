@@ -167,13 +167,13 @@ class SettingsRepository(private val context: Context) {
     }
 
     val dynamicColorFlow: Flow<Boolean> =
-        dataStoreSettingFlow { it[SettingsKeys.DYNAMIC_COLOR] ?: true }
+        dataStoreSettingFlow { it[SettingsKeys.DYNAMIC_COLOR] ?: false }
 
     val forceDarkFlow: Flow<Boolean> =
-        dataStoreSettingFlow { it[SettingsKeys.FORCE_DARK] ?: false }
+        dataStoreSettingFlow { it[SettingsKeys.FORCE_DARK] ?: true }
 
     val followSystemDarkFlow: Flow<Boolean> =
-        dataStoreSettingFlow { it[SettingsKeys.FOLLOW_SYSTEM_DARK] ?: true }
+        dataStoreSettingFlow { it[SettingsKeys.FOLLOW_SYSTEM_DARK] ?: false }
 
     val showCoverSourceBadgeFlow: Flow<Boolean> =
         autoSettingsRepository.showCoverSourceBadgeFlow
