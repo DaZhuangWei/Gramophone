@@ -209,6 +209,18 @@ class SettingsRepository(private val context: Context) {
     val nowPlayingProgressShowAudioSpecFlow: Flow<Boolean> =
         autoSettingsRepository.nowPlayingProgressShowAudioSpecFlow
 
+    val nowPlayingProgressShowAudioSampleRateFlow: Flow<Boolean> =
+        autoSettingsRepository.nowPlayingProgressShowAudioSampleRateFlow
+
+    val nowPlayingProgressShowAudioBitDepthFlow: Flow<Boolean> =
+        autoSettingsRepository.nowPlayingProgressShowAudioBitDepthFlow
+
+    val nowPlayingProgressShowAudioBitrateFlow: Flow<Boolean> =
+        autoSettingsRepository.nowPlayingProgressShowAudioBitrateFlow
+
+    val nowPlayingProgressShowAudioChannelsFlow: Flow<Boolean> =
+        autoSettingsRepository.nowPlayingProgressShowAudioChannelsFlow
+
     val silentGitHubSyncFailureFlow: Flow<Boolean> =
         autoSettingsRepository.silentGitHubSyncFailureFlow
 
@@ -774,6 +786,22 @@ class SettingsRepository(private val context: Context) {
 
     suspend fun setNowPlayingProgressShowAudioSpec(enabled: Boolean) {
         autoSettingsRepository.setNowPlayingProgressShowAudioSpec(enabled)
+    }
+
+    suspend fun setNowPlayingProgressShowAudioSampleRate(enabled: Boolean) {
+        autoSettingsRepository.setNowPlayingProgressShowAudioSampleRate(enabled)
+    }
+
+    suspend fun setNowPlayingProgressShowAudioBitDepth(enabled: Boolean) {
+        autoSettingsRepository.setNowPlayingProgressShowAudioBitDepth(enabled)
+    }
+
+    suspend fun setNowPlayingProgressShowAudioBitrate(enabled: Boolean) {
+        autoSettingsRepository.setNowPlayingProgressShowAudioBitrate(enabled)
+    }
+
+    suspend fun setNowPlayingProgressShowAudioChannels(enabled: Boolean) {
+        autoSettingsRepository.setNowPlayingProgressShowAudioChannels(enabled)
     }
 
     suspend fun setSilentGitHubSyncFailure(enabled: Boolean) {

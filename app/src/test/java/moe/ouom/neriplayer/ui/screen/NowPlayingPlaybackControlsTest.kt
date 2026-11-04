@@ -4,6 +4,7 @@ import moe.ouom.neriplayer.data.model.playback.PlaybackAudioInfo
 import moe.ouom.neriplayer.data.model.playback.PlaybackAudioSource
 import moe.ouom.neriplayer.ui.haptic.HapticFeedbackEffect
 import moe.ouom.neriplayer.ui.screen.nowplaying.NowPlayingProgressInfoSegment
+import moe.ouom.neriplayer.ui.screen.nowplaying.NowPlayingAudioInfoDisplayOptions
 import moe.ouom.neriplayer.ui.screen.nowplaying.NowPlayingProgressOwner
 import moe.ouom.neriplayer.ui.screen.nowplaying.NowPlayingSeekActionOwner
 import moe.ouom.neriplayer.ui.screen.nowplaying.buildNowPlayingProgressInfoPresentation
@@ -253,6 +254,62 @@ class NowPlayingPlaybackControlsTest {
                     bitDepth = null
                 ),
                 true, true, true, 1f
+            )
+        )
+    }
+
+    @Test
+    fun `audio spec fields can be selected individually`() {
+        val info = PlaybackAudioInfo(
+            source = PlaybackAudioSource.NETEASE,
+            codecLabel = "FLAC",
+            sampleRateHz = 96000,
+            bitDepth = 24,
+            bitrateKbps = 1411,
+            channelCount = 2
+        )
+        assertEquals(
+            listOf(
+                NowPlayingProgressInfoSegment("FLAC"),
+                NowPlayingProgressInfoSegment("96 kHz | 24 bit | 1411 kbps | 2 ch")
+            ),
+            buildNowPlayingProgressInfoSegments(
+                info,
+                NowPlayingAudioInfoDisplayOptions(
+                    showQuality = false,
+                    showCodec = true,
+                    showSpec = true
+                ),
+                1f
+            )
+        )
+        assertEquals(
+            listOf(
+                NowPlayingProgressInfoSegment("FLAC"),
+                NowPlayingProgressInfoSegment("1411 kbps | 2 ch")
+            ),
+            buildNowPlayingProgressInfoSegments(
+                info,
+                NowPlayingAudioInfoDisplayOptions(
+                    showQuality = false,
+                    showCodec = true,
+                    showSpec = true,
+                    showSampleRate = false,
+                    showBitDepth = false
+                ),
+                1f
+            )
+        )
+        assertEquals(
+            listOf(NowPlayingProgressInfoSegment("FLAC")),
+            buildNowPlayingProgressInfoSegments(
+                info,
+                NowPlayingAudioInfoDisplayOptions(
+                    showQuality = false,
+                    showCodec = true,
+                    showSpec = false
+                ),
+                1f
             )
         )
     }

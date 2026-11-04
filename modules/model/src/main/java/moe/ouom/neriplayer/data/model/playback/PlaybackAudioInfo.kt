@@ -39,13 +39,38 @@ data class PlaybackAudioInfo(
 fun buildPlaybackSpecLabel(
     sampleRateHz: Int?,
     bitDepth: Int?,
-    bitrateKbps: Int?
+    bitrateKbps: Int?,
+    channelCount: Int? = null,
+    includeSampleRate: Boolean = true,
+    includeBitDepth: Boolean = true,
+    includeBitrate: Boolean = true,
+    includeChannels: Boolean = true
 ): String? {
     val parts = mutableListOf<String>()
-    sampleRateHz?.takeIf { it > 0 }?.let { parts += formatPlaybackSampleRate(it) }
-    bitDepth?.takeIf { it > 0 }?.let { parts += "$it bit" }
-    bitrateKbps?.takeIf { it > 0 }?.let { parts += "$it kbps" }
+    if (includeSampleRate) {
+        sampleRateHz?.takeIf { it > 0 }?.let { parts += formatPlaybackSampleRate(it) }
+    }
+    if (includeBitDepth) {
+        bitDepth?.takeIf { it > 0 }?.let { parts += "$it bit" }
+    }
+    if (includeBitrate) {
+        bitrateKbps?.takeIf { it > 0 }?.let { parts += "$it kbps" }
+    }
+    if (includeChannels) {
+        formatPlaybackChannelCount(channelCount)?.let { parts += it }
+    }
     return parts.takeIf { it.isNotEmpty() }?.joinToString(separator = " | ")
+}
+
+fun formatPlaybackChannelCount(channelCount: Int?): String? {
+    val count = channelCount?.takeIf { it > 0 } ?: return null
+    return when (count) {
+        1 -> "1 ch"
+        2 -> "2 ch"
+        6 -> "5.1"
+        8 -> "7.1"
+        else -> "$count ch"
+    }
 }
 
 fun formatPlaybackSampleRate(sampleRateHz: Int): String {

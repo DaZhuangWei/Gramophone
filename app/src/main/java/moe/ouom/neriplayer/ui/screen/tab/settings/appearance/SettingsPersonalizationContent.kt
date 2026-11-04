@@ -254,6 +254,14 @@ internal fun SettingsPersonalizationPlaybackInfoCard(
         .nowPlayingProgressShowAudioCodecFlow.collectAsState(initial = true)
     val nowPlayingProgressShowAudioSpec by autoSettingsRepository
         .nowPlayingProgressShowAudioSpecFlow.collectAsState(initial = true)
+    val nowPlayingProgressShowAudioSampleRate by autoSettingsRepository
+        .nowPlayingProgressShowAudioSampleRateFlow.collectAsState(initial = true)
+    val nowPlayingProgressShowAudioBitDepth by autoSettingsRepository
+        .nowPlayingProgressShowAudioBitDepthFlow.collectAsState(initial = true)
+    val nowPlayingProgressShowAudioBitrate by autoSettingsRepository
+        .nowPlayingProgressShowAudioBitrateFlow.collectAsState(initial = true)
+    val nowPlayingProgressShowAudioChannels by autoSettingsRepository
+        .nowPlayingProgressShowAudioChannelsFlow.collectAsState(initial = true)
     PersonalizationCardContainer {
         MiuixSettingsSectionIntro(
             title = stringResource(CoreCommonR.string.settings_personalization_playback_info_section),
@@ -344,6 +352,62 @@ internal fun SettingsPersonalizationPlaybackInfoCard(
                 scope.launch { autoSettingsRepository.setNowPlayingProgressShowAudioSpec(enabled) }
             },
             enabled = true,
+            supportingContent = null,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished
+        )
+        PersonalizationSwitchItem(
+            setting = AutoSettingsMetadata.requireSetting(
+                AutoSettingsKeys.NOW_PLAYING_PROGRESS_SHOW_AUDIO_SAMPLE_RATE
+            ),
+            checked = nowPlayingProgressShowAudioSampleRate,
+            onCheckedChange = { enabled ->
+                scope.launch { autoSettingsRepository.setNowPlayingProgressShowAudioSampleRate(enabled) }
+            },
+            enabled = nowPlayingProgressShowAudioSpec,
+            supportingContent = null,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished
+        )
+        PersonalizationSwitchItem(
+            setting = AutoSettingsMetadata.requireSetting(
+                AutoSettingsKeys.NOW_PLAYING_PROGRESS_SHOW_AUDIO_BIT_DEPTH
+            ),
+            checked = nowPlayingProgressShowAudioBitDepth,
+            onCheckedChange = { enabled ->
+                scope.launch { autoSettingsRepository.setNowPlayingProgressShowAudioBitDepth(enabled) }
+            },
+            enabled = nowPlayingProgressShowAudioSpec,
+            supportingContent = null,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished
+        )
+        PersonalizationSwitchItem(
+            setting = AutoSettingsMetadata.requireSetting(
+                AutoSettingsKeys.NOW_PLAYING_PROGRESS_SHOW_AUDIO_BITRATE
+            ),
+            checked = nowPlayingProgressShowAudioBitrate,
+            onCheckedChange = { enabled ->
+                scope.launch { autoSettingsRepository.setNowPlayingProgressShowAudioBitrate(enabled) }
+            },
+            enabled = nowPlayingProgressShowAudioSpec,
+            supportingContent = null,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished
+        )
+        PersonalizationSwitchItem(
+            setting = AutoSettingsMetadata.requireSetting(
+                AutoSettingsKeys.NOW_PLAYING_PROGRESS_SHOW_AUDIO_CHANNELS
+            ),
+            checked = nowPlayingProgressShowAudioChannels,
+            onCheckedChange = { enabled ->
+                scope.launch { autoSettingsRepository.setNowPlayingProgressShowAudioChannels(enabled) }
+            },
+            enabled = nowPlayingProgressShowAudioSpec,
             supportingContent = null,
             highlightTargetId = highlightTargetId,
             highlightPulse = highlightPulse,

@@ -572,6 +572,18 @@ fun NowPlayingScreen(
     val showProgressAudioSpec by settingsRepo
         .nowPlayingProgressShowAudioSpecFlow
         .collectAsStateWithLifecycle(initialValue = true)
+    val showProgressAudioSampleRate by settingsRepo
+        .nowPlayingProgressShowAudioSampleRateFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showProgressAudioBitDepth by settingsRepo
+        .nowPlayingProgressShowAudioBitDepthFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showProgressAudioBitrate by settingsRepo
+        .nowPlayingProgressShowAudioBitrateFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showProgressAudioChannels by settingsRepo
+        .nowPlayingProgressShowAudioChannelsFlow
+        .collectAsStateWithLifecycle(initialValue = true)
     val lyricTranslationUsePhonetic by settingsRepo
         .lyricTranslationUsePhoneticFlow
         .collectAsStateWithLifecycle(initialValue = false)
@@ -1092,9 +1104,15 @@ fun NowPlayingScreen(
     ) {
         buildNowPlayingProgressInfoPresentation(
             audioInfo = currentPlaybackAudioInfo,
-            showQualitySwitch = showProgressQualitySwitch,
-            showAudioCodec = showProgressAudioCodec,
-            showAudioSpec = showProgressAudioSpec,
+            options = NowPlayingAudioInfoDisplayOptions(
+                showQuality = showProgressQualitySwitch,
+                showCodec = showProgressAudioCodec,
+                showSpec = showProgressAudioSpec,
+                showSampleRate = showProgressAudioSampleRate,
+                showBitDepth = showProgressAudioBitDepth,
+                showBitrate = showProgressAudioBitrate,
+                showChannels = showProgressAudioChannels
+            ),
             playbackSpeed = playbackSoundState.speed,
             phoneLandscape = phoneLandscape
         )

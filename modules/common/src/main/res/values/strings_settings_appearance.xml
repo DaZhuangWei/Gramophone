@@ -64,7 +64,15 @@
     <string name="settings_nowplaying_progress_audio_codec">进度条上方显示解码格式</string>
     <string name="settings_nowplaying_progress_audio_codec_desc">显示在进度条上方，如 FLAC、AAC、E-AC-3</string>
     <string name="settings_nowplaying_progress_audio_spec">进度条上方显示音源规格</string>
-    <string name="settings_nowplaying_progress_audio_spec_desc">显示在进度条上方，包括采样率、位深、码率</string>
+    <string name="settings_nowplaying_progress_audio_spec_desc">显示在进度条上方；可在下面单独选择采样率、位深、码率和声道</string>
+    <string name="settings_nowplaying_progress_audio_sample_rate">显示采样率</string>
+    <string name="settings_nowplaying_progress_audio_sample_rate_desc">例如 44.1 kHz、96 kHz；关闭后音频规格中不显示采样率</string>
+    <string name="settings_nowplaying_progress_audio_bit_depth">显示位深</string>
+    <string name="settings_nowplaying_progress_audio_bit_depth_desc">例如 16 bit、24 bit；关闭后不显示位深</string>
+    <string name="settings_nowplaying_progress_audio_bitrate">显示码率</string>
+    <string name="settings_nowplaying_progress_audio_bitrate_desc">显示实际或估算码率，如 320 kbps、1411 kbps</string>
+    <string name="settings_nowplaying_progress_audio_channels">显示声道数</string>
+    <string name="settings_nowplaying_progress_audio_channels_desc">例如 2 ch、5.1；关闭后不显示声道信息</string>
     <string name="settings_select_color">选择主题色</string>
     <string name="settings_apply_color">应用颜色</string>
     <string name="settings_add_to_palette">添加到取色盘</string>

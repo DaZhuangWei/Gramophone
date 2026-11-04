@@ -673,6 +673,42 @@ object AutoSettingsSchema {
             icon = AutoSettingIcon.Analytics
         )
 
+        @AutoSetting(order = 72)
+        val nowPlayingProgressShowAudioSampleRate = autoSwitchSetting(
+            key = "nowplaying_progress_show_audio_sample_rate",
+            defaultValue = true,
+            titleRes = CoreCommonR.string.settings_nowplaying_progress_audio_sample_rate,
+            descriptionRes = CoreCommonR.string.settings_nowplaying_progress_audio_sample_rate_desc,
+            icon = AutoSettingIcon.Analytics
+        )
+
+        @AutoSetting(order = 74)
+        val nowPlayingProgressShowAudioBitDepth = autoSwitchSetting(
+            key = "nowplaying_progress_show_audio_bit_depth",
+            defaultValue = true,
+            titleRes = CoreCommonR.string.settings_nowplaying_progress_audio_bit_depth,
+            descriptionRes = CoreCommonR.string.settings_nowplaying_progress_audio_bit_depth_desc,
+            icon = AutoSettingIcon.Analytics
+        )
+
+        @AutoSetting(order = 76)
+        val nowPlayingProgressShowAudioBitrate = autoSwitchSetting(
+            key = "nowplaying_progress_show_audio_bitrate",
+            defaultValue = true,
+            titleRes = CoreCommonR.string.settings_nowplaying_progress_audio_bitrate,
+            descriptionRes = CoreCommonR.string.settings_nowplaying_progress_audio_bitrate_desc,
+            icon = AutoSettingIcon.Analytics
+        )
+
+        @AutoSetting(order = 78)
+        val nowPlayingProgressShowAudioChannels = autoSwitchSetting(
+            key = "nowplaying_progress_show_audio_channels",
+            defaultValue = true,
+            titleRes = CoreCommonR.string.settings_nowplaying_progress_audio_channels,
+            descriptionRes = CoreCommonR.string.settings_nowplaying_progress_audio_channels_desc,
+            icon = AutoSettingIcon.Analytics
+        )
+
         @AutoSetting(
             key = "lyric_font_scale",
             type = SettingValueType.Float,

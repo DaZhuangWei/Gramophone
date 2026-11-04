@@ -369,7 +369,11 @@ private val PersonalizationPlaybackInfoTargets = setOf(
     "setting:nowplaying_cover_lyrics_enabled",
     "setting:nowplaying_progress_show_quality_switch",
     "setting:nowplaying_progress_show_audio_codec",
-    "setting:nowplaying_progress_show_audio_spec"
+    "setting:nowplaying_progress_show_audio_spec",
+    "setting:nowplaying_progress_show_audio_sample_rate",
+    "setting:nowplaying_progress_show_audio_bit_depth",
+    "setting:nowplaying_progress_show_audio_bitrate",
+    "setting:nowplaying_progress_show_audio_channels"
 )
 
 private val PersonalizationPlaybackControlTargets = setOf(
@@ -986,6 +990,10 @@ private val SettingSearchAliases = mapOf(
     "nowplaying_progress_show_quality_switch" to listOf("quality switch", "progress", "jindutiao"),
     "nowplaying_progress_show_audio_codec" to listOf("codec", "aac", "flac", "bianma"),
     "nowplaying_progress_show_audio_spec" to listOf("sample rate", "bit depth", "guige"),
+    "nowplaying_progress_show_audio_sample_rate" to listOf("sample rate", "khz", "caiyanglv"),
+    "nowplaying_progress_show_audio_bit_depth" to listOf("bit depth", "24 bit", "16 bit", "weishen"),
+    "nowplaying_progress_show_audio_bitrate" to listOf("bitrate", "kbps", "malu"),
+    "nowplaying_progress_show_audio_channels" to listOf("channels", "stereo", "5.1", "shengdao"),
     "lyric_font_scale" to listOf("font", "size", "geci daxiao", "ziti"),
     "nowplaying_cover_lyric_font_scale" to listOf("cover lyric font", "font", "size", "fengmian geci"),
     "nowplaying_cover_translation_font_scale" to listOf("cover translation font", "translation", "fanyi"),

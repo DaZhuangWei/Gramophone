@@ -26,6 +26,37 @@ class PlaybackAudioInfoFormattingTest {
     }
 
     @Test
+    fun `channels and optional spec fields can be formatted independently`() {
+        assertEquals("1 ch", formatPlaybackChannelCount(1))
+        assertEquals("2 ch", formatPlaybackChannelCount(2))
+        assertEquals("5.1", formatPlaybackChannelCount(6))
+        assertEquals("7.1", formatPlaybackChannelCount(8))
+        assertNull(formatPlaybackChannelCount(null))
+        assertNull(formatPlaybackChannelCount(0))
+
+        assertEquals(
+            "96 kHz | 24 bit | 1411 kbps | 2 ch",
+            buildPlaybackSpecLabel(
+                sampleRateHz = 96_000,
+                bitDepth = 24,
+                bitrateKbps = 1411,
+                channelCount = 2
+            )
+        )
+        assertEquals(
+            "1411 kbps | 2 ch",
+            buildPlaybackSpecLabel(
+                sampleRateHz = 96_000,
+                bitDepth = 24,
+                bitrateKbps = 1411,
+                channelCount = 2,
+                includeSampleRate = false,
+                includeBitDepth = false
+            )
+        )
+    }
+
+    @Test
     fun `bitrate estimates need a positive length and duration`() {
         assertNull(estimateBitrateKbps(null, 1_000L))
         assertNull(estimateBitrateKbps(0L, 1_000L))

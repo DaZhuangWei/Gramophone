@@ -48,6 +48,7 @@ import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.core.player.PlayerManager
 import moe.ouom.neriplayer.data.model.playback.PlaybackAudioInfo
 import moe.ouom.neriplayer.data.model.playback.PlaybackQualityOption
+import moe.ouom.neriplayer.data.model.playback.buildPlaybackSpecLabel
 import moe.ouom.neriplayer.data.model.lyrics.LyricEntry
 import moe.ouom.neriplayer.ui.component.lyrics.LyricSeekHapticFeedback
 import moe.ouom.neriplayer.ui.component.lyrics.rememberLyricSeekHapticFeedback
@@ -77,6 +78,16 @@ internal data class NowPlayingProgressInfoPresentation(
     val reserveRowHeight: Boolean
 )
 
+internal data class NowPlayingAudioInfoDisplayOptions(
+    val showQuality: Boolean = true,
+    val showCodec: Boolean = true,
+    val showSpec: Boolean = true,
+    val showSampleRate: Boolean = true,
+    val showBitDepth: Boolean = true,
+    val showBitrate: Boolean = true,
+    val showChannels: Boolean = true
+)
+
 internal fun nowPlayingVisibleProgressInfoSegments(
     segments: List<NowPlayingProgressInfoSegment>,
     phoneLandscape: Boolean
@@ -90,6 +101,15 @@ internal fun shouldReserveNowPlayingProgressInfoSpace(
     phoneLandscape: Boolean
 ): Boolean = !phoneLandscape && (
     showQualitySwitch || showAudioCodec || showAudioSpec || shouldShowPlaybackSpeedBadge(playbackSpeed)
+)
+
+internal fun shouldReserveNowPlayingProgressInfoSpace(
+    options: NowPlayingAudioInfoDisplayOptions,
+    playbackSpeed: Float,
+    phoneLandscape: Boolean
+): Boolean = !phoneLandscape && (
+    options.showQuality || options.showCodec || options.showSpec ||
+        shouldShowPlaybackSpeedBadge(playbackSpeed)
 )
 
 internal class NowPlayingProgressOwner(initialPositionMs: Long) {
@@ -211,20 +231,50 @@ internal class NowPlayingSeekActionOwner(
 
 internal fun buildNowPlayingProgressInfoPresentation(
     audioInfo: PlaybackAudioInfo?,
+    options: NowPlayingAudioInfoDisplayOptions,
+    playbackSpeed: Float,
+    phoneLandscape: Boolean
+): NowPlayingProgressInfoPresentation {
+    val segments = buildNowPlayingProgressInfoSegments(
+        audioInfo, options, playbackSpeed
+    )
+    return NowPlayingProgressInfoPresentation(
+        segments = nowPlayingVisibleProgressInfoSegments(segments, phoneLandscape),
+        reserveRowHeight = shouldReserveNowPlayingProgressInfoSpace(
+            options, playbackSpeed, phoneLandscape
+        )
+    )
+}
+
+internal fun buildNowPlayingProgressInfoPresentation(
+    audioInfo: PlaybackAudioInfo?,
     showQualitySwitch: Boolean,
     showAudioCodec: Boolean,
     showAudioSpec: Boolean,
     playbackSpeed: Float,
     phoneLandscape: Boolean
-): NowPlayingProgressInfoPresentation {
-    val segments = buildNowPlayingProgressInfoSegments(
-        audioInfo, showQualitySwitch, showAudioCodec, showAudioSpec, playbackSpeed
-    )
-    return NowPlayingProgressInfoPresentation(
-        segments = nowPlayingVisibleProgressInfoSegments(segments, phoneLandscape),
-        reserveRowHeight = shouldReserveNowPlayingProgressInfoSpace(
-            showQualitySwitch, showAudioCodec, showAudioSpec, playbackSpeed, phoneLandscape
-        )
+): NowPlayingProgressInfoPresentation = buildNowPlayingProgressInfoPresentation(
+    audioInfo = audioInfo,
+    options = NowPlayingAudioInfoDisplayOptions(
+        showQuality = showQualitySwitch,
+        showCodec = showAudioCodec,
+        showSpec = showAudioSpec
+    ),
+    playbackSpeed = playbackSpeed,
+    phoneLandscape = phoneLandscape
+)
+
+internal fun buildNowPlayingProgressInfoSegments(
+    audioInfo: PlaybackAudioInfo?,
+    options: NowPlayingAudioInfoDisplayOptions,
+    playbackSpeed: Float
+): List<NowPlayingProgressInfoSegment> {
+    if (audioInfo == null) return emptyList()
+    return listOfNotNull(
+        progressQualityBadge(audioInfo, options.showQuality),
+        progressSpeedBadge(playbackSpeed),
+        progressCodecBadge(audioInfo, options.showCodec),
+        progressSpecBadge(audioInfo, options)
     )
 }
 
@@ -234,15 +284,15 @@ internal fun buildNowPlayingProgressInfoSegments(
     showAudioCodec: Boolean,
     showAudioSpec: Boolean,
     playbackSpeed: Float
-): List<NowPlayingProgressInfoSegment> {
-    if (audioInfo == null) return emptyList()
-    return listOfNotNull(
-        progressQualityBadge(audioInfo, showQualitySwitch),
-        progressSpeedBadge(playbackSpeed),
-        progressCodecBadge(audioInfo, showAudioCodec),
-        progressSpecBadge(audioInfo, showAudioSpec)
-    )
-}
+): List<NowPlayingProgressInfoSegment> = buildNowPlayingProgressInfoSegments(
+    audioInfo = audioInfo,
+    options = NowPlayingAudioInfoDisplayOptions(
+        showQuality = showQualitySwitch,
+        showCodec = showAudioCodec,
+        showSpec = showAudioSpec
+    ),
+    playbackSpeed = playbackSpeed
+)
 
 private fun progressQualityBadge(info: PlaybackAudioInfo, enabled: Boolean): NowPlayingProgressInfoSegment? =
     info.qualityLabel?.takeIf { enabled && it.isNotBlank() }
@@ -257,9 +307,23 @@ private fun progressCodecBadge(info: PlaybackAudioInfo, enabled: Boolean): NowPl
     info.codecLabel?.takeIf { enabled && it.isNotBlank() }
         ?.let(::NowPlayingProgressInfoSegment)
 
-private fun progressSpecBadge(info: PlaybackAudioInfo, enabled: Boolean): NowPlayingProgressInfoSegment? =
-    info.specLabel?.takeIf { enabled && it.isNotBlank() }
-        ?.let(::NowPlayingProgressInfoSegment)
+private fun progressSpecBadge(
+    info: PlaybackAudioInfo,
+    options: NowPlayingAudioInfoDisplayOptions
+): NowPlayingProgressInfoSegment? {
+    if (!options.showSpec) return null
+    val label = buildPlaybackSpecLabel(
+        sampleRateHz = info.sampleRateHz,
+        bitDepth = info.bitDepth,
+        bitrateKbps = info.bitrateKbps,
+        channelCount = info.channelCount,
+        includeSampleRate = options.showSampleRate,
+        includeBitDepth = options.showBitDepth,
+        includeBitrate = options.showBitrate,
+        includeChannels = options.showChannels
+    )?.takeIf { it.isNotBlank() } ?: return null
+    return NowPlayingProgressInfoSegment(label)
+}
 
 private fun shouldShowPlaybackSpeedBadge(playbackSpeed: Float): Boolean {
     return (playbackSpeed * 100).roundToInt() != 100

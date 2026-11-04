@@ -73,6 +73,7 @@ import moe.ouom.neriplayer.core.player.network.PlaybackNetworkResumeOwner
 import moe.ouom.neriplayer.core.player.service.notification.FlymeStatusBarLyricSupport
 import moe.ouom.neriplayer.data.model.playback.PlaybackAudioSource
 import moe.ouom.neriplayer.data.model.playback.PlayerEvent
+import moe.ouom.neriplayer.data.model.playback.deriveCodecLabel
 import moe.ouom.neriplayer.core.player.persistence.RestoredPlayerStateSnapshot
 import moe.ouom.neriplayer.core.player.persistence.applyRestoredStateSnapshot
 import moe.ouom.neriplayer.core.player.persistence.applyCommittedLyricOverrides
@@ -549,6 +550,7 @@ private fun PlayerManager.initializePlaybackEngine(app: Application, effectiveMa
                     "sampleRate=${format.sampleRate}, channels=${format.channelCount}, " +
                     "pcmEncoding=${format.pcmEncoding}"
             )
+            updatePlaybackAudioInfoFromFormat(format)
         }
 
         override fun onAudioDecoderInitialized(
@@ -1984,4 +1986,24 @@ private fun PlayerManager.finishPlaybackRelease() {
     UsbExclusiveSessionController.forceStopAllSessions("player_release_finally")
     UsbExclusiveSystemSoundGuard.forceRelease(application, "player_release_finally")
     StartupAudioFocusController.forceRelease("player_release_finally")
+}
+
+/**
+ * 用 Media3 实际解码器输入格式补齐远端流缺失的采样率、声道和码率。
+ * 只填空值，不覆盖解析阶段已经拿到的音质/格式信息。
+ */
+private fun PlayerManager.updatePlaybackAudioInfoFromFormat(format: Format) {
+    val current = _currentPlaybackAudioInfo.value ?: return
+    val sampleMimeType = format.sampleMimeType
+        ?.takeIf { it.isNotBlank() && it != "audio/raw" }
+    val updated = current.copy(
+        sampleRateHz = current.sampleRateHz ?: format.sampleRate.takeIf { it > 0 },
+        channelCount = current.channelCount ?: format.channelCount.takeIf { it > 0 },
+        bitrateKbps = current.bitrateKbps ?: (format.bitrate / 1000).takeIf { format.bitrate > 0 },
+        mimeType = current.mimeType ?: sampleMimeType,
+        codecLabel = current.codecLabel ?: deriveCodecLabel(sampleMimeType)
+    )
+    if (updated != current) {
+        _currentPlaybackAudioInfo.value = updated
+    }
 }
