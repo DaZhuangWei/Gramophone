@@ -333,9 +333,9 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 ### 已产出 APK
 
 - 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.1.apk`
-- 大小：14,785,236 bytes
-- SHA256：`20EB429FE82C34541762DEB077F943B3A34A11C18E602977E568BD8424AF2C89`
-- 版本：`3fe9e9c.11041254`（arm64-v8a，Release 签名）
+- 大小：14,784,108 bytes
+- SHA256：`8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`
+- 版本：`749c1e2.11041301`（arm64-v8a，Release 签名）
 - 已用 x86_64 Release 在模拟器验证：引导、首页、媒体库、搜索、设置、亮暗主题
 - 播放链路未登录未验证；需要你的网易云账号扫码后测试
 
@@ -427,7 +427,7 @@ Lite Release 包名：`moe.ouom.nerilite`
   - 波形、歌词高亮、歌词插值在 120Hz 屏幕上按 120fps 推进；低电量模式歌词降到 60fps。
   - Android 15+ 为 View 图层请求设备最高帧率；取消播放页静置 3 秒降 60Hz 的逻辑，前台保持高刷。
   - 高刷新率设置文案更新。
-- v1.1 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.1.apk`，SHA256 `20EB429FE82C34541762DEB077F943B3A34A11C18E602977E568BD8424AF2C89`，版本 `3fe9e9c.11041254`。
+- v1.1 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.1.apk`，SHA256 `8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`，版本 `749c1e2.11041301`。
 
 验证方式：
 

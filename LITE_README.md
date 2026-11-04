@@ -51,9 +51,9 @@ $env:ANDROID_SDK_ROOT=$env:ANDROID_HOME
 - Debug：`app/build/outputs/apk/debug/app-debug.apk`
 - Release：`app/build/outputs/apk/release/*.apk`
 - 已复制真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.1.apk`
-  - 大小：14,785,236 bytes
-  - SHA256：`20EB429FE82C34541762DEB077F943B3A34A11C18E602977E568BD8424AF2C89`
-  - 版本：`3fe9e9c.11041254`（arm64-v8a）
+  - 大小：14,784,108 bytes
+  - SHA256：`8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`
+  - 版本：`749c1e2.11041301`（arm64-v8a）
 
 > 旧版 `NeriLite-arm64-v1.0.apk` 仍保留，便于回滚；日常使用请安装 v1.1。
 
