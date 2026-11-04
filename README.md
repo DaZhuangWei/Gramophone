@@ -1,3 +1,11 @@
+> **Gramophone：本仓库是 [NeriPlayer](https://github.com/cwuom/NeriPlayer) 的修改版（网易云音乐专属精简分支）。**
+>
+> - 主要修改、构建方法与当前状态见 [LITE_README.md](./LITE_README.md)
+> - 发布流程与 GPL 合规说明见 [docs/RELEASE_AND_LICENSE.md](./docs/RELEASE_AND_LICENSE.md)
+> - 安装包下载见 [Releases](https://github.com/DaZhuangWei/Gramophone/releases)
+> - 许可证：GNU GPL-3.0；完整保留上游版权、许可证与第三方许可声明
+> - 包名仍为 `moe.ouom.nerilite`，可直接覆盖安装旧版
+
 [English](./README_EN.md) | [中文](./README.md)
 
 <h1 align="center">NeriPlayer (音理音理!)</h1>
