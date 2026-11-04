@@ -12,12 +12,17 @@ import moe.ouom.neriplayer.data.local.storage.source.storageCacheItemKinds
 
 import android.content.res.Resources
 import androidx.annotation.StringRes
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 
 class StorageUsagePresenter(private val resources: Resources) {
     fun present(snapshot: StorageUsageSnapshot): StorageUsageSummary = StorageUsageSummary(
-        sections.map { section ->
-            StorageUsageSection(resources.getString(section.title), section.items.map { item(it, snapshot) })
+        sections.mapNotNull { section ->
+            val items = section.items
+                .filterNot { item -> LiteEdition.ENABLED && item.kind in LiteHiddenUsageKinds }
+                .map { item(it, snapshot) }
+            if (items.isEmpty()) null
+            else StorageUsageSection(resources.getString(section.title), items)
         }
     )
 
@@ -69,6 +74,13 @@ private data class ItemText(
     val kind: StorageUsageItemKind,
     @param:StringRes val title: Int,
     @param:StringRes val description: Int
+)
+
+private val LiteHiddenUsageKinds = setOf(
+    StorageUsageItemKind.BiliFavoriteCache,
+    StorageUsageItemKind.BiliArchiveCache,
+    StorageUsageItemKind.YouTubePlaylistCache,
+    StorageUsageItemKind.ServerBrowseCache
 )
 
 private data class SectionText(@param:StringRes val title: Int, val items: List<ItemText>)

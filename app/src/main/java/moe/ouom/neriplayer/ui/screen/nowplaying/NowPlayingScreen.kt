@@ -545,9 +545,7 @@ fun NowPlayingScreen(
         controllerUserId = listenTogetherRoomState?.controllerUserId,
         allowMemberControl = listenTogetherRoomState?.settings?.allowMemberControl
     )
-    val showProgressQualitySwitch by settingsRepo
-        .nowPlayingProgressShowQualitySwitchFlow
-        .collectAsStateWithLifecycle(initialValue = true)
+    val audioInfoDisplayOptions = rememberNowPlayingAudioInfoDisplayOptions(settingsRepo)
     val nowPlayingToolbarDockEnabled by settingsRepo
         .nowPlayingToolbarDockEnabledFlow
         .collectAsStateWithLifecycle(initialValue = true)
@@ -566,24 +564,6 @@ fun NowPlayingScreen(
     val uiDensityScale by settingsRepo
         .uiDensityScaleFlow
         .collectAsStateWithLifecycle(initialValue = 1.0f)
-    val showProgressAudioCodec by settingsRepo
-        .nowPlayingProgressShowAudioCodecFlow
-        .collectAsStateWithLifecycle(initialValue = true)
-    val showProgressAudioSpec by settingsRepo
-        .nowPlayingProgressShowAudioSpecFlow
-        .collectAsStateWithLifecycle(initialValue = true)
-    val showProgressAudioSampleRate by settingsRepo
-        .nowPlayingProgressShowAudioSampleRateFlow
-        .collectAsStateWithLifecycle(initialValue = true)
-    val showProgressAudioBitDepth by settingsRepo
-        .nowPlayingProgressShowAudioBitDepthFlow
-        .collectAsStateWithLifecycle(initialValue = true)
-    val showProgressAudioBitrate by settingsRepo
-        .nowPlayingProgressShowAudioBitrateFlow
-        .collectAsStateWithLifecycle(initialValue = true)
-    val showProgressAudioChannels by settingsRepo
-        .nowPlayingProgressShowAudioChannelsFlow
-        .collectAsStateWithLifecycle(initialValue = true)
     val lyricTranslationUsePhonetic by settingsRepo
         .lyricTranslationUsePhoneticFlow
         .collectAsStateWithLifecycle(initialValue = false)
@@ -1096,23 +1076,13 @@ fun NowPlayingScreen(
     )
     val progressInfoPresentation = remember(
         currentPlaybackAudioInfo,
-        showProgressQualitySwitch,
-        showProgressAudioCodec,
-        showProgressAudioSpec,
+        audioInfoDisplayOptions,
         playbackSoundState.speed,
         phoneLandscape
     ) {
         buildNowPlayingProgressInfoPresentation(
             audioInfo = currentPlaybackAudioInfo,
-            options = NowPlayingAudioInfoDisplayOptions(
-                showQuality = showProgressQualitySwitch,
-                showCodec = showProgressAudioCodec,
-                showSpec = showProgressAudioSpec,
-                showSampleRate = showProgressAudioSampleRate,
-                showBitDepth = showProgressAudioBitDepth,
-                showBitrate = showProgressAudioBitrate,
-                showChannels = showProgressAudioChannels
-            ),
+            options = audioInfoDisplayOptions,
             playbackSpeed = playbackSoundState.speed,
             phoneLandscape = phoneLandscape
         )

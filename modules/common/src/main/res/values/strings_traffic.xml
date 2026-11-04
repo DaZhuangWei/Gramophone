@@ -6,7 +6,7 @@
     <string name="settings_mobile_data_high_risk_prompt">流量模式下提示高风险操作</string>
     <string name="settings_mobile_data_high_risk_prompt_desc">使用移动流量或漫游时下载前确认；WIFI 下载中断开后询问继续、等待 WIFI 或取消所有任务</string>
     <string name="settings_mobile_data_follow_default_audio_quality">使用流量时遵循现有音质设置</string>
-    <string name="settings_mobile_data_follow_default_audio_quality_desc">开启后，移动流量和漫游下继续使用上方各平台音质</string>
+    <string name="settings_mobile_data_follow_default_audio_quality_desc">开启后，移动流量和漫游下继续使用上方网易云音质</string>
     <string name="settings_mobile_data_quality_group">流量下的音质</string>
     <string name="settings_mobile_data_netease_audio_quality">网易云流量音质</string>
     <string name="settings_mobile_data_youtube_audio_quality">YouTube 流量音质</string>

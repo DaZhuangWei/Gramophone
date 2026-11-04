@@ -38,6 +38,45 @@ private const val DEFAULT_IMAGE_CROSSFADE_DURATION_MILLIS = 180
 // mini player artwork also supplies the expanded player's first frame
 internal const val PLAYBACK_COVER_BITMAP_MAX_DIMENSION_PX = 512
 
+private val NeteaseImageHost = Regex("""^p\d+\.music\.126\.net$""", RegexOption.IGNORE_CASE)
+
+/**
+ * 网易云原始封面常见 1000px 以上，单张可达数 MB。
+ * 列表只显示几十 dp 时，让 CDN 直接返回目标尺寸，避免先下原图再缩放。
+ */
+private fun neteaseImageResizeDimension(data: Any?, sizePx: Int?): Int? {
+    val url = (data as? String)?.trim().orEmpty()
+    if (url.isEmpty() || sizePx == null || sizePx <= 0) return null
+    if (!url.startsWith("http://", ignoreCase = true) &&
+        !url.startsWith("https://", ignoreCase = true)
+    ) {
+        return null
+    }
+    if (url.contains("param=", ignoreCase = true) ||
+        url.contains("thumbnail=", ignoreCase = true) ||
+        url.contains("imageView", ignoreCase = true)
+    ) {
+        return null
+    }
+    val schemeEnd = url.indexOf("://")
+    val hostEnd = url.indexOf('/', schemeEnd + 3)
+    if (schemeEnd <= 0 || hostEnd <= schemeEnd) return null
+    val host = url.substring(schemeEnd + 3, hostEnd).substringBefore(':')
+    if (!NeteaseImageHost.matches(host)) return null
+    return sizePx.coerceIn(64, 1080)
+}
+
+private fun neteaseResizedImageData(data: Any?, dimension: Int): Any? {
+    val url = (data as? String)?.trim() ?: return data
+    val separator = if (url.contains('?')) '&' else '?'
+    return "$url${separator}param=${dimension}y${dimension}"
+}
+
+internal fun neteaseResizedImageRequestData(data: Any?, sizePx: Int?): Any? {
+    val dimension = neteaseImageResizeDimension(data, sizePx) ?: return data
+    return neteaseResizedImageData(data, dimension)
+}
+
 /**
  * 创建支持离线缓存的图片请求
  */
@@ -55,16 +94,19 @@ fun offlineCachedImageRequest(
     val remoteSource = isRemoteImageSource(data)
     val resolvedSizePx = sizePx ?: if (localSource) DEFAULT_LOCAL_IMAGE_REQUEST_SIZE_PX else null
     val resolvedAllowHardware = if (localSource && sizePx == null) false else allowHardware
+    val resizeDimension = neteaseImageResizeDimension(data, resolvedSizePx)
+    val requestData = resizeDimension?.let { neteaseResizedImageData(data, it) } ?: data
     val builder = ImageRequest.Builder(context)
-        .data(data)
+        .data(requestData)
         .allowHardware(resolvedAllowHardware)
         .diskCachePolicy(CachePolicy.ENABLED)
         .memoryCachePolicy(CachePolicy.ENABLED)
         .networkCachePolicy(if (offlineMode && remoteSource) CachePolicy.DISABLED else CachePolicy.ENABLED)
     cacheKey?.trim()?.takeIf(String::isNotEmpty)?.let { resolvedCacheKey ->
+        val sizedCacheKey = resizeDimension?.let { "$resolvedCacheKey|resize=$it" } ?: resolvedCacheKey
         builder
-            .memoryCacheKey(resolvedCacheKey)
-            .diskCacheKey(resolvedCacheKey)
+            .memoryCacheKey(sizedCacheKey)
+            .diskCacheKey(sizedCacheKey)
     }
     if (localSource && !resolvedAllowHardware) {
         builder.bitmapConfig(Bitmap.Config.RGB_565)
@@ -94,17 +136,20 @@ fun fastScrollableImageRequest(
     cacheKey: String? = null
 ): ImageRequest {
     val remoteSource = isRemoteImageSource(data)
+    val resizeDimension = neteaseImageResizeDimension(data, sizePx)
+    val requestData = resizeDimension?.let { neteaseResizedImageData(data, it) } ?: data
     val builder = ImageRequest.Builder(context)
-        .data(data)
+        .data(requestData)
         .size(sizePx)
         .precision(Precision.INEXACT)
         .diskCachePolicy(CachePolicy.ENABLED)
         .memoryCachePolicy(CachePolicy.ENABLED)
         .networkCachePolicy(if (offlineMode && remoteSource) CachePolicy.DISABLED else CachePolicy.ENABLED)
     cacheKey?.trim()?.takeIf(String::isNotEmpty)?.let { resolvedCacheKey ->
+        val sizedCacheKey = resizeDimension?.let { "$resolvedCacheKey|resize=$it" } ?: resolvedCacheKey
         builder
-            .memoryCacheKey(resolvedCacheKey)
-            .diskCacheKey(resolvedCacheKey)
+            .memoryCacheKey(sizedCacheKey)
+            .diskCacheKey(sizedCacheKey)
     }
     if (isLocalImageSource(data)) {
         builder

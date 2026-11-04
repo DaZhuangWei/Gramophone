@@ -6,7 +6,7 @@
     <string name="settings_mobile_data_high_risk_prompt">Prompt high-risk actions on mobile data</string>
     <string name="settings_mobile_data_high_risk_prompt_desc">Ask before downloading on mobile data or roaming; when Wi-Fi disconnects, choose whether to continue, wait for Wi-Fi, or cancel all tasks</string>
     <string name="settings_mobile_data_follow_default_audio_quality">Follow existing quality settings on mobile data</string>
-    <string name="settings_mobile_data_follow_default_audio_quality_desc">When enabled, mobile data and roaming continue using the platform quality settings above</string>
+    <string name="settings_mobile_data_follow_default_audio_quality_desc">When enabled, mobile data and roaming continue using the NetEase quality above</string>
     <string name="settings_mobile_data_quality_group">Quality on mobile data</string>
     <string name="settings_mobile_data_netease_audio_quality">NetEase mobile data quality</string>
     <string name="settings_mobile_data_youtube_audio_quality">YouTube mobile data quality</string>

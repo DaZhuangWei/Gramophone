@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.data.model.settings.lyrics.FloatingLyricsPreferences
 import moe.ouom.neriplayer.data.model.settings.lyrics.DEFAULT_CLOUD_MUSIC_LYRIC_OFFSET_MS
@@ -266,17 +267,19 @@ internal fun SettingsLyricsSection(
                     onHighlightFinished = onHighlightFinished
                 )
                 Spacer(Modifier.height(4.dp))
-                LyricsOffsetSliderListItem(
-                    targetId = "setting:bili_cc_subtitle_lyric_default_offset_ms",
-                    title = stringResource(CoreCommonR.string.settings_lyrics_offset_bili_cc_subtitle),
-                    description = stringResource(CoreCommonR.string.settings_lyrics_offset_bili_cc_subtitle_desc),
-                    offsetMs = biliCcSubtitleLyricDefaultOffsetMs,
-                    defaultOffsetMs = DEFAULT_BILI_CC_SUBTITLE_LYRIC_OFFSET_MS,
-                    onOffsetChange = onBiliCcSubtitleLyricDefaultOffsetMsChange,
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
+                if (!LiteEdition.ENABLED) {
+                    LyricsOffsetSliderListItem(
+                        targetId = "setting:bili_cc_subtitle_lyric_default_offset_ms",
+                        title = stringResource(CoreCommonR.string.settings_lyrics_offset_bili_cc_subtitle),
+                        description = stringResource(CoreCommonR.string.settings_lyrics_offset_bili_cc_subtitle_desc),
+                        offsetMs = biliCcSubtitleLyricDefaultOffsetMs,
+                        defaultOffsetMs = DEFAULT_BILI_CC_SUBTITLE_LYRIC_OFFSET_MS,
+                        onOffsetChange = onBiliCcSubtitleLyricDefaultOffsetMsChange,
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
+                }
                 Spacer(Modifier.height(12.dp))
             }
             if (cardIndex == null) LyricsDetailGap(showHeader)

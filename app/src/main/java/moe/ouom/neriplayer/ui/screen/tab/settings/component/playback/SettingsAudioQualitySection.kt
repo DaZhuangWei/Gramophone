@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.data.settings.generated.AutoSettingInfo
 import moe.ouom.neriplayer.data.settings.generated.AutoSettingsKeys
@@ -163,27 +164,29 @@ internal fun SettingsAudioQualitySection(
                 onHighlightFinished = onHighlightFinished
             )
 
-            AudioQualityListItem(
-                setting = AutoSettingsMetadata.requireSetting(AutoSettingsKeys.YOUTUBE_AUDIO_QUALITY),
-                valueLabel = youtubeQualityLabel,
-                preferredQuality = youtubePreferredQuality,
-                iconRes = CoreCommonR.drawable.ic_youtube,
-                onClick = { onShowYouTubeQualityDialogChange(true) },
-                highlightTargetId = highlightTargetId,
-                highlightPulse = highlightPulse,
-                onHighlightFinished = onHighlightFinished
-            )
+            if (!LiteEdition.ENABLED) {
+                AudioQualityListItem(
+                    setting = AutoSettingsMetadata.requireSetting(AutoSettingsKeys.YOUTUBE_AUDIO_QUALITY),
+                    valueLabel = youtubeQualityLabel,
+                    preferredQuality = youtubePreferredQuality,
+                    iconRes = CoreCommonR.drawable.ic_youtube,
+                    onClick = { onShowYouTubeQualityDialogChange(true) },
+                    highlightTargetId = highlightTargetId,
+                    highlightPulse = highlightPulse,
+                    onHighlightFinished = onHighlightFinished
+                )
 
-            AudioQualityListItem(
-                setting = AutoSettingsMetadata.requireSetting(AutoSettingsKeys.BILI_AUDIO_QUALITY),
-                valueLabel = biliQualityLabel,
-                preferredQuality = biliPreferredQuality,
-                iconRes = CoreCommonR.drawable.ic_bilibili,
-                onClick = { onShowBiliQualityDialogChange(true) },
-                highlightTargetId = highlightTargetId,
-                highlightPulse = highlightPulse,
-                onHighlightFinished = onHighlightFinished
-            )
+                AudioQualityListItem(
+                    setting = AutoSettingsMetadata.requireSetting(AutoSettingsKeys.BILI_AUDIO_QUALITY),
+                    valueLabel = biliQualityLabel,
+                    preferredQuality = biliPreferredQuality,
+                    iconRes = CoreCommonR.drawable.ic_bilibili,
+                    onClick = { onShowBiliQualityDialogChange(true) },
+                    highlightTargetId = highlightTargetId,
+                    highlightPulse = highlightPulse,
+                    onHighlightFinished = onHighlightFinished
+                )
+            }
 
             AutoSettingsListItem(
                 setting = AutoSettingsMetadata.requireSetting(
@@ -236,31 +239,33 @@ internal fun SettingsAudioQualitySection(
                     onHighlightFinished = onHighlightFinished
                 )
 
-                AudioQualityListItem(
-                    setting = AutoSettingsMetadata.requireSetting(
-                        AutoSettingsKeys.MOBILE_DATA_YOUTUBE_AUDIO_QUALITY
-                    ),
-                    valueLabel = mobileDataYouTubeQualityLabel,
-                    preferredQuality = mobileDataYouTubeAudioQuality,
-                    iconRes = CoreCommonR.drawable.ic_youtube,
-                    onClick = { onShowMobileDataYouTubeQualityDialogChange(true) },
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
+                if (!LiteEdition.ENABLED) {
+                    AudioQualityListItem(
+                        setting = AutoSettingsMetadata.requireSetting(
+                            AutoSettingsKeys.MOBILE_DATA_YOUTUBE_AUDIO_QUALITY
+                        ),
+                        valueLabel = mobileDataYouTubeQualityLabel,
+                        preferredQuality = mobileDataYouTubeAudioQuality,
+                        iconRes = CoreCommonR.drawable.ic_youtube,
+                        onClick = { onShowMobileDataYouTubeQualityDialogChange(true) },
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
 
-                AudioQualityListItem(
-                    setting = AutoSettingsMetadata.requireSetting(
-                        AutoSettingsKeys.MOBILE_DATA_BILI_AUDIO_QUALITY
-                    ),
-                    valueLabel = mobileDataBiliQualityLabel,
-                    preferredQuality = mobileDataBiliAudioQuality,
-                    iconRes = CoreCommonR.drawable.ic_bilibili,
-                    onClick = { onShowMobileDataBiliQualityDialogChange(true) },
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
+                    AudioQualityListItem(
+                        setting = AutoSettingsMetadata.requireSetting(
+                            AutoSettingsKeys.MOBILE_DATA_BILI_AUDIO_QUALITY
+                        ),
+                        valueLabel = mobileDataBiliQualityLabel,
+                        preferredQuality = mobileDataBiliAudioQuality,
+                        iconRes = CoreCommonR.drawable.ic_bilibili,
+                        onClick = { onShowMobileDataBiliQualityDialogChange(true) },
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
+                }
             }
         }
     }

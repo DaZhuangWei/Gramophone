@@ -1225,6 +1225,7 @@ private fun SongRowCover(song: SongItem, showCover: Boolean, offlineMode: Boolea
                 model = offlineCachedImageRequest(
                     context = itemContext,
                     data = displayCoverUrl,
+                    sizePx = 160,
                     offlineMode = offlineMode
                 ),
                 contentDescription = song.displayName(),

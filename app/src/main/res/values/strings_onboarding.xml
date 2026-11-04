@@ -124,7 +124,7 @@
     <string name="onboarding_controls_preview_lyric_10">不如怜取眼前人</string>
     <string name="onboarding_controls_preview_lyric_11">人间何处问多情</string>
     <string name="onboarding_controls_preview_lyric_12">且把新词酌酒听</string>
-    <string name="onboarding_learning_title">快速了解音理音理</string>
+    <string name="onboarding_learning_title">快速了解 Gramophone</string>
     <string name="onboarding_learning_desc">这些入口能帮助你更快找到常用功能，浏览后即可开始使用</string>
     <string name="onboarding_learning_now_playing_title">正在播放</string>
     <string name="onboarding_learning_now_playing_desc">点击迷你播放器进入 Now Playing，封面页和歌词页可以左右切换</string>
@@ -140,7 +140,7 @@
     <string name="onboarding_learning_listen_together_desc">在播放页或设置中创建房间，与朋友同步歌曲、进度和播放模式</string>
     <string name="onboarding_learning_queue_title">播放队列</string>
     <string name="onboarding_learning_queue_desc">在正在播放页打开队列可以查看、拖动调整顺序，并使用播放模式和定时停止</string>
-    <string name="onboarding_learning_enter_app">进入音理音理</string>
+    <string name="onboarding_learning_enter_app">进入 Gramophone</string>
     <string name="disclaimer_section1_body">Gramophone 是本地优先的音视频播放器，用于整合和播放你主动访问的第三方内容。应用不会托管、上传或分发音视频文件；在线播放、搜索、登录和下载会直接连接相应平台或你选择的服务。</string>
     <string name="disclaimer_section2_bullet1">可播放内容的版权及相关权益归原作者、权利人或对应平台所有。</string>
     <string name="disclaimer_section2_bullet2">你应确认访问、下载、分享或使用内容的来源合法，并具备必要的使用权限。</string>

@@ -119,6 +119,7 @@ internal fun SettingsPersonalizationStartCard(
 @Composable
 internal fun SettingsPersonalizationHomeCard(
     internationalEnabled: Boolean,
+    showBilibiliCardSetting: Boolean = true,
     homeTrendingLabelRes: Int,
     homeRadarLabelRes: Int,
     homeRecommendedLabelRes: Int,
@@ -197,7 +198,7 @@ internal fun SettingsPersonalizationHomeCard(
             onHighlightFinished = onHighlightFinished
         )
 
-        if (!internationalEnabled) {
+        if (!internationalEnabled && showBilibiliCardSetting) {
             SettingsHomeCardSwitch(
                 title = stringResource(CoreCommonR.string.settings_home_card_bilibili),
                 description = stringResource(CoreCommonR.string.settings_home_card_bilibili_desc),

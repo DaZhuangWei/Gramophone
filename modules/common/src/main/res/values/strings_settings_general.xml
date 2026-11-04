@@ -18,7 +18,7 @@
     <string name="settings_explore_search_history">探索页搜索历史</string>
     <string name="settings_explore_search_history_desc">显示并记录探索页的搜索关键词</string>
     <string name="settings_usb_device_attach_handling">处理 USB DAC 插入</string>
-    <string name="settings_usb_device_attach_handling_desc">关闭后，插入 USB DAC 或 FreeDSP 线束时不会唤起音理音理处理此设备</string>
+    <string name="settings_usb_device_attach_handling_desc">关闭后，插入 USB DAC 或 FreeDSP 线束时不会唤起 Gramophone 处理此设备</string>
     <string name="settings_playback_idle_shutdown">暂停后退出播放服务</string>
     <string name="settings_playback_idle_shutdown_desc">暂停超时后移除通知，保留队列和进度</string>
     <string name="settings_prefer_high_refresh_rate">高刷新率</string>
@@ -97,7 +97,7 @@
     <string name="settings_playback_volume_balance_left">当前：偏左 %d%%</string>
     <string name="settings_playback_volume_balance_right">当前：偏右 %d%%</string>
     <string name="settings_playback_source">播放源</string>
-    <string name="settings_playback_source_desc">配置自动换源与音源兜底策略</string>
+    <string name="settings_playback_source_desc">配置本地音频兜底策略</string>
     <string name="settings_lyric_source">来源偏好</string>
     <string name="settings_lyric_source_desc">配置歌词来源与逐词优先策略</string>
     <string name="settings_prefer_word_timed_lyrics">优先使用逐词歌词</string>
@@ -303,7 +303,7 @@
     <string name="settings_standardized_lyric_embedding">标准化歌词嵌入</string>
     <string name="settings_standardized_lyric_embedding_desc">开启后写入音频标签的歌词会转成通用 LRC，应用内部分场景保留逐字体验</string>
     <string name="settings_download_follow_playback_audio_quality">遵循播放音质设置</string>
-    <string name="settings_download_follow_playback_audio_quality_desc">开启后下载使用播放音质；关闭后可分别设置各平台下载音质</string>
+    <string name="settings_download_follow_playback_audio_quality_desc">开启后下载使用播放音质；关闭后可单独设置网易云下载音质</string>
     <string name="settings_download_quality_group">下载音质</string>
     <string name="settings_download_netease_audio_quality">网易云下载音质</string>
     <string name="settings_download_youtube_audio_quality">YouTube 下载音质</string>

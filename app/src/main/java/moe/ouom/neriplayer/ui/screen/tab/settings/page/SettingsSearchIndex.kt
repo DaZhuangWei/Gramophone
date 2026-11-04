@@ -3,6 +3,7 @@ package moe.ouom.neriplayer.ui.screen.tab.settings.page
 import android.content.res.Resources
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.data.settings.generated.AutoSettingInfo
 import moe.ouom.neriplayer.data.settings.generated.AutoSettingsMetadata
@@ -31,19 +32,21 @@ internal fun buildSettingsSearchEntries(
     resources: Resources,
     internationalEnabled: Boolean = false
 ): List<SettingsSearchEntry> {
-    val pageEntries = SettingsPage.entries.map { page ->
-        val title = resources.safeString(page.titleRes)
-        val description = resources.safeString(page.descriptionRes)
-        SettingsSearchEntry(
-            id = "page:${page.name}",
-            page = page,
-            title = title,
-            description = description,
-            tokens = listOf(title, page.name) + page.searchAliases(),
-            targetId = "page:${page.name}",
-            order = page.ordinal * 100
-        )
-    }
+    val pageEntries = SettingsPage.entries
+        .filterNot { page -> LiteEdition.ENABLED && page in LiteHiddenSettingsPages }
+        .map { page ->
+            val title = resources.safeString(page.titleRes)
+            val description = resources.safeString(page.descriptionRes)
+            SettingsSearchEntry(
+                id = "page:${page.name}",
+                page = page,
+                title = title,
+                description = description,
+                tokens = listOf(title, page.name) + page.searchAliases(),
+                targetId = "page:${page.name}",
+                order = page.ordinal * 100
+            )
+        }
 
     val settingEntries = AutoSettingsMetadata.settings
         .filter {
@@ -70,8 +73,24 @@ internal fun buildSettingsSearchEntries(
             )
         }
 
-    return pageEntries + settingEntries + manualSettingsSearchEntries(resources)
+    return (pageEntries + settingEntries + manualSettingsSearchEntries(resources))
+        .filterNot { entry ->
+            LiteEdition.ENABLED &&
+                (entry.page in LiteHiddenSettingsPages || entry.id in LiteHiddenSearchEntryIds)
+        }
 }
+
+private val LiteHiddenSettingsPages = setOf(
+    SettingsPage.Backup,
+    SettingsPage.ListenTogether,
+    SettingsPage.MusicServers
+)
+
+private val LiteHiddenSearchEntryIds = setOf(
+    "manual:bili_login",
+    "manual:youtube_login",
+    "manual:internationalization"
+)
 
 internal fun searchSettingsEntries(
     entries: List<SettingsSearchEntry>,

@@ -223,31 +223,33 @@ internal fun SettingsPlaybackSection(
                     onHighlightFinished = onHighlightFinished
                 )
 
-                PlaybackSwitchItem(
-                    setting = AutoSettingsMetadata.requireSetting(
-                        AutoSettingsKeys.REMEMBER_LONG_FORM_PLAYBACK_PROGRESS
-                    ),
-                    checked = rememberLongFormPlaybackProgress,
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Bookmark,
-                            contentDescription = stringResource(
-                                CoreCommonR.string.settings_remember_long_form_playback_progress
-                            ),
-                            modifier = Modifier.size(24.dp),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    },
-                    onToggle = {
-                        onRememberLongFormPlaybackProgressChange(
-                            !rememberLongFormPlaybackProgress
-                        )
-                    },
-                    onCheckedChange = onRememberLongFormPlaybackProgressChange,
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
+                if (!LiteEdition.ENABLED) {
+                    PlaybackSwitchItem(
+                        setting = AutoSettingsMetadata.requireSetting(
+                            AutoSettingsKeys.REMEMBER_LONG_FORM_PLAYBACK_PROGRESS
+                        ),
+                        checked = rememberLongFormPlaybackProgress,
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Bookmark,
+                                contentDescription = stringResource(
+                                    CoreCommonR.string.settings_remember_long_form_playback_progress
+                                ),
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        },
+                        onToggle = {
+                            onRememberLongFormPlaybackProgressChange(
+                                !rememberLongFormPlaybackProgress
+                            )
+                        },
+                        onCheckedChange = onRememberLongFormPlaybackProgressChange,
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
+                }
 
                 if (!LiteEdition.ENABLED) {
                     PlaybackSwitchItem(

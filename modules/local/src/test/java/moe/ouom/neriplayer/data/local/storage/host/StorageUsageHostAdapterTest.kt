@@ -1,5 +1,6 @@
 package moe.ouom.neriplayer.data.local.storage.host
 
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.data.local.storage.presentation.StorageUsagePresenter
 import android.content.Context
 import android.content.res.Resources
@@ -51,11 +52,23 @@ class StorageUsageHostAdapterTest {
         val summary = StorageUsagePresenter(resources).present(snapshot)
 
         assertEquals(3, summary.sections.size)
-        assertEquals(24, summary.sections.sumOf { it.items.size })
-        val serverCache = summary.sections.flatMap { it.items }
-            .single { it.kind == StorageUsageItemKind.ServerBrowseCache }
-        assertEquals(StorageCacheKind.ServerBrowse, serverCache.cacheKind)
-        assertEquals(0L, serverCache.sizeBytes)
+        val hiddenKinds = if (LiteEdition.ENABLED) {
+            setOf(
+                StorageUsageItemKind.BiliFavoriteCache,
+                StorageUsageItemKind.BiliArchiveCache,
+                StorageUsageItemKind.YouTubePlaylistCache,
+                StorageUsageItemKind.ServerBrowseCache
+            )
+        } else {
+            emptySet()
+        }
+        assertEquals(24 - hiddenKinds.size, summary.sections.sumOf { it.items.size })
+        if (StorageUsageItemKind.ServerBrowseCache !in hiddenKinds) {
+            val serverCache = summary.sections.flatMap { it.items }
+                .single { it.kind == StorageUsageItemKind.ServerBrowseCache }
+            assertEquals(StorageCacheKind.ServerBrowse, serverCache.cacheKind)
+            assertEquals(0L, serverCache.sizeBytes)
+        }
         assertEquals(20L, summary.cleanableSizeBytes)
         assertEquals(20L, summary.totalSizeBytes)
         assertEquals(1, summary.totalFileCount)

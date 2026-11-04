@@ -17,6 +17,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.ui.screen.tab.settings.page.SettingsPage
 import org.junit.Assert.assertEquals
@@ -74,6 +75,7 @@ class SettingsSearchLocaleTest {
 
     @Test
     fun internationalModeRemovesOnlyTheBilibiliHomeSwitchWithoutResettingSearchState() {
+        if (LiteEdition.ENABLED) return
         render(updateHostResources = true)
         composeRule.runOnIdle { navigation.searchQueryState.value = "bilibili" }
         val queryState = navigation.searchQueryState

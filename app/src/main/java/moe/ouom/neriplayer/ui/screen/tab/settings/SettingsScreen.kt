@@ -66,6 +66,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.data.settings.background.BackgroundImageStorage
 import moe.ouom.neriplayer.data.settings.generated.AutoSettingsKeys
@@ -403,36 +404,38 @@ internal fun SettingsScreen(
                                     ),
                                     onLanguageChanged = environment.onLanguageChanged
                                 )
-                                ListItem(
-                                    modifier = Modifier.settingsHighlightTarget(
-                                        targetId = "manual:internationalization",
-                                        highlightTargetId = settingsHighlightTargetId,
-                                        highlightPulse = settingsHighlightPulse,
-                                        onHighlightFinished = onSettingsHighlightFinished
-                                    ),
-                                    leadingContent = {
-                                        SettingRowIcon(
-                                            key = "internationalization",
-                                            painter = painterResource(id = CoreCommonR.drawable.ic_i18n),
-                                            contentDescription = stringResource(CoreCommonR.string.settings_internationalization),
-                                            modifier = Modifier.size(24.dp),
-                                            tint = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    },
-                                    headlineContent = { Text(stringResource(CoreCommonR.string.settings_internationalization)) },
-                                    supportingContent = {
-                                        Text(
-                                            stringResource(CoreCommonR.string.settings_internationalization_desc)
-                                        )
-                                    },
-                                    trailingContent = {
-                                        MiuixSettingsSwitch(
-                                            checked = otherState.internationalizationEnabled,
-                                            onCheckedChange = appearanceActions.onInternationalizationEnabledChange
-                                        )
-                                    },
-                                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-                                )
+                                if (!LiteEdition.ENABLED) {
+                                    ListItem(
+                                        modifier = Modifier.settingsHighlightTarget(
+                                            targetId = "manual:internationalization",
+                                            highlightTargetId = settingsHighlightTargetId,
+                                            highlightPulse = settingsHighlightPulse,
+                                            onHighlightFinished = onSettingsHighlightFinished
+                                        ),
+                                        leadingContent = {
+                                            SettingRowIcon(
+                                                key = "internationalization",
+                                                painter = painterResource(id = CoreCommonR.drawable.ic_i18n),
+                                                contentDescription = stringResource(CoreCommonR.string.settings_internationalization),
+                                                modifier = Modifier.size(24.dp),
+                                                tint = MaterialTheme.colorScheme.onSurface
+                                            )
+                                        },
+                                        headlineContent = { Text(stringResource(CoreCommonR.string.settings_internationalization)) },
+                                        supportingContent = {
+                                            Text(
+                                                stringResource(CoreCommonR.string.settings_internationalization_desc)
+                                            )
+                                        },
+                                        trailingContent = {
+                                            MiuixSettingsSwitch(
+                                                checked = otherState.internationalizationEnabled,
+                                                onCheckedChange = appearanceActions.onInternationalizationEnabledChange
+                                            )
+                                        },
+                                        colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                                    )
+                                }
                             }
                         },
 
@@ -572,6 +575,7 @@ internal fun SettingsScreen(
                             item(key = "${selectedPage.name}:card:1") {
                                 SettingsPersonalizationHomeCard(
                                     internationalEnabled = otherState.internationalizationEnabled,
+                                    showBilibiliCardSetting = !LiteEdition.ENABLED,
                                     homeTrendingLabelRes = homeCardCopy.trendingLabelRes,
                                     homeRadarLabelRes = homeCardCopy.radarLabelRes,
                                     homeRecommendedLabelRes = homeCardCopy.recommendedLabelRes,
@@ -948,12 +952,14 @@ internal fun SettingsScreen(
 
                         SettingsPage.PlaybackSource to {
                             miuixSettingsSectionCardItem(key = "${selectedPage.name}:content") {
-                                YouTubePlaybackSourceSetting(
-                                    repository = repository,
-                                    highlightTargetId = settingsHighlightTargetId,
-                                    highlightPulse = settingsHighlightPulse,
-                                    onHighlightFinished = onSettingsHighlightFinished
-                                )
+                                if (!LiteEdition.ENABLED) {
+                                    YouTubePlaybackSourceSetting(
+                                        repository = repository,
+                                        highlightTargetId = settingsHighlightTargetId,
+                                        highlightPulse = settingsHighlightPulse,
+                                        onHighlightFinished = onSettingsHighlightFinished
+                                    )
+                                }
                                 AutoSettingsListItem(
                                     setting = AutoSettingsMetadata.requireSetting(
                                         AutoSettingsKeys.NETEASE_LOCAL_SOURCE_FALLBACK
@@ -981,33 +987,35 @@ internal fun SettingsScreen(
                                         playbackActions.onNeteaseLocalSourceFallbackChange(!playbackState.playbackSources.neteaseLocalSourceFallback)
                                     }
                                 )
-                                AutoSettingsListItem(
-                                    setting = AutoSettingsMetadata.requireSetting(
-                                        AutoSettingsKeys.NETEASE_AUTO_SOURCE_SWITCH
-                                    ),
-                                    leadingContent = {
-                                        Icon(
-                                            painter = painterResource(CoreCommonR.drawable.ic_bilibili),
-                                            contentDescription = stringResource(
-                                                CoreCommonR.string.settings_netease_auto_source_switch
-                                            ),
-                                            modifier = Modifier.size(24.dp),
-                                            tint = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    },
-                                    trailingContent = {
-                                        MiuixSettingsSwitch(
-                                            checked = playbackState.playbackSources.neteaseAutoSourceSwitch,
-                                            onCheckedChange = playbackActions.onNeteaseAutoSourceSwitchChange
-                                        )
-                                    },
-                                    highlightTargetId = settingsHighlightTargetId,
-                                    highlightPulse = settingsHighlightPulse,
-                                    onHighlightFinished = onSettingsHighlightFinished,
-                                    onClick = {
-                                        playbackActions.onNeteaseAutoSourceSwitchChange(!playbackState.playbackSources.neteaseAutoSourceSwitch)
-                                    }
-                                )
+                                if (!LiteEdition.ENABLED) {
+                                    AutoSettingsListItem(
+                                        setting = AutoSettingsMetadata.requireSetting(
+                                            AutoSettingsKeys.NETEASE_AUTO_SOURCE_SWITCH
+                                        ),
+                                        leadingContent = {
+                                            Icon(
+                                                painter = painterResource(CoreCommonR.drawable.ic_bilibili),
+                                                contentDescription = stringResource(
+                                                    CoreCommonR.string.settings_netease_auto_source_switch
+                                                ),
+                                                modifier = Modifier.size(24.dp),
+                                                tint = MaterialTheme.colorScheme.onSurface
+                                            )
+                                        },
+                                        trailingContent = {
+                                            MiuixSettingsSwitch(
+                                                checked = playbackState.playbackSources.neteaseAutoSourceSwitch,
+                                                onCheckedChange = playbackActions.onNeteaseAutoSourceSwitchChange
+                                            )
+                                        },
+                                        highlightTargetId = settingsHighlightTargetId,
+                                        highlightPulse = settingsHighlightPulse,
+                                        onHighlightFinished = onSettingsHighlightFinished,
+                                        onClick = {
+                                            playbackActions.onNeteaseAutoSourceSwitchChange(!playbackState.playbackSources.neteaseAutoSourceSwitch)
+                                        }
+                                    )
+                                }
                             }
                         },
 

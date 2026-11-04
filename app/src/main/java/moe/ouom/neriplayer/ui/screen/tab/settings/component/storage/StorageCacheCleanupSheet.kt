@@ -33,6 +33,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.common.format.formatFileSize
 import moe.ouom.neriplayer.data.model.storage.StorageCacheClearOptions
@@ -375,6 +376,15 @@ private fun cleanupChoices(options: StorageCacheClearOptions) = listOf(
         description = CoreCommonR.string.storage_desc_crash_logs,
         checked = options.crashLogs
     ) { current, checked -> current.copy(crashLogs = checked) }
+).filterNot { choice ->
+    LiteEdition.ENABLED && choice.kind in LiteHiddenCacheKinds
+}
+
+private val LiteHiddenCacheKinds = setOf(
+    StorageCacheKind.BiliFavorite,
+    StorageCacheKind.BiliArchive,
+    StorageCacheKind.YouTubePlaylist,
+    StorageCacheKind.ServerBrowse
 )
 
 @Composable

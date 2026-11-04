@@ -97,7 +97,7 @@
     <string name="settings_playback_volume_balance_left">Current: Left %d%%</string>
     <string name="settings_playback_volume_balance_right">Current: Right %d%%</string>
     <string name="settings_playback_source">Playback Source</string>
-    <string name="settings_playback_source_desc">Configure automatic source switching and fallback sources</string>
+    <string name="settings_playback_source_desc">Configure the local audio fallback policy</string>
     <string name="settings_lyric_source">Source Preference</string>
     <string name="settings_lyric_source_desc">Configure lyric sources and word-timing preference</string>
     <string name="settings_prefer_word_timed_lyrics">Prefer Word-Timed Lyrics</string>
@@ -303,7 +303,7 @@
     <string name="settings_standardized_lyric_embedding">Standardized lyric embedding</string>
     <string name="settings_standardized_lyric_embedding_desc">Convert embedded audio tag lyrics to common LRC; word-level lyrics remain available in some in-app contexts</string>
     <string name="settings_download_follow_playback_audio_quality">Follow playback quality settings</string>
-    <string name="settings_download_follow_playback_audio_quality_desc">When enabled, downloads use playback quality; turn it off to choose a quality for each platform</string>
+    <string name="settings_download_follow_playback_audio_quality_desc">When enabled, downloads use playback quality; turn it off to choose the NetEase download quality separately</string>
     <string name="settings_download_quality_group">Download quality</string>
     <string name="settings_download_netease_audio_quality">NetEase download quality</string>
     <string name="settings_download_youtube_audio_quality">YouTube download quality</string>

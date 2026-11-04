@@ -66,6 +66,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
+import moe.ouom.neriplayer.common.LiteEdition
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.core.download.GlobalDownloadManager
 import moe.ouom.neriplayer.core.player.download.network.MAX_DOWNLOAD_PARALLELISM
@@ -400,41 +401,43 @@ private fun DownloadAudioQualitySettings(
                 onHighlightFinished = onHighlightFinished
             )
 
-            DownloadAudioQualityListItem(
-                setting = youtubeSetting,
-                value = normalizeDownloadYouTubeAudioQuality(youtubeQuality),
-                valueLabel = stringResource(
-                    when (normalizeDownloadYouTubeAudioQuality(youtubeQuality)) {
-                        "low" -> CoreCommonR.string.settings_audio_quality_low
-                        "medium" -> CoreCommonR.string.settings_audio_quality_medium
-                        "high" -> CoreCommonR.string.settings_audio_quality_high
-                        else -> CoreCommonR.string.quality_very_high
-                    }
-                ),
-                onClick = { dialogPlatform = DownloadAudioQualityPlatform.YOUTUBE },
-                highlightTargetId = highlightTargetId,
-                highlightPulse = highlightPulse,
-                onHighlightFinished = onHighlightFinished
-            )
+            if (!LiteEdition.ENABLED) {
+                DownloadAudioQualityListItem(
+                    setting = youtubeSetting,
+                    value = normalizeDownloadYouTubeAudioQuality(youtubeQuality),
+                    valueLabel = stringResource(
+                        when (normalizeDownloadYouTubeAudioQuality(youtubeQuality)) {
+                            "low" -> CoreCommonR.string.settings_audio_quality_low
+                            "medium" -> CoreCommonR.string.settings_audio_quality_medium
+                            "high" -> CoreCommonR.string.settings_audio_quality_high
+                            else -> CoreCommonR.string.quality_very_high
+                        }
+                    ),
+                    onClick = { dialogPlatform = DownloadAudioQualityPlatform.YOUTUBE },
+                    highlightTargetId = highlightTargetId,
+                    highlightPulse = highlightPulse,
+                    onHighlightFinished = onHighlightFinished
+                )
 
-            DownloadAudioQualityListItem(
-                setting = biliSetting,
-                value = normalizeDownloadBiliAudioQuality(biliQuality),
-                valueLabel = stringResource(
-                    when (normalizeDownloadBiliAudioQuality(biliQuality)) {
-                        "dolby" -> CoreCommonR.string.settings_dolby
-                        "hires" -> CoreCommonR.string.quality_hires
-                        "lossless" -> CoreCommonR.string.quality_lossless
-                        "high" -> CoreCommonR.string.settings_audio_quality_high
-                        "medium" -> CoreCommonR.string.settings_audio_quality_medium
-                        else -> CoreCommonR.string.settings_audio_quality_low
-                    }
-                ),
-                onClick = { dialogPlatform = DownloadAudioQualityPlatform.BILI },
-                highlightTargetId = highlightTargetId,
-                highlightPulse = highlightPulse,
-                onHighlightFinished = onHighlightFinished
-            )
+                DownloadAudioQualityListItem(
+                    setting = biliSetting,
+                    value = normalizeDownloadBiliAudioQuality(biliQuality),
+                    valueLabel = stringResource(
+                        when (normalizeDownloadBiliAudioQuality(biliQuality)) {
+                            "dolby" -> CoreCommonR.string.settings_dolby
+                            "hires" -> CoreCommonR.string.quality_hires
+                            "lossless" -> CoreCommonR.string.quality_lossless
+                            "high" -> CoreCommonR.string.settings_audio_quality_high
+                            "medium" -> CoreCommonR.string.settings_audio_quality_medium
+                            else -> CoreCommonR.string.settings_audio_quality_low
+                        }
+                    ),
+                    onClick = { dialogPlatform = DownloadAudioQualityPlatform.BILI },
+                    highlightTargetId = highlightTargetId,
+                    highlightPulse = highlightPulse,
+                    onHighlightFinished = onHighlightFinished
+                )
+            }
         }
     }
 

@@ -49,6 +49,7 @@ import moe.ouom.neriplayer.core.player.PlayerManager
 import moe.ouom.neriplayer.data.model.playback.PlaybackAudioInfo
 import moe.ouom.neriplayer.data.model.playback.PlaybackQualityOption
 import moe.ouom.neriplayer.data.model.playback.buildPlaybackSpecLabel
+import moe.ouom.neriplayer.data.settings.SettingsRepository
 import moe.ouom.neriplayer.data.model.lyrics.LyricEntry
 import moe.ouom.neriplayer.ui.component.lyrics.LyricSeekHapticFeedback
 import moe.ouom.neriplayer.ui.component.lyrics.rememberLyricSeekHapticFeedback
@@ -87,6 +88,35 @@ internal data class NowPlayingAudioInfoDisplayOptions(
     val showBitrate: Boolean = true,
     val showChannels: Boolean = true
 )
+
+@Composable
+internal fun rememberNowPlayingAudioInfoDisplayOptions(
+    settingsRepo: SettingsRepository
+): NowPlayingAudioInfoDisplayOptions {
+    val showQuality by settingsRepo.nowPlayingProgressShowQualitySwitchFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showCodec by settingsRepo.nowPlayingProgressShowAudioCodecFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showSpec by settingsRepo.nowPlayingProgressShowAudioSpecFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showSampleRate by settingsRepo.nowPlayingProgressShowAudioSampleRateFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showBitDepth by settingsRepo.nowPlayingProgressShowAudioBitDepthFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showBitrate by settingsRepo.nowPlayingProgressShowAudioBitrateFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    val showChannels by settingsRepo.nowPlayingProgressShowAudioChannelsFlow
+        .collectAsStateWithLifecycle(initialValue = true)
+    return NowPlayingAudioInfoDisplayOptions(
+        showQuality = showQuality,
+        showCodec = showCodec,
+        showSpec = showSpec,
+        showSampleRate = showSampleRate,
+        showBitDepth = showBitDepth,
+        showBitrate = showBitrate,
+        showChannels = showChannels
+    )
+}
 
 internal fun nowPlayingVisibleProgressInfoSegments(
     segments: List<NowPlayingProgressInfoSegment>,

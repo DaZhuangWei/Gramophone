@@ -6,7 +6,7 @@
     <string name="settings_haptic">触感反馈</string>
     <string name="settings_haptic_desc">开启后点击按钮时会有震动反馈</string>
     <string name="settings_audio_quality">音质设置</string>
-    <string name="settings_audio_quality_expand">各平台音质与移动数据策略</string>
+    <string name="settings_audio_quality_expand">网易云音质与移动数据策略</string>
     <string name="settings_show_lyric_translation">显示歌词翻译</string>
     <string name="settings_show_lyric_translation_desc">开启后将显示歌词的翻译内容</string>
     <string name="settings_advanced_lyrics">高级歌词</string>
