@@ -218,56 +218,56 @@ internal fun SettingsLyricsSection(
                     highlightPulse = highlightPulse,
                     onHighlightFinished = onHighlightFinished
                 )
-                Spacer(Modifier.height(4.dp))
-                LyricsOffsetSliderListItem(
-                    targetId = "setting:qq_music_lyric_default_offset_ms",
-                    title = stringResource(CoreCommonR.string.settings_lyrics_offset_qq_music),
-                    description = stringResource(CoreCommonR.string.settings_lyrics_offset_qq_music_desc),
-                    offsetMs = qqMusicLyricDefaultOffsetMs,
-                    defaultOffsetMs = DEFAULT_QQ_MUSIC_LYRIC_OFFSET_MS,
-                    onOffsetChange = onQqMusicLyricDefaultOffsetMsChange,
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
-                Spacer(Modifier.height(4.dp))
-                LyricsOffsetSliderListItem(
-                    targetId = "setting:kugou_lyric_default_offset_ms",
-                    title = stringResource(CoreCommonR.string.settings_lyrics_offset_kugou),
-                    description = stringResource(CoreCommonR.string.settings_lyrics_offset_kugou_desc),
-                    offsetMs = kugouLyricDefaultOffsetMs,
-                    defaultOffsetMs = DEFAULT_KUGOU_LYRIC_OFFSET_MS,
-                    onOffsetChange = onKugouLyricDefaultOffsetMsChange,
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
-                Spacer(Modifier.height(4.dp))
-                LyricsOffsetSliderListItem(
-                    targetId = "setting:lrclib_lyric_default_offset_ms",
-                    title = stringResource(CoreCommonR.string.settings_lyrics_offset_lrclib),
-                    description = stringResource(CoreCommonR.string.settings_lyrics_offset_lrclib_desc),
-                    offsetMs = lrclibLyricDefaultOffsetMs,
-                    defaultOffsetMs = DEFAULT_LRCLIB_LYRIC_OFFSET_MS,
-                    onOffsetChange = onLrclibLyricDefaultOffsetMsChange,
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
-                Spacer(Modifier.height(4.dp))
-                LyricsOffsetSliderListItem(
-                    targetId = "setting:amll_ttml_lyric_default_offset_ms",
-                    title = stringResource(CoreCommonR.string.settings_lyrics_offset_amll_ttml),
-                    description = stringResource(CoreCommonR.string.settings_lyrics_offset_amll_ttml_desc),
-                    offsetMs = amllTtmlLyricDefaultOffsetMs,
-                    defaultOffsetMs = DEFAULT_AMLL_TTML_LYRIC_OFFSET_MS,
-                    onOffsetChange = onAmllTtmlLyricDefaultOffsetMsChange,
-                    highlightTargetId = highlightTargetId,
-                    highlightPulse = highlightPulse,
-                    onHighlightFinished = onHighlightFinished
-                )
-                Spacer(Modifier.height(4.dp))
                 if (!LiteEdition.ENABLED) {
+                    Spacer(Modifier.height(4.dp))
+                    LyricsOffsetSliderListItem(
+                        targetId = "setting:qq_music_lyric_default_offset_ms",
+                        title = stringResource(CoreCommonR.string.settings_lyrics_offset_qq_music),
+                        description = stringResource(CoreCommonR.string.settings_lyrics_offset_qq_music_desc),
+                        offsetMs = qqMusicLyricDefaultOffsetMs,
+                        defaultOffsetMs = DEFAULT_QQ_MUSIC_LYRIC_OFFSET_MS,
+                        onOffsetChange = onQqMusicLyricDefaultOffsetMsChange,
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    LyricsOffsetSliderListItem(
+                        targetId = "setting:kugou_lyric_default_offset_ms",
+                        title = stringResource(CoreCommonR.string.settings_lyrics_offset_kugou),
+                        description = stringResource(CoreCommonR.string.settings_lyrics_offset_kugou_desc),
+                        offsetMs = kugouLyricDefaultOffsetMs,
+                        defaultOffsetMs = DEFAULT_KUGOU_LYRIC_OFFSET_MS,
+                        onOffsetChange = onKugouLyricDefaultOffsetMsChange,
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    LyricsOffsetSliderListItem(
+                        targetId = "setting:lrclib_lyric_default_offset_ms",
+                        title = stringResource(CoreCommonR.string.settings_lyrics_offset_lrclib),
+                        description = stringResource(CoreCommonR.string.settings_lyrics_offset_lrclib_desc),
+                        offsetMs = lrclibLyricDefaultOffsetMs,
+                        defaultOffsetMs = DEFAULT_LRCLIB_LYRIC_OFFSET_MS,
+                        onOffsetChange = onLrclibLyricDefaultOffsetMsChange,
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    LyricsOffsetSliderListItem(
+                        targetId = "setting:amll_ttml_lyric_default_offset_ms",
+                        title = stringResource(CoreCommonR.string.settings_lyrics_offset_amll_ttml),
+                        description = stringResource(CoreCommonR.string.settings_lyrics_offset_amll_ttml_desc),
+                        offsetMs = amllTtmlLyricDefaultOffsetMs,
+                        defaultOffsetMs = DEFAULT_AMLL_TTML_LYRIC_OFFSET_MS,
+                        onOffsetChange = onAmllTtmlLyricDefaultOffsetMsChange,
+                        highlightTargetId = highlightTargetId,
+                        highlightPulse = highlightPulse,
+                        onHighlightFinished = onHighlightFinished
+                    )
+                    Spacer(Modifier.height(4.dp))
                     LyricsOffsetSliderListItem(
                         targetId = "setting:bili_cc_subtitle_lyric_default_offset_ms",
                         title = stringResource(CoreCommonR.string.settings_lyrics_offset_bili_cc_subtitle),

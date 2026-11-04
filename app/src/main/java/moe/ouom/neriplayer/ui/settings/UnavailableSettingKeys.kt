@@ -39,6 +39,10 @@ private val liteHiddenSettingKeys: Set<String> = if (LiteEdition.ENABLED) {
         "bili_cc_subtitle_language",
         "bili_cc_subtitle_ai_only_enabled",
         "bili_cc_subtitle_lyric_default_offset_ms",
+        "qq_music_lyric_default_offset_ms",
+        "kugou_lyric_default_offset_ms",
+        "lrclib_lyric_default_offset_ms",
+        "amll_ttml_lyric_default_offset_ms",
         "download_youtube_audio_quality",
         "download_bili_audio_quality"
     )
