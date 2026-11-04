@@ -26,6 +26,8 @@ v0.1 可运行版本（Debug / Release APK 均已构建）：
 - 动画：120Hz 屏幕上波形、歌词高亮、歌词插值按 120fps 推进；前台保持高刷
 - 播放修复：seek 不再越过歌曲时长，最后一行歌词跳转不会自动切下一首
 - 音频参数：进度条上方可显示音质、解码格式、采样率、位深、码率、声道数，并在「设置 → 播放页」逐项开关
+- 平台清理：移除残留的「音理音理」品牌文案，以及设置里的 YouTube、哔哩哔哩、音乐服务器等入口
+- 封面加速：网易云封面按显示尺寸向 CDN 请求缩略图，列表不再先下载数 MB 原图
 
 ## 构建
 
@@ -51,12 +53,12 @@ $env:ANDROID_SDK_ROOT=$env:ANDROID_HOME
 
 - Debug：`app/build/outputs/apk/debug/app-debug.apk`
 - Release：`app/build/outputs/apk/release/*.apk`
-- 已复制真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.2.apk`
-  - 大小：14,793,288 bytes
-  - SHA256：`D1A94B9C4D1C7D8C1BE9B2AE76050EE5BC124C6D7A931909CC7D2B7C1136B802`
-  - 版本：`29cc7c4.11041328`（arm64-v8a）
+- 已复制真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.3.apk`
+  - 大小：14,785,736 bytes
+  - SHA256：`7C36FE5F0956F0EBF8922E991010F6F561D395C9209B3C3BA05323F77DFBA47C`
+  - 版本：`ea7a882.11041937`（arm64-v8a）
 
-> v1.1 真机包 `Gramophone-arm64-v1.1.apk` 与更早的 `NeriLite-arm64-v1.0.apk` 仍保留，便于回滚；日常使用请安装 v1.2。
+> v1.2 / v1.1 真机包与更早的 `NeriLite-arm64-v1.0.apk` 仍保留，便于回滚；日常使用请安装 v1.3。
 
 > 远端网易云流通常不提供位深元数据，位深只在文件或解码器给出时显示；采样率、声道数和码率会从 Media3 解码器输入格式自动补齐。
 

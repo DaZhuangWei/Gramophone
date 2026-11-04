@@ -332,7 +332,7 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 
 ### 已产出 APK
 
-- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.1.apk`
+- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.3.apk`
 - 大小：14,784,108 bytes
 - SHA256：`8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`
 - 版本：`749c1e2.11041301`（arm64-v8a，Release 签名）
@@ -444,6 +444,25 @@ Lite Release 包名：`moe.ouom.nerilite`
 - 展示逻辑收敛到 `NowPlayingAudioInfoDisplayOptions`，并用 `buildPlaybackSpecLabel(includeXxx=...)` 按字段拼接，避免多处条件分支。
 - 验证：`:app:assembleDebug`、`:app:assembleRelease` 通过；`NowPlayingPlaybackControlsTest`、`PlaybackAudioInfoFormattingTest` 通过；模拟器实测 `一张相片` 显示 `极高 · MP3 · 48 kHz | 320 kbps | 2 ch`，设置页四个子开关可独立切换。
 - v1.2 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.2.apk`，SHA256 `D1A94B9C4D1C7D8C1BE9B2AE76050EE5BC124C6D7A931909CC7D2B7C1136B802`，版本 `29cc7c4.11041328`。
+
+### 2026-11-04（第四轮）
+
+- 残留品牌清理：引导页「快速了解音理音理」「进入音理音理」和 USB 设置描述改为 Gramophone，androidTest 的启动器名称断言同步更新。
+- Lite 设置收敛：
+  - `UnavailableSettingKeys` 集中维护 Lite 隐藏键，界面和设置搜索共用，避免只藏 UI、搜索还能跳转。
+  - 隐藏音质页的 YouTube / 哔哩哔哩默认音质与移动数据音质。
+  - 播放源页只保留「本地音频兜底」，隐藏 YouTube 播放源和网易云自动换源（哔哩哔哩）。
+  - 隐藏下载页的 YouTube / 哔哩哔哩下载音质、歌词页的 B 站 CC 字幕与偏移、播放页的长视频进度和 SponsorBlock、首页的哔哩哔哩音乐开关、语言页的国际化和音乐服务器入口。
+  - 存储详情与清理面板不再显示 B 站、YouTube、音乐服务器缓存分类。
+  - 设置搜索过滤隐藏平台项、隐藏页面（备份 / 一起听 / 音乐服务器）和对应登录入口。
+- 封面加载加速：
+  - 网易云 `p*.music.126.net` 封面统一通过 `?param=WxH` 请求显示尺寸，列表不再下载 1000px 原图。实测同一张封面原图 6.8 MB，128px 约 38 KB，384px 约 265 KB。
+  - 只有字符串 URL 且未带 `param` / `thumbnail` / `imageView` 时才改写；音频域名、本地 `content://` 与已有尺寸参数的 URL 保持不变。
+  - 显式 cacheKey 追加 `|resize=尺寸`，避免不同尺寸共用同一缓存槽；新磁盘缓存也会与旧版原图缓存隔离。
+  - 歌曲行补齐尺寸：网易云合集列表 160px，本地歌单与探索歌曲行 128px，探索歌单卡片 384px。
+- 顺带修复：把播放页音频信息选项收集收敛为 `rememberNowPlayingAudioInfoDisplayOptions`，避免逐项开关变化时不触发重组，同时把 `NowPlayingScreen.kt` 压回 2000 行预算以内。
+- 验证：`assembleDebug`、`assembleRelease` 通过；封面 URL、播放信息、设置个人化、设置搜索、存储用量相关单测通过；模拟器实测音质页 / 播放源页 / 播放设置仅剩网易云与本地相关项，搜索 `bilibili` 返回「没有匹配的设置」。
+- v1.3 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.3.apk`，SHA256 `7C36FE5F0956F0EBF8922E991010F6F561D395C9209B3C3BA05323F77DFBA47C`，版本 `ea7a882.11041937`。
 
 验证方式：
 
