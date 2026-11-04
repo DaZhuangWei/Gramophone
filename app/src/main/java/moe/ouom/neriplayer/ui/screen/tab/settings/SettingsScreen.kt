@@ -1140,6 +1140,7 @@ internal fun SettingsScreen(
 
                         SettingsPage.Downloads to {
                             settingsDownloadsPageItems(
+                                directory = downloadDirectorySettings,
                                 onNavigateToDownloadManager = onNavigateToDownloadManager,
                                 highlightTargetId = settingsHighlightTargetId,
                                 highlightPulse = settingsHighlightPulse,

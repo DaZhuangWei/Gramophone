@@ -210,6 +210,7 @@ class NeriPlayerApplication : Application(), WorkConfiguration.Provider {
 
             // 初始化全局下载管理器
             GlobalDownloadManager.initialize(this)
+            AppContainer.startAutoDownloadObserver()
 
             // 初始化 LyriconManager, 如果用户启用了 Lyricon 功能
             if (readPlaybackPreferenceSnapshotSync(this).lyriconEnabled) {

@@ -507,6 +507,9 @@ class SettingsRepository(private val context: Context) {
     val downloadMetadataPostProcessingEnabledFlow: Flow<Boolean> =
         autoSettingsRepository.downloadMetadataPostProcessingEnabledFlow
 
+    val downloadWhilePlayingFlow: Flow<Boolean> =
+        autoSettingsRepository.downloadWhilePlayingFlow
+
     val backgroundImageBlurFlow: Flow<Float> =
         autoSettingsRepository.backgroundImageBlurFlow
 

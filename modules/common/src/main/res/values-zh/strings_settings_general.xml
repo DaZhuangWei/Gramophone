@@ -286,7 +286,7 @@
     <string name="settings_download_directory">下载目录</string>
     <string name="settings_download_directory_desc">歌曲、歌词和封面会保存到这里</string>
     <string name="settings_download_directory_current">当前：%1$s</string>
-    <string name="settings_download_directory_hint">建议使用应用私有目录，性能更稳</string>
+    <string name="settings_download_directory_hint">支持外置存储和 SD 卡；下载期间请保持存储卡已挂载</string>
     <string name="settings_download_directory_permission_lost">目录授权已失效，请重新选择此目录后再下载或编辑文件</string>
     <string name="settings_download_directory_choose">选择目录</string>
     <string name="settings_download_directory_reset">恢复默认目录</string>
@@ -303,6 +303,8 @@
     <string name="settings_standardized_lyric_embedding">标准化歌词嵌入</string>
     <string name="settings_standardized_lyric_embedding_desc">开启后写入音频标签的歌词会转成通用 LRC，应用内部分场景保留逐字体验</string>
     <string name="settings_download_follow_playback_audio_quality">遵循播放音质设置</string>
+    <string name="settings_download_while_playing">边听边下</string>
+    <string name="settings_download_while_playing_desc">播放歌曲时自动下载到下载目录；仅在 Wi-Fi 下执行，已下载歌曲会跳过</string>
     <string name="settings_download_follow_playback_audio_quality_desc">开启后下载使用播放音质；关闭后可单独设置网易云下载音质</string>
     <string name="settings_download_quality_group">下载音质</string>
     <string name="settings_download_netease_audio_quality">网易云下载音质</string>

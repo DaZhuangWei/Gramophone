@@ -1648,6 +1648,15 @@ object AutoSettingsSchema {
             icon = AutoSettingIcon.Audiotrack
         )
 
+        @AutoSetting(order = 15)
+        val downloadWhilePlaying = autoSwitchSetting(
+            key = "download_while_playing",
+            defaultValue = false,
+            titleRes = CoreCommonR.string.settings_download_while_playing,
+            descriptionRes = CoreCommonR.string.settings_download_while_playing_desc,
+            icon = AutoSettingIcon.Download
+        )
+
         @AutoSetting(
             key = "download_netease_audio_quality",
             type = SettingValueType.String,

@@ -40,8 +40,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
@@ -73,6 +75,8 @@ import moe.ouom.neriplayer.core.player.download.network.MAX_DOWNLOAD_PARALLELISM
 import moe.ouom.neriplayer.core.player.download.network.normalizeDownloadParallelism
 import moe.ouom.neriplayer.data.settings.AutoSettingsSchema
 import moe.ouom.neriplayer.data.settings.autoSettingFlow
+import moe.ouom.neriplayer.data.settings.generated.AutoSettingsKeys
+import moe.ouom.neriplayer.data.settings.generated.AutoSettingsMetadata
 import moe.ouom.neriplayer.data.settings.download.normalizeDownloadBiliAudioQuality
 import moe.ouom.neriplayer.data.settings.download.normalizeDownloadNeteaseAudioQuality
 import moe.ouom.neriplayer.data.settings.download.normalizeDownloadYouTubeAudioQuality
@@ -83,6 +87,8 @@ import moe.ouom.neriplayer.ksp.annotations.AutoSettingSpec
 import moe.ouom.neriplayer.ui.screen.tab.settings.miuix.MiuixSettingsSlider
 import moe.ouom.neriplayer.ui.screen.tab.settings.miuix.MiuixSettingsTextButton
 import moe.ouom.neriplayer.ui.screen.tab.settings.page.MiuixSettingsSectionCard
+import moe.ouom.neriplayer.ui.screen.tab.settings.page.MiuixSettingsSectionIntro
+import moe.ouom.neriplayer.ui.settings.AutoSettingsListItem
 import moe.ouom.neriplayer.R as AppR
 
 @Composable
@@ -145,6 +151,15 @@ private fun SettingsDownloadExpandedContent(
                 bottom = if (indentContent) 8.dp else 0.dp
             )
     ) {
+        AutoSettingSpecSwitchItem(
+            setting = AutoSettingsSchema.download.downloadWhilePlaying,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
         AutoSettingSpecSwitchItem(
             setting = AutoSettingsSchema.download.downloadMetadataPostProcessingEnabled,
             highlightTargetId = highlightTargetId,
@@ -290,6 +305,82 @@ internal const val DOWNLOAD_QUALITY_FOLLOW_PLAYBACK_CARD_TEST_TAG =
     "download-quality-follow-playback-card"
 internal const val DOWNLOAD_QUALITY_PLATFORM_OPTIONS_TEST_TAG =
     "download-quality-platform-options"
+
+@Composable
+internal fun SettingsDownloadDirectoryCard(
+    currentSummary: String,
+    permissionLost: Boolean,
+    changeEnabled: Boolean,
+    onPick: () -> Unit,
+    highlightTargetId: String?,
+    highlightPulse: Int,
+    onHighlightFinished: (() -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+    MiuixSettingsSectionCard(modifier = modifier) {
+        MiuixSettingsSectionIntro(
+            title = stringResource(CoreCommonR.string.settings_storage_download_section),
+            description = stringResource(CoreCommonR.string.settings_storage_download_section_desc)
+        )
+        AutoSettingsListItem(
+            setting = AutoSettingsMetadata.requireSetting(AutoSettingsKeys.DOWNLOAD_DIRECTORY_URI),
+            leadingContent = {
+                Icon(
+                    imageVector = Icons.Outlined.Folder,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            },
+            supportingContent = {
+                Column {
+                    Text(stringResource(CoreCommonR.string.settings_download_directory_desc))
+                    Text(
+                        text = stringResource(
+                            CoreCommonR.string.settings_download_directory_current,
+                            currentSummary
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = stringResource(CoreCommonR.string.settings_download_directory_hint),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                    if (permissionLost) {
+                        Text(
+                            text = stringResource(
+                                CoreCommonR.string.settings_download_directory_permission_lost
+                            ),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                    if (!changeEnabled) {
+                        Text(
+                            text = stringResource(
+                                CoreCommonR.string.settings_download_directory_change_blocked_active_download
+                            ),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            },
+            trailingContent = {
+                MiuixSettingsTextButton(onClick = onPick, enabled = changeEnabled) {
+                    Text(stringResource(CoreCommonR.string.settings_download_directory_choose))
+                }
+            },
+            enabled = changeEnabled,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished,
+            onClick = onPick
+        )
+    }
+}
 
 @Composable
 internal fun SettingsDownloadQualityFollowPlaybackCard(

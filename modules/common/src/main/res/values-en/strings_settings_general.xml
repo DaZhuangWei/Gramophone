@@ -286,7 +286,7 @@
     <string name="settings_download_directory">Download Directory</string>
     <string name="settings_download_directory_desc">Songs, lyrics, and covers will be saved here</string>
     <string name="settings_download_directory_current">Current: %1$s</string>
-    <string name="settings_download_directory_hint">App private folder is usually more stable</string>
+    <string name="settings_download_directory_hint">External storage and SD cards are supported; keep the card mounted while downloading</string>
     <string name="settings_download_directory_permission_lost">Folder access expired. Choose this folder again before downloading or editing files.</string>
     <string name="settings_download_directory_choose">Choose Folder</string>
     <string name="settings_download_directory_reset">Restore Default Folder</string>
@@ -303,6 +303,8 @@
     <string name="settings_standardized_lyric_embedding">Standardized lyric embedding</string>
     <string name="settings_standardized_lyric_embedding_desc">Convert embedded audio tag lyrics to common LRC; word-level lyrics remain available in some in-app contexts</string>
     <string name="settings_download_follow_playback_audio_quality">Follow playback quality settings</string>
+    <string name="settings_download_while_playing">Download while playing</string>
+    <string name="settings_download_while_playing_desc">Automatically download the current song to the download folder while playing; Wi-Fi only, already downloaded songs are skipped</string>
     <string name="settings_download_follow_playback_audio_quality_desc">When enabled, downloads use playback quality; turn it off to choose the NetEase download quality separately</string>
     <string name="settings_download_quality_group">Download quality</string>
     <string name="settings_download_netease_audio_quality">NetEase download quality</string>

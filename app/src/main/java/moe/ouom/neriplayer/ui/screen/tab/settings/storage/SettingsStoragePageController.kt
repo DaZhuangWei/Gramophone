@@ -25,6 +25,7 @@ import moe.ouom.neriplayer.data.model.storage.StorageUsageSummary
 import moe.ouom.neriplayer.data.local.storage.analyzeStorageUsage
 import moe.ouom.neriplayer.ui.screen.tab.settings.download.directory.ManagedLibraryProcessingDetailsCard
 import moe.ouom.neriplayer.ui.screen.tab.settings.component.download.SettingsDownloadQualityFollowPlaybackCard
+import moe.ouom.neriplayer.ui.screen.tab.settings.component.download.SettingsDownloadDirectoryCard
 import moe.ouom.neriplayer.ui.screen.tab.settings.component.download.SettingsDownloadSection
 import moe.ouom.neriplayer.ui.screen.tab.settings.component.storage.SettingsStorageCacheSection
 import moe.ouom.neriplayer.ui.screen.tab.settings.component.storage.StorageCacheDetailsContent
@@ -274,11 +275,24 @@ internal fun openStorageSystemSettings(context: Context, onFailure: () -> Unit) 
 }
 
 internal fun LazyListScope.settingsDownloadsPageItems(
+    directory: DownloadDirectorySettingsController,
     onNavigateToDownloadManager: () -> Unit,
     highlightTargetId: String?,
     highlightPulse: Int,
     onHighlightFinished: () -> Unit
 ) {
+    item(key = "${SettingsPage.Downloads.name}:directory") {
+        SettingsDownloadDirectoryCard(
+            currentSummary = directory.currentSummary,
+            permissionLost = directory.permissionLost,
+            changeEnabled = directory.changeEnabled,
+            onPick = directory.onPickRequested,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished,
+            modifier = Modifier.animateItem()
+        )
+    }
     item(key = "${SettingsPage.Downloads.name}:quality_follow_playback") {
         SettingsDownloadQualityFollowPlaybackCard(
             highlightTargetId = highlightTargetId,

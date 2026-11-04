@@ -39,11 +39,20 @@ import android.app.Application
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import moe.ouom.neriplayer.core.download.GlobalDownloadManager
+import moe.ouom.neriplayer.core.player.PlayerManager
+import moe.ouom.neriplayer.data.identity.stableKey
+import moe.ouom.neriplayer.data.local.media.isLocalSong
+import moe.ouom.neriplayer.data.model.traffic.TrafficNetworkType
+import moe.ouom.neriplayer.data.traffic.currentDownloadNetworkTypeOrNull
 import moe.ouom.neriplayer.platform.bilibili.api.client.BiliClient
 import moe.ouom.neriplayer.platform.bilibili.playback.BiliClientAudioDataSource
 import moe.ouom.neriplayer.platform.bilibili.playback.BiliPlaybackRepository
@@ -257,6 +266,8 @@ object AppContainer {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private const val YOUTUBE_DOWNLOAD_PLAYBACK_CALL_TIMEOUT_MS = 20_000L
+    private const val AUTO_DOWNLOAD_DELAY_MS = 3_000L
+    private var autoDownloadObserverStarted = false
 
     val subsonicAccounts by lazy { SubsonicAccounts(application) }
     val subsonicRepository by lazy {
@@ -536,6 +547,40 @@ object AppContainer {
     }
 
     fun launchBackgroundIo(block: suspend CoroutineScope.() -> Unit) = scope.launch(block = block)
+
+    internal fun startAutoDownloadObserver() {
+        if (autoDownloadObserverStarted) return
+        autoDownloadObserverStarted = true
+        scope.launch {
+            combine(
+                settingsRepo.downloadWhilePlayingFlow,
+                PlayerManager.currentSongFlow,
+                PlayerManager.isPlayingFlow
+            ) { enabled, song, playing -> Triple(enabled, song, playing) }
+                .distinctUntilChangedBy { state ->
+                    Triple(state.first, state.second?.stableKey(), state.third)
+                }
+                .collectLatest { (enabled, song, playing) ->
+                    if (!enabled || !playing || song == null) return@collectLatest
+                    val songKey = song.stableKey()
+                    if (
+                        song.isLocalSong() ||
+                        GlobalDownloadManager.hasDownloadedSongCached(song) ||
+                        AudioDownloadManager.isSongDownloadActive(songKey)
+                    ) {
+                        return@collectLatest
+                    }
+                    delay(AUTO_DOWNLOAD_DELAY_MS)
+                    if (!settingsRepo.downloadWhilePlayingFlow.first()) return@collectLatest
+                    if (!PlayerManager.isPlayingFlow.value) return@collectLatest
+                    if (PlayerManager.currentSongFlow.value?.stableKey() != songKey) return@collectLatest
+                    if (application.currentDownloadNetworkTypeOrNull() != TrafficNetworkType.WIFI) {
+                        return@collectLatest
+                    }
+                    GlobalDownloadManager.startDownload(application, song)
+                }
+        }
+    }
 
     fun pauseYouTubeBackgroundWebWorkForForegroundLogin() {
         if (!::application.isInitialized) {
