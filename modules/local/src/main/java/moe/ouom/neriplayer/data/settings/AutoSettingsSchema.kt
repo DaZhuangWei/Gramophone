@@ -1657,6 +1657,15 @@ object AutoSettingsSchema {
             icon = AutoSettingIcon.Download
         )
 
+        @AutoSetting(order = 16)
+        val downloadWhilePlayingAllowMobileData = autoSwitchSetting(
+            key = "download_while_playing_allow_mobile_data",
+            defaultValue = false,
+            titleRes = CoreCommonR.string.settings_download_while_playing_allow_mobile_data,
+            descriptionRes = CoreCommonR.string.settings_download_while_playing_allow_mobile_data_desc,
+            icon = AutoSettingIcon.Public
+        )
+
         @AutoSetting(
             key = "download_netease_audio_quality",
             type = SettingValueType.String,

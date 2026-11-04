@@ -304,7 +304,9 @@
     <string name="settings_standardized_lyric_embedding_desc">Convert embedded audio tag lyrics to common LRC; word-level lyrics remain available in some in-app contexts</string>
     <string name="settings_download_follow_playback_audio_quality">Follow playback quality settings</string>
     <string name="settings_download_while_playing">Download while playing</string>
-    <string name="settings_download_while_playing_desc">Automatically download the current song to the download folder while playing; Wi-Fi only, already downloaded songs are skipped</string>
+    <string name="settings_download_while_playing_desc">Automatically download the current song to the download folder while playing; Wi-Fi only by default, already downloaded songs are skipped</string>
+    <string name="settings_download_while_playing_allow_mobile_data">Allow mobile data for download while playing</string>
+    <string name="settings_download_while_playing_allow_mobile_data_desc">When enabled, auto-download also runs on mobile data and consumes your data plan; check your allowance first</string>
     <string name="settings_download_follow_playback_audio_quality_desc">When enabled, downloads use playback quality; turn it off to choose the NetEase download quality separately</string>
     <string name="settings_download_quality_group">Download quality</string>
     <string name="settings_download_netease_audio_quality">NetEase download quality</string>

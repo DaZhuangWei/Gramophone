@@ -510,6 +510,9 @@ class SettingsRepository(private val context: Context) {
     val downloadWhilePlayingFlow: Flow<Boolean> =
         autoSettingsRepository.downloadWhilePlayingFlow
 
+    val downloadWhilePlayingAllowMobileDataFlow: Flow<Boolean> =
+        autoSettingsRepository.downloadWhilePlayingAllowMobileDataFlow
+
     val backgroundImageBlurFlow: Flow<Float> =
         autoSettingsRepository.backgroundImageBlurFlow
 

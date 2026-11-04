@@ -1212,6 +1212,14 @@ object GlobalDownloadManager {
         scheduleUserDownload(context, song, skipTrafficRiskPrompt = false)
     }
 
+    /**
+     * 播放页自动下载入口：网络与流量策略已由调用方（设置开关）确认，
+     * 不再为每首歌弹出移动流量确认框。
+     */
+    fun startAutomaticDownload(context: Context, song: SongItem) {
+        scheduleUserDownload(context, song, skipTrafficRiskPrompt = true)
+    }
+
     suspend fun startDownload(
         context: Context,
         song: SongItem,

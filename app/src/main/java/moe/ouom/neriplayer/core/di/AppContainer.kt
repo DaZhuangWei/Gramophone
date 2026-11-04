@@ -563,21 +563,35 @@ object AppContainer {
                 .collectLatest { (enabled, song, playing) ->
                     if (!enabled || !playing || song == null) return@collectLatest
                     val songKey = song.stableKey()
+                    NPLogger.d(
+                        "AutoDownload",
+                        "candidate enabled=$enabled playing=$playing song=${song.name} key=$songKey"
+                    )
                     if (
                         song.isLocalSong() ||
                         GlobalDownloadManager.hasDownloadedSongCached(song) ||
                         AudioDownloadManager.isSongDownloadActive(songKey)
                     ) {
+                        NPLogger.d(
+                            "AutoDownload",
+                            "skip local/downloaded/active song=${song.name} key=$songKey"
+                        )
                         return@collectLatest
                     }
                     delay(AUTO_DOWNLOAD_DELAY_MS)
                     if (!settingsRepo.downloadWhilePlayingFlow.first()) return@collectLatest
                     if (!PlayerManager.isPlayingFlow.value) return@collectLatest
                     if (PlayerManager.currentSongFlow.value?.stableKey() != songKey) return@collectLatest
-                    if (application.currentDownloadNetworkTypeOrNull() != TrafficNetworkType.WIFI) {
-                        return@collectLatest
-                    }
-                    GlobalDownloadManager.startDownload(application, song)
+                    val networkType = application.currentDownloadNetworkTypeOrNull()
+                    val allowMobileData = settingsRepo.downloadWhilePlayingAllowMobileDataFlow.first()
+                    val networkAllowed = networkType == TrafficNetworkType.WIFI ||
+                        (allowMobileData && networkType == TrafficNetworkType.MOBILE)
+                    NPLogger.d(
+                        "AutoDownload",
+                        "network=$networkType allowMobile=$allowMobileData allowed=$networkAllowed song=$songKey"
+                    )
+                    if (!networkAllowed) return@collectLatest
+                    GlobalDownloadManager.startAutomaticDownload(application, song)
                 }
         }
     }

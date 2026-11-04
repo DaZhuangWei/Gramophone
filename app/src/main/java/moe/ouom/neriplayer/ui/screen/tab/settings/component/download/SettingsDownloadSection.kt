@@ -140,6 +140,10 @@ private fun SettingsDownloadExpandedContent(
     val batchDownloadProgress by GlobalDownloadManager.batchDownloadProgressFlow.collectAsState()
     val taskSummary by GlobalDownloadManager.downloadTaskSummary.collectAsState()
     val visibleProgress = batchDownloadProgress?.takeIf { taskSummary.hasPendingTasks }
+    val downloadSettingRepository = rememberAutoSettingSpecRepository()
+    val downloadWhilePlaying by remember(downloadSettingRepository) {
+        downloadSettingRepository.flow(AutoSettingsSchema.download.downloadWhilePlaying)
+    }.collectAsState(initial = false)
 
     Column(
         modifier = Modifier
@@ -153,6 +157,16 @@ private fun SettingsDownloadExpandedContent(
     ) {
         AutoSettingSpecSwitchItem(
             setting = AutoSettingsSchema.download.downloadWhilePlaying,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        AutoSettingSpecSwitchItem(
+            setting = AutoSettingsSchema.download.downloadWhilePlayingAllowMobileData,
+            enabled = downloadWhilePlaying,
             highlightTargetId = highlightTargetId,
             highlightPulse = highlightPulse,
             onHighlightFinished = onHighlightFinished
