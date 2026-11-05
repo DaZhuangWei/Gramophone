@@ -245,9 +245,12 @@ internal fun LocalMediaSupport.prepareShareableFileInDirectoryImpl(sourceFile: F
 }
 
 internal fun LocalMediaSupport.readTextContentImpl(context: Context, reference: String): String? {
+    val directFile = reference
+        .takeIf { it.startsWith("/") || File(it).isAbsolute }
+        ?.let(::File)
     val bytes = when {
-        reference.startsWith("/") -> try {
-            readLimitedTextFile(File(reference))
+        directFile != null -> try {
+            readLimitedTextFile(directFile)
         } catch (error: CancellationException) {
             throw error
         } catch (error: SecurityException) {

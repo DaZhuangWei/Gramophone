@@ -31,6 +31,7 @@ import coil.request.CachePolicy
 import coil.transform.Transformation
 import moe.ouom.neriplayer.data.traffic.isOfflineModeNow
 import androidx.compose.ui.graphics.ImageBitmap
+import java.io.File
 import java.util.LinkedHashMap
 
 private const val DEFAULT_LOCAL_IMAGE_REQUEST_SIZE_PX = 512
@@ -170,11 +171,20 @@ fun isRemoteImageSource(data: Any?): Boolean {
 }
 
 fun isLocalImageSource(data: Any?): Boolean {
-    val normalized = data?.toString()?.trim()?.lowercase().orEmpty()
+    if (data is File) {
+        // Windows 会把 POSIX 绝对路径 "/sdcard/a.jpg" 规范成 "\sdcard\a.jpg"
+        return data.isAbsolute ||
+            data.path.startsWith("/") ||
+            data.path.startsWith("\\")
+    }
+    val raw = data?.toString()?.trim().orEmpty()
+    val normalized = raw.lowercase()
     return normalized.startsWith("content://") ||
         normalized.startsWith("file://") ||
         normalized.startsWith("android.resource://") ||
-        normalized.startsWith("/")
+        normalized.startsWith("/") ||
+        // Windows 绝对路径（D:\...）不以 / 开头，也要按本地文件处理
+        File(raw).isAbsolute
 }
 
 // retained playback artwork outlives Coil's Drawable, so keep an independent bitmap

@@ -15,6 +15,7 @@ import moe.ouom.neriplayer.data.identity.stableKey
 import moe.ouom.neriplayer.data.model.storage.ExtraCacheClearResult
 import moe.ouom.neriplayer.data.model.storage.PlayerCacheClearOutcome
 import moe.ouom.neriplayer.data.model.storage.StorageCacheClearOptions
+import moe.ouom.neriplayer.data.settings.storage.PlaybackCacheStorage
 
 private val storageCacheClearMutex = Mutex()
 
@@ -42,13 +43,27 @@ internal suspend fun PlayerManager.clearStorageCachesImpl(options: StorageCacheC
                         }
                     }
                 } ?: empty else empty
-                completed = audio
+                val staleAudio = if (options.audioCache) {
+                    PlaybackCacheStorage.cleanupStaleCacheDirs(application)
+                } else {
+                    PlaybackCacheStorage.CleanupResult(true, 0L, 0)
+                }
+                val audioWithStale = audio.copy(
+                    success = audio.success && staleAudio.success,
+                    freedBytes = audio.freedBytes + staleAudio.freedBytes,
+                    deletedFiles = audio.deletedFiles + staleAudio.deletedFiles
+                )
+                completed = audioWithStale
                 val image = if (options.imageCache) {
                     clearRetainingImageCache(Coil.imageLoader(application), plan.retainedCoverUrls, plan.preserveUnmapped)
                 } else empty
                 PlayerCacheClearOutcome(
-                    ExtraCacheClearResult(audio.success && image.success, audio.freedBytes + image.freedBytes, 0,
-                        audio.deletedFiles + image.deletedFiles)
+                    ExtraCacheClearResult(
+                        audioWithStale.success && image.success,
+                        audioWithStale.freedBytes + image.freedBytes,
+                        0,
+                        audioWithStale.deletedFiles + image.deletedFiles
+                    )
                 )
             } catch (cancelled: CancellationException) {
                 throw cancelled

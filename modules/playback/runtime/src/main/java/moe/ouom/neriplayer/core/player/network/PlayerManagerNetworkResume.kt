@@ -130,6 +130,7 @@ internal fun PlayerManager.holdPlaybackForNetworkIfOffline(reason: String): Bool
     if (!shouldHoldPlaybackForNetwork(resumePlaybackRequested, isPlaybackNetworkUsable(application), requiresNetwork)) {
         return false
     }
+    if (tryPlayNextOfflinePlayable(reason)) return true
     // 强制停止后播放器不再保留进度，恢复时显式从这里继续，不依赖"保留上次进度"设置
     // 切歌解析途中播放器里还是上一首，要用这次加载请求的位置
     val positionMs = if (isPendingMediaLoadActive()) {

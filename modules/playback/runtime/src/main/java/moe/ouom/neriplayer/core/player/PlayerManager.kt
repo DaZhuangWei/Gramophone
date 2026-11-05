@@ -57,6 +57,7 @@ import moe.ouom.neriplayer.data.model.music.MusicPlatform
 import moe.ouom.neriplayer.data.model.music.SongSearchInfo
 import moe.ouom.neriplayer.core.player.host.PlayerDependencies
 import moe.ouom.neriplayer.core.player.audio.reactive.AudioReactive
+import moe.ouom.neriplayer.core.player.audio.reactive.AudioSpectrumFrame
 import moe.ouom.neriplayer.core.player.audio.effects.AudioEffectsOwner
 import moe.ouom.neriplayer.core.player.audio.effects.AudioEffectsRuntimeState
 import moe.ouom.neriplayer.core.player.audio.effects.AudioOutputRouteMonitor
@@ -760,6 +761,11 @@ object PlayerManager {
     internal var lastTrackEndHandledAtMs = 0L
     val audioLevelFlow get() = AudioReactive.level
     val beatImpulseFlow get() = AudioReactive.beat
+    val audioSpectrumFlow: StateFlow<AudioSpectrumFrame> get() = AudioReactive.spectrum
+    val audioDrySpectrumFlow: StateFlow<AudioSpectrumFrame> get() = AudioReactive.drySpectrum
+    val audioCompareWetSpectrumFlow: StateFlow<AudioSpectrumFrame> get() = AudioReactive.compareWetSpectrum
+    fun setAudioSpectrumEnabled(enabled: Boolean) = AudioReactive.setSpectrumEnabled(enabled)
+    fun setAudioDryCompareEnabled(enabled: Boolean) = AudioReactive.setDryCompareEnabled(enabled)
 
     val biliRepo by lazy { PlayerDependencies.repositories.biliPlaybackRepository }
     val biliClient by lazy { PlayerDependencies.repositories.biliClient }

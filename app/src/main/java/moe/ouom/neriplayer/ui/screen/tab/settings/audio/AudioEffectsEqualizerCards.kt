@@ -1,7 +1,10 @@
 package moe.ouom.neriplayer.ui.screen.tab.settings.audio
 
 import moe.ouom.neriplayer.ui.component.common.NeriChoiceChip
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -9,7 +12,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
@@ -23,6 +28,8 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -31,12 +38,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import moe.ouom.neriplayer.common.R as CoreCommonR
+import moe.ouom.neriplayer.core.player.PlayerManager
+import moe.ouom.neriplayer.core.player.audio.reactive.AudioSpectrumFrame
 import moe.ouom.neriplayer.data.model.playback.effects.AUDIO_EFFECTS_EQ_BAND_LIMIT_DB
 import moe.ouom.neriplayer.data.model.playback.effects.AUDIO_EFFECTS_PARAMETRIC_BAND_LIMIT
 import moe.ouom.neriplayer.data.model.playback.effects.AUDIO_EFFECTS_PREAMP_MAX_DB
@@ -63,6 +74,9 @@ import moe.ouom.neriplayer.R as AppR
 internal fun AudioEffectsEqualizerCard(
     sound: AudioEffectsSound,
     settings: AudioEffectsSettings,
+    spectrum: State<AudioSpectrumFrame>,
+    drySpectrum: State<AudioSpectrumFrame>,
+    compareWetSpectrum: State<AudioSpectrumFrame>,
     editor: AudioEffectsEditor
 ) {
     AudioEffectsCardIntro(
@@ -70,6 +84,11 @@ internal fun AudioEffectsEqualizerCard(
         description = stringResource(AppR.string.audio_effects_eq_desc)
     )
     var selectedBand by rememberSaveable { mutableIntStateOf(DEFAULT_SELECTED_BAND) }
+    var compareMode by rememberSaveable { mutableStateOf(false) }
+    DisposableEffect(compareMode) {
+        PlayerManager.setAudioDryCompareEnabled(compareMode)
+        onDispose { PlayerManager.setAudioDryCompareEnabled(false) }
+    }
     val changeBand: (Int, Float) -> Unit = { index, gain ->
         editor.sound { current ->
             val bands = current.equalizerBandsDb.toMutableList()
@@ -77,9 +96,40 @@ internal fun AudioEffectsEqualizerCard(
             current.copy(equalizerEnabled = true, equalizerBandsDb = bands)
         }
     }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Text(
+            text = stringResource(AppR.string.audio_effects_spectrum_view),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f)
+        )
+        FilterChip(
+            selected = !compareMode,
+            onClick = { compareMode = false },
+            label = { Text(stringResource(AppR.string.audio_effects_spectrum_view_wet)) }
+        )
+        FilterChip(
+            selected = compareMode,
+            onClick = { compareMode = true },
+            label = { Text(stringResource(AppR.string.audio_effects_spectrum_view_compare)) }
+        )
+    }
+    if (compareMode) {
+        SpectrumCompareLegend(sound)
+    }
     AudioEffectsEqualizerGraph(
         sound = sound,
         selectedBand = selectedBand,
+        spectrum = spectrum,
+        drySpectrum = drySpectrum,
+        compareWetSpectrum = compareWetSpectrum,
+        compareMode = compareMode,
         onSelectBand = { selectedBand = it },
         onBandChange = changeBand,
         modifier = Modifier.padding(vertical = 4.dp)
@@ -106,6 +156,62 @@ internal fun AudioEffectsEqualizerCard(
         description = stringResource(AppR.string.audio_effects_auto_headroom_desc),
         checked = settings.autoHeadroom,
         onCheckedChange = { enabled -> editor.settings { it.copy(autoHeadroom = enabled) } }
+    )
+}
+
+@Composable
+private fun SpectrumCompareLegend(sound: AudioEffectsSound) {
+    val primary = MaterialTheme.colorScheme.primary
+    val high = Color(0xFF5FC9BB)
+    val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 2.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            LegendSwatch(dashed = true)
+            Text(
+                text = stringResource(AppR.string.audio_effects_spectrum_dry),
+                style = MaterialTheme.typography.labelSmall,
+                color = labelColor
+            )
+            LegendSwatch(dashed = false, gradient = listOf(primary, high))
+            Text(
+                text = stringResource(AppR.string.audio_effects_spectrum_wet),
+                style = MaterialTheme.typography.labelSmall,
+                color = labelColor
+            )
+        }
+        Text(
+            text = stringResource(AppR.string.audio_effects_spectrum_delta) + " " +
+                formatSignedDb(sound.bassDb) + " / " + formatSignedDb(sound.trebleDb),
+            style = MaterialTheme.typography.labelSmall,
+            color = primary,
+            modifier = Modifier.padding(top = 2.dp)
+        )
+    }
+}
+
+@Composable
+private fun LegendSwatch(dashed: Boolean, gradient: List<Color> = emptyList()) {
+    val color = MaterialTheme.colorScheme.onSurfaceVariant
+    val shape = RoundedCornerShape(2.dp)
+    val swatchModifier = if (dashed) {
+        Modifier
+            .background(color.copy(alpha = 0.08f))
+            .border(1.dp, color.copy(alpha = 0.45f), shape)
+    } else {
+        Modifier.background(Brush.horizontalGradient(gradient))
+    }
+    Box(
+        modifier = Modifier
+            .size(width = 16.dp, height = 6.dp)
+            .clip(shape)
+            .then(swatchModifier)
     )
 }
 

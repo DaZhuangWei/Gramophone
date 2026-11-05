@@ -36,9 +36,10 @@ class StorageLocations(
     val cacheDir: File,
     diagnosticsDir: File,
     val databaseFiles: List<File>,
-    val downloadMetadataFiles: List<File>
+    val downloadMetadataFiles: List<File>,
+    val mediaCacheDirs: List<File> = listOf(File(cacheDir, "media_cache"))
 ) {
-    val mediaCacheDir = File(cacheDir, "media_cache")
+    val mediaCacheDir: File = mediaCacheDirs.firstOrNull() ?: File(cacheDir, "media_cache")
     val imageCacheDir = File(cacheDir, "image_cache")
     val downloadStagingDirs = listOf(File(filesDir, "download_staging"), File(cacheDir, "download_staging"))
         .distinctBy { it.absolutePath }
@@ -54,7 +55,7 @@ class StorageLocations(
         "local_playlists.json", "favorite_playlists.json", "playlist_usage.json"
     ).map { File(filesDir, it) }
     val cacheFiles = mapOf(
-        StorageCacheKind.Audio to listOf(mediaCacheDir),
+        StorageCacheKind.Audio to mediaCacheDirs,
         StorageCacheKind.Image to listOf(imageCacheDir),
         StorageCacheKind.DownloadStaging to downloadStagingDirs,
         StorageCacheKind.SharedMedia to listOf(sharedMediaDir),
@@ -71,7 +72,7 @@ class StorageLocations(
     )
 
     internal fun cacheExclusions(): List<File> =
-        listOf(mediaCacheDir, imageCacheDir, sharedMediaDir, lyricsCacheDir) + downloadStagingDirs + otherCacheDirs
+        mediaCacheDirs + listOf(imageCacheDir, sharedMediaDir, lyricsCacheDir) + downloadStagingDirs + otherCacheDirs
 
     internal fun appDataExclusions(downloadedFiles: List<File>): List<File> = knownAppDataRoots(
         platformCacheDirs = storagePlatformCaches.keys.flatMap { cacheFiles.getValue(it) },
@@ -83,7 +84,7 @@ class StorageLocations(
         logDir = logDir,
         crashDir = crashDir,
         downloadedStorageFiles = downloadedFiles
-    ) + lyricsCacheDir
+    ) + mediaCacheDirs + lyricsCacheDir
 }
 
 internal fun knownAppDataRoots(

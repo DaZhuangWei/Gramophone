@@ -56,7 +56,7 @@ class NeriAppProcessingBannerLayoutPolicyTest {
 
         assertTrue(contentLayout.contains("Box(\n"))
         assertTrue(contentLayout.contains(".managedProcessingRevealGesture("))
-        assertTrue(contentLayout.contains("visible = presentation.visible"))
+        assertTrue(contentLayout.contains("collapsed = presentation.revealGestureEnabled"))
         assertTrue(contentLayout.contains(".align(Alignment.TopCenter)"))
         assertTrue(contentLayout.contains("content(layoutInsets)"))
         assertTrue(
@@ -173,7 +173,7 @@ class NeriAppProcessingBannerLayoutPolicyTest {
         var directory = File(System.getProperty("user.dir") ?: ".")
         repeat(6) {
             val candidate = File(directory, path)
-            if (candidate.isFile) return candidate.readText()
+            if (candidate.isFile) return candidate.readText().replace("\r\n", "\n")
             directory = directory.parentFile ?: return@repeat
         }
         error("project source file not found: $path")

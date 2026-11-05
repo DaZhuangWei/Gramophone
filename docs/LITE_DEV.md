@@ -317,6 +317,12 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 - [x] 首次引导页金色主题、Gramophone 文案
 - [x] 隐藏一起听、云同步入口
 - [x] 播放设置里的 Bilibili 专属项隐藏（SponsorBlock）
+- [x] 听过歌曲持久缓存：默认迁移到 `files/media_cache`，完整播放后可断网播放
+- [x] 缓存位置选择：应用内部 / 外置存储 / SD 卡应用专属目录，切换后重启生效
+- [x] 缓存统计与清理覆盖旧位置，切换目录不会让旧缓存永久占空间
+- [x] 边听边下限速：0 不限速，64 KB/s 步进，最高 20 MB/s，仅限制自动下载
+- [x] 模拟器断网验证缓存歌曲可直接播放（`命中完整缓存，直接走离线缓存地址`）
+- [x] 断网自动跳歌：解析/播放失败时环形寻找下一首缓存、下载或本地歌曲并继续播放
 
 ### 进行中
 
@@ -332,11 +338,11 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 
 ### 已产出 APK
 
-- 真机包：`D:\WorkSpace\muisc\Gramophone-arm64-v1.7.apk`
-- 大小：14,784,108 bytes
-- SHA256：`8ABA293E5C1C4930BDE812B6BD09AD40785B7C02B47302A6256F67DE06CAB69B`
-- 版本：`749c1e2.11041301`（arm64-v8a，Release 签名）
-- 已用 x86_64 Release 在模拟器验证：引导、首页、媒体库、搜索、设置、亮暗主题
+- 真机包：`D:\WorkSpace\muisc\app\Gramophone-arm64-v1.9.apk`
+- 大小：14,796,080 bytes
+- SHA256：`11E2D52AF5821BD17281D617F67A786BC9A2DF5463DD9E3D4570CC0A31C99C0A`
+- 版本：`800549f5.11052002`（arm64-v8a，Release 签名）
+- 已用 Debug 包在模拟器验证：缓存位置对话框、外部存储写入、飞行模式离线播放、断网自动跳歌
 - 播放链路未登录未验证；需要你的网易云账号扫码后测试
 
 ---
@@ -499,6 +505,66 @@ Lite Release 包名：`moe.ouom.nerilite`
   - 自动下载仍使用现有下载音质与目录；播放页只在设置开启时入队。
 - 验证：Wi-Fi 下播放 `Nowhere`，15 秒后自动开始下载并正常完成；日志 `AutoDownload` 记录候选、网络和等待原因。
 - v1.7 arm64 包输出到 `D:\WorkSpace\muisc\Gramophone-arm64-v1.7.apk`，SHA256 `2E5A0AD2A261B4F7FF2193C15597E3FA68CBBEBCCCA6515D7E7F27EECDD0C6DE`，版本 `87b0f74.11042337`。
+
+### 2026-11-05（第九轮）
+
+- 听过歌曲持久缓存：
+  - 播放缓存目录从 `cacheDir/media_cache` 迁移到 `filesDir/media_cache`，避免系统清理缓存目录后离线歌曲丢失；升级时优先同分区 rename 旧目录。
+  - 新增 `PlaybackCacheStorage`，统一解析当前缓存目录、可用位置、旧位置候选目录和旧缓存清理。
+  - 存储扫描、缓存详情与缓存清理覆盖内部存储、外置存储、SD 卡和旧 `cacheDir` 位置。
+- 缓存位置选择：
+  - 设置 → 存储与缓存 → 缓存上限卡片新增「缓存位置」，可选应用内部存储、外置存储（应用专属）、SD 卡（应用专属）。
+  - 对话框直接显示实际路径；不可用位置置灰。切换后需重启应用生效。
+- 断网播放验证：
+  - 模拟器播放 `BEAUTY AND THE BEAST` 后切飞行模式，重启恢复队列并播放。
+  - 日志确认 `命中完整缓存，直接走离线缓存地址: netease-3417543784-exhigh`，播放状态进入 `READY/PLAYING`。
+- 边听边下限速：
+  - 新增设置键 `download_while_playing_speed_limit_kbps`，默认 0（不限速），64 KB/s 步进，最高 20 MB/s。
+  - `AutoDownloadBandwidthLimiter` 使用令牌桶按歌曲 `stableKey` 限制自动下载；直链、分块、HLS 传输均接入，传输结束或失败自动注销。
+  - AppContainer 在 `startAutomaticDownload` 前注册限额；手动下载不受影响。
+  - 新增 `AutoDownloadBandwidthLimiterTest`，覆盖归一化、上限、字节换算和未注册不阻塞。
+- 构建与产物：
+  - `:app:assembleDebug`、`:app:assembleRelease` 通过；`SettingsPageTest`、设置搜索相关测试通过。
+  - v1.8 arm64 包输出到 `D:\WorkSpace\muisc\app\Gramophone-arm64-v1.8.apk`，SHA256 `0BF5D9616EC2274AE0B45A15636AF9D852BACC5629DCE8B0A97C7D9E3119D69C`，版本 `800549f5.11051441`。
+- 遗留：
+  - 缓存位置切换后旧缓存不会自动迁移，需在缓存清理中删除；如需“切换即搬家”可后续补充耗时迁移流程。
+  - 限速上限 20 MB/s，低于 64 KB/s 的值会按 64 KB/s 归一化；如需更细档位可调整 `SPEED_LIMIT_STEP_KBPS`。
+
+### 2026-11-05（第十轮）
+
+- 断网自动跳歌：
+  - 新增 `OfflinePlaybackFallback`，在 `holdPlaybackForNetworkIfOffline` 判断需要等待网络之前，先从当前曲目之后环形查找下一首可离线播放的歌曲。
+  - 可离线播放判定：本地歌曲、已下载歌曲、刚完成下载、Media3 播放缓存完整覆盖整首。
+  - 找到目标后直接 `playAtIndex`，同步 `currentIndex`、发送 `NEXT` 播放命令并提示「网络已断开，已自动切换到缓存或已下载的歌曲」。
+  - 整队都没有离线副本、正在一起听或用户已暂停时，继续沿用原来的暂停等网络逻辑。
+  - 新增纯策略单测 `OfflinePlaybackFallbackTest`，覆盖向前查找、环形回绕、不重复当前曲目和无候选。
+- 模拟器验证：
+  - 清空播放缓存后联网完整播放 `在梦里`，使缓存完整；随后播放另一首未缓存歌曲并开启飞行模式。
+  - 日志确认 `NERI-OfflineFallback ... fromIndex=6, targetIndex=4, song=在梦里`，随后 `命中完整缓存，直接走离线缓存地址: netease-3446748352-exhigh`，播放状态恢复为 `PLAYING`。
+- v1.9 arm64 包输出到 `D:\WorkSpace\muisc\app\Gramophone-arm64-v1.9.apk`，SHA256 `11E2D52AF5821BD17281D617F67A786BC9A2DF5463DD9E3D4570CC0A31C99C0A`，版本 `800549f5.11052002`。
+- 遗留：
+  - 自动跳歌会直接改变当前队列位置；如果用户希望回到原曲，需要手动上一首。
+  - 下载目录尚未建立索引时，极少数刚下载完成的歌曲可能先按缓存判定，后续可补充更快的下载索引查询。
+
+### 2026-11-05（第十一轮）
+
+- 实时频谱与音效可视化（v2.0 功能补记）：
+  - 均衡器页新增实时频谱，`AudioSpectrumAnalyzer` 按 60Hz 做 FFT，`SpectrumDisplay` 在显示层按 120Hz 插值；低电量模式降回 60fps。
+  - 新增干/湿对比：灰色包络为处理前、实色柱为处理后，金色/蓝色标出实际提升与衰减。
+  - 音色页新增低频/高频效果范围色带；新增 `AudioSpectrumCompact` 与 `SpectrumDisplay`。
+  - 保留音质信息、封面尺寸加载、下载目录、边听边下与限速等既有改进。
+- 测试闭环（`docs/TEST_FAILURES_2026-11-05.md` 的 23 个失败）：
+  - 全量 `:app:testDebugUnitTest` 从 27 failed 修到 **0 failed / 1 skipped**；`:common`、`:database`、`:model`、`:playback:logic` 全部通过。
+  - `:local` 只修了与 sidecar 写入、候选检查直接相关的 8 个 Windows 用例；该模块全量仍有既有的文件事务失败，且 `LocalMediaTargetedRecoveryTest` 在 Windows 上会挂起，未纳入本次验收。
+  - DataStore 1.2.1 → 1.3.0；DataStore 测试改在 Robolectric SDK 35 下运行，绕开 SDK < 26 的 `File.renameTo` 在 Windows 上无法覆盖文件的问题。
+  - Windows 路径兼容：`isFastCoverReference`、`resolveDownloadedCoverPath`、`isLocalImageSource`、`LocalSongSupport.normalizedLocalReference`、`LocalMediaSupport.readTextContent`、`localMediaUriCandidates`、sidecar 写入判断统一支持 `D:\...` 与 `file:/D:/...`；缺失本地封面回退远端。
+  - Lite 平台预期：`libraryTabDisplayOrder` / `exploreSearchSourceDisplayOrder` 增加 `liteEdition` 参数，测试同时覆盖 Lite 与全平台分支，Lite 默认只保留本地/收藏/网易云。
+  - 歌词插值测试改用 120Hz 常量；歌词卡片分享的 FileProvider URI 与 `startActivity` 回到主线程，测试在 Windows 下 mock FileProvider（androidx.core 1.19 的 `belongsToRoot` 使用 `/` 拼接，反斜杠路径误判越界）。
+  - 源码文本断言统一 `\r\n` → `\n`，并更新处理横幅的 `collapsed = presentation.revealGestureEnabled` 断言。
+- 测试环境：
+  - 全量测试必须使用 **JDK 21+**（本机 `C:\Program Files\Java\jdk-26.0.1`），否则 Robolectric 的 `@Config(sdk = [36])` 会在 JDK 17 下额外失败。
+  - Release 构建继续使用 JDK 17。
+- 产物：v2.1 arm64 包见下方「已产出 APK」。
 
 验证方式：
 

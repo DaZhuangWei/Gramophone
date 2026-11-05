@@ -48,6 +48,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import android.content.res.Resources
+import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.TextSnippet
 import androidx.compose.material.icons.outlined.DeleteForever
@@ -60,6 +61,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -72,6 +74,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -88,6 +91,7 @@ import moe.ouom.neriplayer.data.settings.generated.AutoSettingsKeys
 import moe.ouom.neriplayer.ui.settings.AutoSettingsListItem
 import moe.ouom.neriplayer.data.settings.generated.AutoSettingsMetadata
 import moe.ouom.neriplayer.data.settings.storage.CacheSizePolicy
+import moe.ouom.neriplayer.data.settings.storage.PlaybackCacheStorage
 import moe.ouom.neriplayer.data.model.storage.StorageCacheClearOptions
 import moe.ouom.neriplayer.data.model.storage.PlayerCacheClearEstimate
 import moe.ouom.neriplayer.data.model.storage.StorageUsageSummary
@@ -200,10 +204,18 @@ internal fun SettingsStorageCacheSection(
     onHighlightFinished: (() -> Unit)? = null
 ) {
     val composeResources = LocalResources.current
+    val context = LocalContext.current
     var clearOtherCache by rememberSaveable { mutableStateOf(false) }
     var clearLocalImportCache by rememberSaveable { mutableStateOf(false) }
     var retainRecentSongs by rememberSaveable { mutableStateOf(0) }
     val showDownloadFileNameDialog = remember { mutableStateOf(false) }
+    var showCacheLocationDialog by rememberSaveable { mutableStateOf(false) }
+    var cacheLocation by remember(context) {
+        mutableStateOf(PlaybackCacheStorage.read(context))
+    }
+    val cacheLocationPath = remember(context, cacheLocation) {
+        PlaybackCacheStorage.locationCacheDir(context, cacheLocation).absolutePath
+    }
     var pendingDownloadFileNameTemplate by rememberSaveable(
         stateSaver = TextFieldValue.Saver
     ) {
@@ -469,6 +481,50 @@ internal fun SettingsStorageCacheSection(
                     highlightPulse = highlightPulse,
                     onHighlightFinished = onHighlightFinished
                 )
+                ListItem(
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Outlined.Folder,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    headlineContent = {
+                        Text(stringResource(CoreCommonR.string.settings_cache_location))
+                    },
+                    supportingContent = {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Text(stringResource(CoreCommonR.string.settings_cache_location_desc))
+                            Text(
+                                text = stringResource(
+                                    CoreCommonR.string.settings_cache_location_current,
+                                    cacheLocationPath
+                                ),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = stringResource(
+                                    CoreCommonR.string.settings_cache_location_restart_hint
+                                ),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                    },
+                    trailingContent = {
+                        MiuixSettingsTextButton(
+                            onClick = { showCacheLocationDialog = true }
+                        ) {
+                            Text(stringResource(CoreCommonR.string.settings_cache_location_choose))
+                        }
+                    },
+                    modifier = Modifier.settingsItemClickable {
+                        showCacheLocationDialog = true
+                    },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                )
             }
             if (cardIndex == null) StorageDetailGap(showHeader)
 
@@ -564,6 +620,85 @@ internal fun SettingsStorageCacheSection(
             },
             onClear = onClearCacheClick,
             onDismiss = { onShowClearCacheDialogChange(false) }
+        )
+    }
+
+    if (showCacheLocationDialog) {
+        MiuixSettingsDialog(
+            onDismissRequest = { showCacheLocationDialog = false },
+            title = { Text(stringResource(CoreCommonR.string.settings_cache_location_dialog_title)) },
+            text = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    PlaybackCacheStorage.Location.entries.forEach { location ->
+                        val available = PlaybackCacheStorage.isAvailable(context, location)
+                        val label = when (location) {
+                            PlaybackCacheStorage.Location.INTERNAL ->
+                                stringResource(CoreCommonR.string.settings_cache_location_internal)
+                            PlaybackCacheStorage.Location.EXTERNAL ->
+                                stringResource(CoreCommonR.string.settings_cache_location_external)
+                            PlaybackCacheStorage.Location.EXTERNAL_SD ->
+                                stringResource(CoreCommonR.string.settings_cache_location_sd_card)
+                        }
+                        val path = PlaybackCacheStorage
+                            .locationCacheDir(context, location)
+                            .absolutePath
+                        ListItem(
+                            leadingContent = {
+                                RadioButton(
+                                    selected = cacheLocation == location,
+                                    onClick = null,
+                                    enabled = available
+                                )
+                            },
+                            headlineContent = {
+                                Text(label)
+                            },
+                            supportingContent = {
+                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Text(
+                                        text = path,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    if (!available) {
+                                        Text(
+                                            text = stringResource(
+                                                CoreCommonR.string.settings_cache_location_unavailable
+                                            ),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .alpha(if (available) 1f else 0.5f)
+                                .settingsItemClickable(enabled = available) {
+                                    PlaybackCacheStorage.write(context, location)
+                                    cacheLocation = location
+                                    showCacheLocationDialog = false
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(
+                                            CoreCommonR.string.settings_cache_location_changed
+                                        ),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                },
+                            colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                MiuixSettingsTextButton(onClick = { showCacheLocationDialog = false }) {
+                    Text(stringResource(CoreCommonR.string.action_close))
+                }
+            }
         )
     }
 

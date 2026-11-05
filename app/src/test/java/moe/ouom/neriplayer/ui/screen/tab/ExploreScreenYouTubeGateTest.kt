@@ -21,7 +21,8 @@ class ExploreScreenYouTubeGateTest {
     fun `search sources exclude YouTube when disabled`() {
         val sources = exploreSearchSourceDisplayOrder(
             isInternational = true,
-            youtubeEnabled = false
+            youtubeEnabled = false,
+            liteEdition = false
         )
 
         assertFalse(sources.contains(SearchSource.YOUTUBE_MUSIC))
@@ -39,11 +40,32 @@ class ExploreScreenYouTubeGateTest {
     fun `international search keeps YouTube first when enabled`() {
         val sources = exploreSearchSourceDisplayOrder(
             isInternational = true,
-            youtubeEnabled = true
+            youtubeEnabled = true,
+            liteEdition = false
         )
 
         assertEquals(SearchSource.YOUTUBE_MUSIC, sources.first())
         assertEquals(SearchSource.LINK_RECOGNITION, sources.last())
+    }
+
+    @Test
+    fun `lite edition keeps only the Netease search source`() {
+        assertEquals(
+            listOf(SearchSource.NETEASE),
+            exploreSearchSourceDisplayOrder(
+                isInternational = true,
+                youtubeEnabled = true,
+                liteEdition = true
+            )
+        )
+        assertEquals(
+            listOf(SearchSource.NETEASE),
+            exploreSearchSourceDisplayOrder(
+                isInternational = false,
+                youtubeEnabled = false,
+                liteEdition = true
+            )
+        )
     }
 
     @Test

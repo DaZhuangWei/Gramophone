@@ -19,7 +19,11 @@ class LibraryTabOrderTest {
     fun `international users see YouTube Music before Netease`() {
         assertEquals(
             listOf(LOCAL, FAVORITE, YTMUSIC, NETEASE, BILI, MY_MUSIC),
-            libraryTabDisplayOrder(isInternational = true, youtubeEnabled = true)
+            libraryTabDisplayOrder(
+                isInternational = true,
+                youtubeEnabled = true,
+                liteEdition = false
+            )
         )
     }
 
@@ -27,7 +31,11 @@ class LibraryTabOrderTest {
     fun `domestic users see Netease before YouTube Music`() {
         assertEquals(
             listOf(LOCAL, FAVORITE, NETEASE, YTMUSIC, BILI, MY_MUSIC),
-            libraryTabDisplayOrder(isInternational = false, youtubeEnabled = true)
+            libraryTabDisplayOrder(
+                isInternational = false,
+                youtubeEnabled = true,
+                liteEdition = false
+            )
         )
     }
 
@@ -35,8 +43,44 @@ class LibraryTabOrderTest {
     fun `disabled YouTube removes its tab for every region`() {
         val expected = listOf(LOCAL, FAVORITE, NETEASE, BILI, MY_MUSIC)
 
-        assertEquals(expected, libraryTabDisplayOrder(isInternational = true, youtubeEnabled = false))
-        assertEquals(expected, libraryTabDisplayOrder(isInternational = false, youtubeEnabled = false))
+        assertEquals(
+            expected,
+            libraryTabDisplayOrder(
+                isInternational = true,
+                youtubeEnabled = false,
+                liteEdition = false
+            )
+        )
+        assertEquals(
+            expected,
+            libraryTabDisplayOrder(
+                isInternational = false,
+                youtubeEnabled = false,
+                liteEdition = false
+            )
+        )
+    }
+
+    @Test
+    fun `lite edition keeps only local favorite and netease tabs`() {
+        val expected = listOf(LOCAL, FAVORITE, NETEASE)
+
+        assertEquals(
+            expected,
+            libraryTabDisplayOrder(
+                isInternational = true,
+                youtubeEnabled = true,
+                liteEdition = true
+            )
+        )
+        assertEquals(
+            expected,
+            libraryTabDisplayOrder(
+                isInternational = false,
+                youtubeEnabled = false,
+                liteEdition = true
+            )
+        )
     }
 
     @Test

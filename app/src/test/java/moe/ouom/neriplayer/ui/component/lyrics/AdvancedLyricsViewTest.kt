@@ -696,43 +696,47 @@ class AdvancedLyricsViewTest {
 
     @Test
     fun `shouldRenderInterpolatedPlaybackFrame respects default frame interval`() {
+        val interval = InterpolatedPlaybackDefaultFrameIntervalNanos
         assertTrue(
             shouldRenderInterpolatedPlaybackFrame(
                 lastRenderedFrameNanos = 0L,
                 frameNanos = 1_000_000_000L,
-                frameIntervalNanos = InterpolatedPlaybackDefaultFrameIntervalNanos
+                frameIntervalNanos = interval
             )
         )
+        // 同一 120Hz 帧格内不重复渲染
         assertFalse(
             shouldRenderInterpolatedPlaybackFrame(
                 lastRenderedFrameNanos = 1_000_000_000L,
-                frameNanos = 1_020_000_000L,
-                frameIntervalNanos = InterpolatedPlaybackDefaultFrameIntervalNanos
+                frameNanos = 1_000_000_000L + interval / 2,
+                frameIntervalNanos = interval
             )
         )
+        // 跨入下一帧格后恢复渲染
         assertTrue(
             shouldRenderInterpolatedPlaybackFrame(
                 lastRenderedFrameNanos = 1_000_000_000L,
-                frameNanos = 1_034_000_000L,
-                frameIntervalNanos = InterpolatedPlaybackDefaultFrameIntervalNanos
+                frameNanos = 1_000_000_000L + interval,
+                frameIntervalNanos = interval
             )
         )
     }
 
     @Test
     fun `shouldRenderInterpolatedPlaybackFrame respects low power interval`() {
+        val interval = InterpolatedPlaybackLowPowerFrameIntervalNanos
         assertFalse(
             shouldRenderInterpolatedPlaybackFrame(
                 lastRenderedFrameNanos = 1_000_000_000L,
-                frameNanos = 1_033_000_000L,
-                frameIntervalNanos = InterpolatedPlaybackLowPowerFrameIntervalNanos
+                frameNanos = 1_000_000_000L + interval / 2,
+                frameIntervalNanos = interval
             )
         )
         assertTrue(
             shouldRenderInterpolatedPlaybackFrame(
                 lastRenderedFrameNanos = 1_000_000_000L,
-                frameNanos = 1_067_000_000L,
-                frameIntervalNanos = InterpolatedPlaybackLowPowerFrameIntervalNanos
+                frameNanos = 1_000_000_000L + interval,
+                frameIntervalNanos = interval
             )
         )
     }

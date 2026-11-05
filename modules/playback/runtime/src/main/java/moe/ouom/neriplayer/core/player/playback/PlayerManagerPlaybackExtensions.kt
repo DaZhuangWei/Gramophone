@@ -122,7 +122,6 @@ internal fun PlayerManager.cancelVolumeFadeImpl(resetToFull: Boolean = false) {
         }
     }
 }
-
 internal fun PlayerManager.cancelPendingPauseRequestImpl(resetVolumeToFull: Boolean = false) {
     val hadPendingPause = pendingPauseJob?.isActive == true
     if (hadPendingPause || resetVolumeToFull) {
@@ -232,7 +231,6 @@ internal fun PlayerManager.suppressPlaybackForAudioRouteLoss(reason: String) {
         )
     }
 }
-
 internal fun PlayerManager.restoreAudioRouteMuteImpl() {
     val restoreVolume = audioRouteMuteRestoreVolume ?: run {
         audioRouteMuteRequiresExplicitRestore = false
@@ -385,7 +383,6 @@ internal suspend fun PlayerManager.fadeOutCurrentPlaybackIfNeeded(
     if (durationMs <= 0L) {
         return
     }
-
     cancelVolumeFade()
     val startVolume = withContext(Dispatchers.Main) { player.volume.coerceIn(0f, 1f) }
     if (startVolume <= 0f) {
@@ -541,7 +538,6 @@ internal fun PlayerManager.playPlaylistImpl(
     )
     scheduleStatePersist()
 }
-
 internal fun PlayerManager.playAtIndex(
     index: Int,
     resumePositionMs: Long = 0L,
@@ -937,7 +933,6 @@ private fun PlayerManager.maybeHydrateSongForPlayback(
     if (!isLocalSong(song)) {
         return
     }
-
     val currentSongAtRequest = _currentSongFlow.value?.takeIf { it.sameIdentityAs(song) }
     ioScope.launch {
         val isPublishedManagedDownload = PlayerDependencies.downloads.hasDownloadedSongCached(song)
@@ -1197,7 +1192,6 @@ internal fun PlayerManager.playImpl(
         else -> {}
     }
 }
-
 internal fun PlayerManager.handleTrackEndedIfNeededImpl(source: String) {
     val currentKey = currentTrackEndKey()
     if (!admitTrackEnd(source, currentKey)) return
@@ -1395,7 +1389,6 @@ private fun PlayerManager.shouldBypassUsbExclusivePauseFade(debugReason: String)
         pathState.fallbackReason?.contains("usb", ignoreCase = true) == true ||
         debugReason.contains("usb", ignoreCase = true)
 }
-
 private fun PlayerManager.pauseInternal(
     forcePersist: Boolean,
     resetVolumeBeforePause: Boolean,
@@ -1491,7 +1484,6 @@ private fun PlayerManager.restorePauseVolumeIfNeeded(restoreVolumeAfterPause: Bo
     if (!restoreVolumeAfterPause) return
     restoreUnmutedPauseVolume()
 }
-
 private fun PlayerManager.restoreUnmutedPauseVolume() {
     if (isAudioRouteMuteSuppressed()) return
     runPlayerActionOnMainThread {
@@ -1571,7 +1563,6 @@ private data class PreparedPlaybackSeek(
     val executionAction: SeekExecutionAction,
     val pendingAction: PendingSeekAction
 )
-
 private fun PlayerManager.preparePlaybackSeek(positionMs: Long): PreparedPlaybackSeek {
     val currentSong = _currentSongFlow.value
     val currentUrl = _currentMediaUrl.value
@@ -1681,7 +1672,6 @@ private fun PlayerManager.syncSeekOutputs(positionMs: Long) {
     playbackStatsOwner.onManualSeek(positionMs)
     _playbackPositionMs.value = positionMs
 }
-
 private fun PlayerManager.refreshPlaybackUrlAfterSeek(
     positionMs: Long,
     commandSource: PlaybackCommandSource,
@@ -1749,7 +1739,6 @@ private fun PlayerManager.runProgressUpdateTick() {
     val positionMs = readProgressPosition() ?: return
     publishProgressPosition(positionMs)
 }
-
 private fun PlayerManager.readProgressPosition(): Long? =
     try {
         resolveDisplayedPlaybackPosition(player.currentPosition.coerceAtLeast(0L))
@@ -1811,7 +1800,6 @@ private fun PlayerManager.readPlayerDurationOrFallback(): Long =
     } catch (_: Throwable) {
         playbackDurationFlow.value
     }
-
 private fun PlayerManager.applyProgressAutoSkipIfNeeded(positionMs: Long, durationMs: Long): Boolean {
     val skip = playbackAutoSkipPolicy.resolve(
         song = _currentSongFlow.value,
@@ -1885,7 +1873,6 @@ private fun PlayerManager.maybePersistPlaybackProgress(positionMs: Long) {
     )
     scheduleStatePersist(positionMs = positionMs, shouldResumePlayback = true)
 }
-
 private fun PlayerManager.maybePersistLongFormPlaybackProgress(positionMs: Long) {
     playbackProgressOwner.persistPeriodicLongFormProgress(positionMs, STATE_PERSIST_INTERVAL_MS)
 }
@@ -1961,7 +1948,6 @@ private fun PlayerManager.restoreQueueAfterStop(clearMediaUrl: Boolean) {
     if (currentPlaylist.isEmpty()) clearEmptyQueueAfterStop()
     else restoreNonemptyQueueAfterStop(clearMediaUrl)
 }
-
 private fun PlayerManager.clearEmptyQueueAfterStop() {
     clearRestoredPlayback()
     currentIndex = -1

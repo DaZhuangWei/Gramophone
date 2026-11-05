@@ -26,8 +26,17 @@ class ThemeModeTest {
     @Test
     fun `preference snapshots resolve dark mode with force dark first`() {
         assertTrue(ThemePreferenceSnapshot(forceDark = true, followSystemDark = false).resolveUseDark(systemDark = false))
-        assertTrue(ThemePreferenceSnapshot(followSystemDark = true).resolveUseDark(systemDark = true))
-        assertFalse(ThemePreferenceSnapshot(followSystemDark = true).resolveUseDark(systemDark = false))
-        assertFalse(ThemePreferenceSnapshot(followSystemDark = false).resolveUseDark(systemDark = true))
+        assertTrue(
+            ThemePreferenceSnapshot(forceDark = false, followSystemDark = true)
+                .resolveUseDark(systemDark = true)
+        )
+        assertFalse(
+            ThemePreferenceSnapshot(forceDark = false, followSystemDark = true)
+                .resolveUseDark(systemDark = false)
+        )
+        assertFalse(
+            ThemePreferenceSnapshot(forceDark = false, followSystemDark = false)
+                .resolveUseDark(systemDark = true)
+        )
     }
 }

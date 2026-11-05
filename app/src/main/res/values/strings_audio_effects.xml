@@ -250,4 +250,16 @@
     <string name="audio_effects_section_switch_speed_desc">关闭后按正常速度播放，再次打开会恢复之前的倍速和音调</string>
     <string name="audio_effects_status_limiter_idle">防破音保护待命中</string>
     <string name="audio_effects_status_limiter_off">防破音保护已关闭</string>
+    <string name="audio_effects_spectrum_live">实时拾音</string>
+    <string name="audio_effects_spectrum_waiting">等待播放</string>
+    <string name="audio_effects_spectrum_low">低频</string>
+    <string name="audio_effects_spectrum_mid">中频</string>
+    <string name="audio_effects_spectrum_high">高频</string>
+    <string name="audio_effects_spectrum_view">频谱视图</string>
+    <string name="audio_effects_spectrum_view_wet">处理后</string>
+    <string name="audio_effects_spectrum_view_compare">干湿对比</string>
+    <string name="audio_effects_spectrum_dry">干（处理前）</string>
+    <string name="audio_effects_spectrum_wet">湿（处理后）</string>
+    <string name="audio_effects_spectrum_delta">差值</string>
+    <string name="audio_effects_spectrum_compare_stage">处理前 / 处理后</string>
 </resources>

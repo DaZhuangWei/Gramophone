@@ -1015,8 +1015,10 @@ private fun String?.usableCoverReference(): String? =
     takeUnless { it.isNullOrBlank() || isMediaStoreCoverReference(it) }
 
 private fun resolveDownloadedCoverPath(coverPath: String): String? {
-    if (!coverPath.startsWith("/")) return coverPath
-    return File(coverPath).takeIf(File::exists)?.toURI()?.toString()
+    val file = File(coverPath)
+    // Windows 绝对路径（D:\...）同样要检查文件是否存在，缺失时回退远端封面
+    if (!file.isAbsolute) return coverPath
+    return file.takeIf(File::exists)?.toURI()?.toString()
 }
 
 internal fun toggleSelectedDownloadSongKeys(

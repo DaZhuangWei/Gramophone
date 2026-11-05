@@ -529,8 +529,9 @@ internal fun SongItem.localMediaUriCandidates(): List<Uri> {
     )
     return listOfNotNull(preferredSource, localFilePath, mediaUri)
         .mapNotNull { source ->
-            val localUri = if (source.startsWith("/")) {
-                Uri.fromFile(File(source))
+            val file = File(source)
+            val localUri = if (source.startsWith("/") || file.isAbsolute) {
+                Uri.fromFile(file)
             } else {
                 runCatching { source.toUri() }.getOrNull()
             }

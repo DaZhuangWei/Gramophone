@@ -383,7 +383,7 @@ internal fun LocalMediaSupport.writeLocalLyricsMetadataReference(
 }
 
 internal fun LocalMediaSupport.isReadableLocalReference(context: Context, reference: String): Boolean {
-    if (reference.startsWith("/")) {
+    if (reference.startsWith("/") || File(reference).isAbsolute) {
         return File(reference).isFile
     }
     val uri = runCatching { reference.toUri() }.getOrNull() ?: return false
@@ -504,7 +504,7 @@ internal fun LocalMediaSupport.writeLocalMetadataReference(
     file: File?,
     content: String
 ): Boolean {
-    if (file != null && reference.startsWith("/")) {
+    if (file != null && (reference.startsWith("/") || File(reference).isAbsolute)) {
         return writeTextFileAtomically(File(reference), content)
     }
     return writeTextContent(context, reference, content)

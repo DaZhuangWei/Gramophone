@@ -5,6 +5,7 @@ import java.io.IOException
 import java.nio.file.Files
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assume
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -44,7 +45,7 @@ class FilePathGuardsTest {
         val directory = temporaryFolder.newFolder("music")
         val outside = temporaryFolder.newFolder("outside")
         val link = directory.resolve("linked-album")
-        Files.createSymbolicLink(link.toPath(), outside.toPath())
+        createSymbolicLinkOrSkip(link, outside)
 
         assertFalse(isFileInsideDirectory(link.resolve("song.flac"), directory))
     }
@@ -53,7 +54,7 @@ class FilePathGuardsTest {
     fun resolvesTheDirectoryWhenItIsASymbolicLink() {
         val directory = temporaryFolder.newFolder("music")
         val link = temporaryFolder.root.resolve("linked-music")
-        Files.createSymbolicLink(link.toPath(), directory.toPath())
+        createSymbolicLinkOrSkip(link, directory)
 
         assertTrue(isFileInsideDirectory(directory.resolve("song.flac"), link))
     }
@@ -74,6 +75,18 @@ class FilePathGuardsTest {
                 unreadableDirectory
             )
         )
+    }
+
+    private fun createSymbolicLinkOrSkip(link: File, target: File) {
+        try {
+            Files.createSymbolicLink(link.toPath(), target.toPath())
+        } catch (error: UnsupportedOperationException) {
+            Assume.assumeNoException("symbolic links are not supported on this platform", error)
+        } catch (error: IOException) {
+            Assume.assumeNoException("symbolic links are not available without extra privileges", error)
+        } catch (error: SecurityException) {
+            Assume.assumeNoException("symbolic links are blocked by the current security policy", error)
+        }
     }
 
     private fun failingCanonicalFile(file: File): File = object : File(file.absolutePath) {

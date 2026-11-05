@@ -250,4 +250,16 @@
     <string name="audio_effects_section_switch_speed_desc">When off, playback runs at normal speed. Turning it back on restores your speed and pitch.</string>
     <string name="audio_effects_status_limiter_idle">Clipping guard standing by</string>
     <string name="audio_effects_status_limiter_off">Clipping guard is off</string>
+    <string name="audio_effects_spectrum_live">Live pickup</string>
+    <string name="audio_effects_spectrum_waiting">Waiting for playback</string>
+    <string name="audio_effects_spectrum_low">Low</string>
+    <string name="audio_effects_spectrum_mid">Mid</string>
+    <string name="audio_effects_spectrum_high">High</string>
+    <string name="audio_effects_spectrum_view">Spectrum view</string>
+    <string name="audio_effects_spectrum_view_wet">Wet</string>
+    <string name="audio_effects_spectrum_view_compare">Dry / Wet</string>
+    <string name="audio_effects_spectrum_dry">Dry (before)</string>
+    <string name="audio_effects_spectrum_wet">Wet (after)</string>
+    <string name="audio_effects_spectrum_delta">Delta</string>
+    <string name="audio_effects_spectrum_compare_stage">Before / After</string>
 </resources>

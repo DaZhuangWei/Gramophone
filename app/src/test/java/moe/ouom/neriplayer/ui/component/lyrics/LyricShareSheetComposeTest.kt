@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,6 +26,7 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
+import androidx.core.content.FileProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.io.File
 import moe.ouom.neriplayer.common.R as CoreCommonR
@@ -43,6 +45,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.MockedStatic
+import org.mockito.Mockito
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
@@ -65,9 +71,23 @@ class LyricShareSheetComposeTest {
     )
     private var dismissCount = 0
     private val messages = mutableListOf<String>()
+    private lateinit var fileProviderMock: MockedStatic<FileProvider>
 
     @Before
     fun setUp() {
+        // androidx.core 1.19 的 FileProvider 用 "/" 拼接 root 判断包含关系，
+        // Windows 反斜杠路径会误判为越界；卡片的文件写入和分享 Intent 仍在测试内验证
+        fileProviderMock = Mockito.mockStatic(FileProvider::class.java)
+        fileProviderMock.`when`<Uri> {
+            FileProvider.getUriForFile(
+                any(Context::class.java),
+                anyString(),
+                any(File::class.java)
+            )
+        }.thenAnswer { invocation ->
+            val shared = invocation.getArgument<File>(2)
+            Uri.parse("content://test.fileprovider/lyric_share_cards/${shared.name}")
+        }
         LocalMediaHostAccess.bind(
             downloads = AndroidLocalMediaDownloads,
             covers = AndroidLocalMediaCovers,
@@ -77,6 +97,7 @@ class LyricShareSheetComposeTest {
 
     @After
     fun tearDown() {
+        fileProviderMock.close()
         File(context.cacheDir, "lyric_share_cards").deleteRecursively()
     }
 
@@ -286,8 +307,6 @@ class LyricShareSheetComposeTest {
         assertEquals(listOf(context.getString(CoreCommonR.string.local_song_share_failed)), messages)
     }
 
-    // FileProvider caches its roots per process while Robolectric gives each test a new data
-    // directory, so every lyric card share has to happen inside this one test.
     @Test
     @Config(qualifiers = "w411dp-h900dp")
     fun `lyric cards are rendered saved and shared as pngs`() {

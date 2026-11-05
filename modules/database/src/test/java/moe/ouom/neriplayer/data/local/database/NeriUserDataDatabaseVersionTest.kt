@@ -17,7 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class NeriUserDataDatabaseVersionTest {
+class NeriDbVersionTest {
     private lateinit var directory: File
     private val supported = NeriUserDataDatabase.FINAL_DB_VERSION
 
@@ -34,12 +34,12 @@ class NeriUserDataDatabaseVersionTest {
         ApplicationProvider.getApplicationContext<Context>().deleteDatabase(NeriUserDataDatabase.DATABASE_NAME)
     }
 
-    @Test fun `current and older versions can be opened by this app`() {
+    @Test fun `currentAndOlderOpen`() {
         assertEquals(DatabaseVersionState.Compatible(supported, supported), databaseVersionState(databaseAt("current.db", supported)))
         assertEquals(DatabaseVersionState.Compatible(15, supported), databaseVersionState(databaseAt("older.db", 15)))
     }
 
-    @Test fun `version from a newer app is reported and the file keeps its contents`() {
+    @Test fun `newerVersionKeepsContents`() {
         val file = databaseAt("newer.db", supported + 1)
         val before = file.readBytes()
 
@@ -48,7 +48,7 @@ class NeriUserDataDatabaseVersionTest {
         assertArrayEquals(before, file.readBytes())
     }
 
-    @Test fun `version bump still waiting in the write ahead log is seen`() {
+    @Test fun `walVersionBumpIsSeen`() {
         val file = databaseAt("wal.db", supported)
         val writer = SQLiteDatabase.openDatabase(file.path, null, SQLiteDatabase.OPEN_READWRITE)
         try {
@@ -63,7 +63,7 @@ class NeriUserDataDatabaseVersionTest {
         }
     }
 
-    @Test fun `corrupt file is reported unreadable and never deleted`() {
+    @Test fun `corruptFileIsUnreadable`() {
         val file = File(directory, "corrupt.db").apply { writeBytes(ByteArray(4096) { 0x5A }) }
 
         val state = databaseVersionState(file)
@@ -73,7 +73,7 @@ class NeriUserDataDatabaseVersionTest {
         assertArrayEquals(ByteArray(4096) { 0x5A }, file.readBytes())
     }
 
-    @Test fun `app check reads the user database in the app database directory`() {
+    @Test fun `appCheckUsesDatabasePath`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val file = context.getDatabasePath(NeriUserDataDatabase.DATABASE_NAME).apply { parentFile?.mkdirs() }
         SQLiteDatabase.openOrCreateDatabase(file, null).use { it.version = supported + 2 }
@@ -81,7 +81,7 @@ class NeriUserDataDatabaseVersionTest {
         assertEquals(DatabaseVersionState.NewerThanApp(supported + 2, supported), NeriUserDataDatabase.checkVersion(context))
     }
 
-    @Test fun `singleton open refuses a newer database before Room and preserves its rows`() {
+    @Test fun `singletonRefusesNewer`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val file = context.getDatabasePath(NeriUserDataDatabase.DATABASE_NAME).apply { parentFile?.mkdirs() }
         SQLiteDatabase.openOrCreateDatabase(file, null).use { database ->
@@ -105,7 +105,7 @@ class NeriUserDataDatabaseVersionTest {
         }
     }
 
-    @Test fun `direct open refuses unreadable user data before Room and preserves the file`() {
+    @Test fun `directOpenRefusesCorrupt`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val file = context.getDatabasePath(NeriUserDataDatabase.DATABASE_NAME).apply {
             parentFile?.mkdirs()
@@ -122,7 +122,7 @@ class NeriUserDataDatabaseVersionTest {
         assertArrayEquals(ByteArray(4096) { 0x5A }, file.readBytes())
     }
 
-    @Test fun `missing and current databases still open after a rejected version is corrected`() {
+    @Test fun `reopenAfterVersionCorrection`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val file = context.getDatabasePath(NeriUserDataDatabase.DATABASE_NAME)
         assertTrue(!file.exists())

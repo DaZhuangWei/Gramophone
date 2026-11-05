@@ -194,9 +194,10 @@ internal fun rememberHotPlaylists(
 
 internal fun libraryTabDisplayOrder(
     isInternational: Boolean,
-    youtubeEnabled: Boolean = true
+    youtubeEnabled: Boolean = true,
+    liteEdition: Boolean = LiteEdition.ENABLED
 ): List<LibraryTab> {
-    if (LiteEdition.ENABLED) {
+    if (liteEdition) {
         return listOf(
             LibraryTab.LOCAL,
             LibraryTab.FAVORITE,

@@ -7,6 +7,7 @@ import moe.ouom.neriplayer.core.player.download.runtime.downloadSongOnIo
 import moe.ouom.neriplayer.core.player.download.runtime.evictDownloadConnections
 import moe.ouom.neriplayer.core.player.download.runtime.publishProgress
 import moe.ouom.neriplayer.core.player.download.runtime.snapshotActiveCalls
+import moe.ouom.neriplayer.core.player.download.transfer.AutoDownloadBandwidthLimiter
 import moe.ouom.neriplayer.data.model.download.DownloadStage
 import moe.ouom.neriplayer.data.model.download.DownloadProgress
 import moe.ouom.neriplayer.core.player.download.AudioDownloadManager.HlsResumeState
@@ -16,6 +17,7 @@ import moe.ouom.neriplayer.core.download.ManagedDownloadStorage
 import moe.ouom.neriplayer.core.download.execution.state.isPostCoreDownloadOperationState
 import moe.ouom.neriplayer.common.logging.NPLogger
 import moe.ouom.neriplayer.data.model.SongItem
+import moe.ouom.neriplayer.data.identity.stableKey
 import moe.ouom.neriplayer.data.model.settings.download.DownloadAudioQualitySelection
 
 internal fun AudioDownloadManager.notifyRecoveryOpportunityImpl(reason: String) {
@@ -197,13 +199,17 @@ internal suspend fun AudioDownloadManager.downloadSongImpl(
     downloadAudioQuality: DownloadAudioQualitySelection? = null,
     forceFreshTransfer: Boolean = false
 ): ManagedDownloadStorage.StoredEntry? {
-    return downloadSongOnIo(
-        context = context,
-        song = song,
-        batchSessionId = batchSessionId,
-        attemptId = attemptId,
-        operationId = operationId,
-        downloadAudioQuality = downloadAudioQuality,
-        forceFreshTransfer = forceFreshTransfer
-    )
+    return try {
+        downloadSongOnIo(
+            context = context,
+            song = song,
+            batchSessionId = batchSessionId,
+            attemptId = attemptId,
+            operationId = operationId,
+            downloadAudioQuality = downloadAudioQuality,
+            forceFreshTransfer = forceFreshTransfer
+        )
+    } finally {
+        AutoDownloadBandwidthLimiter.unregister(song.stableKey())
+    }
 }

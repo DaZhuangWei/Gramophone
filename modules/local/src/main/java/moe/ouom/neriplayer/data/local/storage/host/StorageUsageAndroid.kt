@@ -13,6 +13,7 @@ import moe.ouom.neriplayer.data.local.storage.source.StorageLocations
 import moe.ouom.neriplayer.data.local.storage.source.StoragePlatformCacheAccess
 import moe.ouom.neriplayer.data.local.storage.source.StorageUsageSource
 import moe.ouom.neriplayer.data.local.storage.source.storagePlatformCaches
+import moe.ouom.neriplayer.data.settings.storage.PlaybackCacheStorage
 
 import android.content.Context
 import java.io.File
@@ -36,7 +37,8 @@ internal fun storageLocations(context: Context): StorageLocations {
             "managed_download_snapshot_v1.json", LocalMediaHostAccess.downloads.snapshotCacheFileName,
             "pending_download_queue_v1.json", "cancelled_download_keys_v1.json",
             "downloaded_song_catalog_v3.json", "downloaded_song_catalog_v4.json"
-        ).map { File(context.filesDir, it) }
+        ).map { File(context.filesDir, it) },
+        mediaCacheDirs = PlaybackCacheStorage.candidateCacheDirs(context)
     )
 }
 

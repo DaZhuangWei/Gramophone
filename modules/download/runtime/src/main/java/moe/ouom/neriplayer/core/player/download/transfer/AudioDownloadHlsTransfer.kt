@@ -322,7 +322,7 @@ internal class AudioDownloadHlsTransfer(
                                 headerMap.forEach { (name, value) -> header(name, value) }
                             }
                             .build()
-                        downloadedBytes += hooks.executeTrackedCall(
+                        val transferredSegmentBytes = hooks.executeTrackedCall(
                             client = client,
                             request = segmentRequest,
                             songKey = songKey,
@@ -352,6 +352,8 @@ internal class AudioDownloadHlsTransfer(
                                 )
                             }
                         }
+                        downloadedBytes += transferredSegmentBytes
+                        AutoDownloadBandwidthLimiter.throttle(songKey, transferredSegmentBytes)
                         runCatching {
                             sink.flush()
                             output.fd.sync()

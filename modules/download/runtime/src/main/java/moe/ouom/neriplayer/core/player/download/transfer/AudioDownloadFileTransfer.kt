@@ -384,6 +384,7 @@ internal class AudioDownloadFileTransfer(
                         sink.write(buffer, read)
                         trafficAccumulator.add(read)
                         readSoFar += read
+                        AutoDownloadBandwidthLimiter.throttle(songKey, read)
                         val nowNs = System.nanoTime()
                         if (
                             readSoFar - durableBytes >= DURABLE_CHECKPOINT_INTERVAL_BYTES ||
@@ -861,6 +862,7 @@ internal class AudioDownloadFileTransfer(
                     trafficAccumulator.add(read)
                     chunkRead += read
                     downloadedBytes += read
+                    AutoDownloadBandwidthLimiter.throttle(songKey, read)
                     val elapsedSec = ((System.nanoTime() - startNs) / 1_000_000_000.0)
                         .coerceAtLeast(0.001)
                     hooks.publishProgress(

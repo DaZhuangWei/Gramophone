@@ -1667,6 +1667,18 @@ object AutoSettingsSchema {
         )
 
         @AutoSetting(
+            order = 17,
+            ui = SettingUiType.Custom
+        )
+        val downloadWhilePlayingSpeedLimitKbps = autoIntSetting(
+            key = "download_while_playing_speed_limit_kbps",
+            defaultValue = 0,
+            titleRes = CoreCommonR.string.settings_download_while_playing_speed_limit,
+            descriptionRes = CoreCommonR.string.settings_download_while_playing_speed_limit_desc,
+            icon = AutoSettingIcon.Download
+        )
+
+        @AutoSetting(
             key = "download_netease_audio_quality",
             type = SettingValueType.String,
             defaultString = DEFAULT_DOWNLOAD_NETEASE_AUDIO_QUALITY,

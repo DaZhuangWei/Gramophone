@@ -8,6 +8,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.audio.ForwardingAudioSink
+import moe.ouom.neriplayer.core.player.audio.reactive.AudioReactive
 import moe.ouom.neriplayer.data.model.playback.effects.AudioEffectsInactiveReason
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -85,7 +86,15 @@ internal class AudioEffectsAudioSink(
 
     override fun configure(inputFormat: Format, specifiedBufferSize: Int, outputChannels: IntArray?) {
         clearPending()
-        format = AudioEffectsPcmFormat.from(inputFormat)
+        val pcmFormat = AudioEffectsPcmFormat.from(inputFormat)
+        format = pcmFormat
+        if (pcmFormat != null) {
+            AudioReactive.configureCompareSpectrum(
+                sampleRate = pcmFormat.sampleRate,
+                channelCount = pcmFormat.channelCount,
+                encoding = pcmFormat.encoding
+            )
+        }
         engineConfigured = false
         engineRunning = false
         appliedGeneration = Long.MIN_VALUE
@@ -96,7 +105,11 @@ internal class AudioEffectsAudioSink(
         if (passthroughInput === buffer) return passThrough(buffer, presentationTimeUs, encodedAccessUnitCount)
         if (pendingInput !== buffer) {
             clearPending()
-            if (!processIntoPending(buffer)) return passThrough(buffer, presentationTimeUs, encodedAccessUnitCount)
+            if (format != null) AudioReactive.handleDryPcmBuffer(buffer)
+            if (!processIntoPending(buffer)) {
+                if (format != null) AudioReactive.handleCompareWetPcmBuffer(buffer)
+                return passThrough(buffer, presentationTimeUs, encodedAccessUnitCount)
+            }
         }
         if (!super.handleBuffer(processed, presentationTimeUs, encodedAccessUnitCount)) return false
         buffer.position(buffer.limit())
@@ -167,6 +180,7 @@ internal class AudioEffectsAudioSink(
         output.limit(size)
         engineRunning = status and AUDIO_EFFECTS_STATUS_IDLE == 0
         pendingInput = buffer
+        AudioReactive.handleCompareWetPcmBuffer(output)
         maybePublishStats(dsp, pcm)
         return true
     }

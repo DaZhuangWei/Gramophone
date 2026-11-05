@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,10 +53,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.core.player.PlayerManager
+import moe.ouom.neriplayer.core.player.audio.reactive.AudioSpectrumFrame
 import moe.ouom.neriplayer.data.model.playback.PlaybackSoundState
 import moe.ouom.neriplayer.data.model.playback.effects.AudioEffectsBuiltInPresets
 import moe.ouom.neriplayer.data.model.playback.effects.AudioEffectsPresetIds
@@ -90,10 +96,30 @@ internal fun AudioEffectsSettingsPage(usbExclusive: Boolean, modifier: Modifier 
     val route by PlayerManager.audioOutputRouteFlow.collectAsStateWithLifecycle()
     val stats by PlayerManager.audioEffectsStatsFlow.collectAsStateWithLifecycle()
     val soundState by PlayerManager.playbackSoundStateFlow.collectAsStateWithLifecycle()
+    val spectrumState = PlayerManager.audioSpectrumFlow.collectAsStateWithLifecycle()
+    val drySpectrumState = PlayerManager.audioDrySpectrumFlow.collectAsStateWithLifecycle()
+    val compareWetSpectrumState = PlayerManager.audioCompareWetSpectrumFlow.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
     val editor = remember(route) { AudioEffectsEditor(route) }
     val profile = settings.profileFor(route)
     var section by rememberSaveable { mutableStateOf(AudioEffectsSection.PRESETS) }
     var confirmReset by remember(route) { mutableStateOf<AudioEffectsSection?>(null) }
+    val spectrumVisible = section == AudioEffectsSection.EQUALIZER || section == AudioEffectsSection.TONE
+
+    LaunchedEffect(lifecycleOwner, spectrumVisible) {
+        if (!spectrumVisible) {
+            PlayerManager.setAudioSpectrumEnabled(false)
+            return@LaunchedEffect
+        }
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            PlayerManager.setAudioSpectrumEnabled(true)
+            try {
+                awaitCancellation()
+            } finally {
+                PlayerManager.setAudioSpectrumEnabled(false)
+            }
+        }
+    }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         MiuixSettingsSectionCard { AudioEffectsOverview(settings, profile, route, stats, editor) }
         AudioEffectsSectionTabs(
@@ -114,7 +140,18 @@ internal fun AudioEffectsSettingsPage(usbExclusive: Boolean, modifier: Modifier 
             }
         }
         CompositionLocalProvider(LocalAudioEffectsSectionEnabled provides sectionEnabled) {
-            AudioEffectsSectionContent(section, settings, profile, route, soundState, usbExclusive, editor)
+            AudioEffectsSectionContent(
+                section = section,
+                settings = settings,
+                profile = profile,
+                route = route,
+                soundState = soundState,
+                usbExclusive = usbExclusive,
+                spectrum = spectrumState,
+                drySpectrum = drySpectrumState,
+                compareWetSpectrum = compareWetSpectrumState,
+                editor = editor
+            )
         }
         if (section.resettable) {
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp), horizontalArrangement = Arrangement.End) {
@@ -156,17 +193,29 @@ private fun AudioEffectsSectionContent(
     route: AudioOutputRoute,
     soundState: PlaybackSoundState,
     usbExclusive: Boolean,
+    spectrum: State<AudioSpectrumFrame>,
+    drySpectrum: State<AudioSpectrumFrame>,
+    compareWetSpectrum: State<AudioSpectrumFrame>,
     editor: AudioEffectsEditor
 ) {
     val sound = profile.sound
     when (section) {
         AudioEffectsSection.PRESETS -> MiuixSettingsSectionCard { AudioEffectsPresetCard(settings, profile, editor) }
         AudioEffectsSection.EQUALIZER -> {
-            MiuixSettingsSectionCard { AudioEffectsEqualizerCard(sound, settings, editor) }
+            MiuixSettingsSectionCard {
+                AudioEffectsEqualizerCard(
+                    sound = sound,
+                    settings = settings,
+                    spectrum = spectrum,
+                    drySpectrum = drySpectrum,
+                    compareWetSpectrum = compareWetSpectrum,
+                    editor = editor
+                )
+            }
             MiuixSettingsSectionCard { AudioEffectsCorrectionCard(sound, editor) }
         }
         AudioEffectsSection.TONE -> {
-            MiuixSettingsSectionCard { AudioEffectsToneCard(sound, editor) }
+            MiuixSettingsSectionCard { AudioEffectsToneCard(sound, spectrum, editor) }
             MiuixSettingsSectionCard { AudioEffectsCharacterCard(sound, editor) }
         }
         AudioEffectsSection.SPACE -> MiuixSettingsSectionCard { AudioEffectsSpaceCard(sound, editor) }

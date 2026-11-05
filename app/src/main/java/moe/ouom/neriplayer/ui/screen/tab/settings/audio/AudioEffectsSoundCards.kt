@@ -2,12 +2,17 @@ package moe.ouom.neriplayer.ui.screen.tab.settings.audio
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import moe.ouom.neriplayer.core.player.audio.reactive.AudioSpectrumFrame
 import moe.ouom.neriplayer.data.model.playback.effects.AudioEffectsSound
 import moe.ouom.neriplayer.data.model.playback.effects.compressorAmount
 import moe.ouom.neriplayer.data.model.playback.effects.withCompressorAmount
@@ -15,10 +20,19 @@ import kotlin.math.roundToInt
 import moe.ouom.neriplayer.R as AppR
 
 @Composable
-internal fun AudioEffectsToneCard(sound: AudioEffectsSound, editor: AudioEffectsEditor) {
+internal fun AudioEffectsToneCard(
+    sound: AudioEffectsSound,
+    spectrum: State<AudioSpectrumFrame>,
+    editor: AudioEffectsEditor
+) {
     AudioEffectsCardIntro(
         title = stringResource(AppR.string.audio_effects_tone_title),
         description = stringResource(AppR.string.audio_effects_tone_desc)
+    )
+    AudioEffectsToneSpectrum(
+        sound = sound,
+        spectrum = spectrum,
+        modifier = Modifier.padding(top = 8.dp, bottom = 2.dp)
     )
     AudioEffectsSliderRow(
         title = stringResource(AppR.string.audio_effects_bass),

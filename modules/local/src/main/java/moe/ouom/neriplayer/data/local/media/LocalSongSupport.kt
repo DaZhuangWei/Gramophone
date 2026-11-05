@@ -181,7 +181,7 @@ object LocalSongSupport {
             ?: song.mediaUri.nonBlankOrNull()?.let(::mediaFileName)
 
     private fun mediaFileName(mediaUri: String): String? =
-        if (mediaUri.startsWith("/")) {
+        if (mediaUri.startsWith("/") || File(mediaUri).isAbsolute) {
             File(mediaUri).name
         } else {
             runCatching { mediaUri.toUri().lastPathSegment }.getOrNull()
@@ -190,9 +190,13 @@ object LocalSongSupport {
     private fun normalizedLocalReference(reference: String?): String? {
         val raw = reference.trimmedOrNull() ?: return null
         return when {
-            raw.startsWith("/") -> File(raw).absolutePath
             raw.startsWith("content://", ignoreCase = true) ||
                 raw.startsWith("android.resource://", ignoreCase = true) -> raw
+            // Windows 绝对路径（D:\...）在 Uri.parse 里会被当成单字母 scheme，
+            // 必须在解析成 URI 之前按文件路径处理
+            File(raw).isAbsolute && !raw.startsWith("file:", ignoreCase = true) ->
+                File(raw).absolutePath
+            raw.startsWith("/") -> File(raw).absolutePath
             else -> fileUriPath(raw)?.let { File(it).absolutePath } ?: parsedLocalReference(raw)
         }
     }

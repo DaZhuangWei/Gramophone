@@ -1064,6 +1064,9 @@ private val SettingSearchAliases = mapOf(
     "download_youtube_audio_quality" to listOf("youtube download quality", "youtube yin zhi"),
     "download_bili_audio_quality" to listOf("bili download quality", "bilibili yin zhi"),
     "download_parallelism" to listOf("threads", "parallel", "concurrency", "bingfa"),
+    "download_while_playing_speed_limit_kbps" to listOf(
+        "speed limit", "throttle", "xiansu", "bian ting bian xia"
+    ),
     "mobile_data_high_risk_prompt_enabled" to listOf("traffic warning", "roaming", "liuliang tishi"),
     "max_cache_size_bytes" to listOf("cache limit", "space", "huancun daxiao"),
     "silent_github_sync_failure" to listOf(

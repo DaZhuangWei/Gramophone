@@ -1,9 +1,9 @@
 package moe.ouom.neriplayer.ui
 
+import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
-import android.content.res.Configuration
-import android.content.res.Resources
+import android.content.ContextWrapper
+import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -19,13 +19,15 @@ import moe.ouom.neriplayer.ui.settings.route.appSettingsRouteStateFlow
 import moe.ouom.neriplayer.ui.settings.route.initialAppSettingsRouteState
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.anyInt
-import org.mockito.Mockito.anyString
-import org.mockito.Mockito.RETURNS_SELF
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.io.File
 
+// DataStore 在 Android SDK < 26 时会退回 File.renameTo，Windows 上无法覆盖已存在的文件；
+// Robolectric 提供 SDK 35，才能走到 java.nio 的替换语义
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [35])
 class AppSettingsRouteStateTest {
     @Test
     fun initialRouteStateKeepsEveryBootstrapPreferenceSourceIndependent() {
@@ -70,19 +72,11 @@ class AppSettingsRouteStateTest {
             mkdirs()
             deleteOnExit()
         }
-        val context = mock(Context::class.java)
-        `when`(context.filesDir).thenReturn(filesDir)
-        `when`(context.applicationContext).thenReturn(context)
-        val configuration = mock(Configuration::class.java).apply {
-            smallestScreenWidthDp = 360
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        val context = object : ContextWrapper(application) {
+            override fun getApplicationContext(): Context = this
+            override fun getFilesDir(): File = filesDir
         }
-        val resources = mock(Resources::class.java)
-        `when`(resources.configuration).thenReturn(configuration)
-        `when`(context.resources).thenReturn(resources)
-        val preferences = mock(SharedPreferences::class.java)
-        val editor = mock(SharedPreferences.Editor::class.java, RETURNS_SELF)
-        `when`(preferences.edit()).thenReturn(editor)
-        `when`(context.getSharedPreferences(anyString(), anyInt())).thenReturn(preferences)
         val repository = SettingsRepository(context)
 
         val initial = withTimeout(10_000) { appSettingsRouteStateFlow(repository).first() }

@@ -71,10 +71,10 @@ class PreviewThemePolicyTest {
     }
 
     @Test
-    fun unknownStoredStyleFallsBackToMaterial() {
+    fun unknownStoredStyleFallsBackToClean() {
         assertEquals(UiStyle.Clean, UiStyle.fromStorage("clean"))
-        assertEquals(UiStyle.Material, UiStyle.fromStorage(null))
-        assertEquals(UiStyle.Material, UiStyle.fromStorage("aurora"))
+        assertEquals(UiStyle.Clean, UiStyle.fromStorage(null))
+        assertEquals(UiStyle.Clean, UiStyle.fromStorage("aurora"))
     }
 
     @Test

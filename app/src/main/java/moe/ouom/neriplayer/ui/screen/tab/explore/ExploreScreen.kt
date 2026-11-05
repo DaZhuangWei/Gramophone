@@ -203,9 +203,10 @@ private val ExploreSearchFieldShape = RoundedCornerShape(16.dp)
 
 internal fun exploreSearchSourceDisplayOrder(
     isInternational: Boolean,
-    youtubeEnabled: Boolean
+    youtubeEnabled: Boolean,
+    liteEdition: Boolean = LiteEdition.ENABLED
 ): List<SearchSource> {
-    if (LiteEdition.ENABLED) {
+    if (liteEdition) {
         return listOf(SearchSource.NETEASE)
     }
     return if (!youtubeEnabled) {

@@ -33,6 +33,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 import kotlin.math.max
 import kotlin.math.min
@@ -68,6 +71,7 @@ object AudioReactive {
     private const val BEAT_DECAY_REFERENCE_NS = 16_666_667L
     private const val BEAT_DECAY_PER_REFERENCE = 0.90
     private const val EPS = 1e-9
+    private const val SPECTRUM_INTERVAL_MS = 16L
 
     private var encoding: Int = C.ENCODING_PCM_16BIT
     private var channels: Int = 2
@@ -85,11 +89,85 @@ object AudioReactive {
     val level: StateFlow<Float> = _level
     val beat:  StateFlow<Float> = _beat
 
+    private val spectrumAnalyzer = AudioSpectrumAnalyzer()
+    @Volatile
+    private var spectrumEnabledState = false
+    private val spectrumExecutor = Executors.newSingleThreadScheduledExecutor { runnable ->
+        Thread(runnable, "Neri-Spectrum").apply {
+            isDaemon = true
+            priority = Thread.NORM_PRIORITY - 1
+        }
+    }
+    private var spectrumTask: ScheduledFuture<*>? = null
+    val spectrum: StateFlow<AudioSpectrumFrame> = spectrumAnalyzer.frame
+
+    private val drySpectrumAnalyzer = AudioSpectrumAnalyzer()
+    private val compareWetSpectrumAnalyzer = AudioSpectrumAnalyzer()
+    @Volatile
+    private var dryCompareEnabledState = false
+    val drySpectrum: StateFlow<AudioSpectrumFrame> = drySpectrumAnalyzer.frame
+    val compareWetSpectrum: StateFlow<AudioSpectrumFrame> = compareWetSpectrumAnalyzer.frame
+
+    /** 音效页可见时单独开启；不依赖 Now Playing 的背景动效开关 */
+    @Synchronized
+    fun setSpectrumEnabled(value: Boolean) {
+        if (spectrumEnabledState == value) return
+        spectrumEnabledState = value
+        spectrumTask?.cancel(false)
+        spectrumTask = null
+        spectrumAnalyzer.reset()
+        if (!value) {
+            // 保留 dryCompareEnabledState：App 退到后台再回来时，
+            // 均衡器卡片不会重新触发 DisposableEffect，需要靠这个标记恢复干湿对比。
+            drySpectrumAnalyzer.reset()
+            compareWetSpectrumAnalyzer.reset()
+            return
+        }
+        spectrumTask = spectrumExecutor.scheduleWithFixedDelay(
+            {
+                val nowNs = System.nanoTime()
+                if (spectrumEnabledState) spectrumAnalyzer.analyze(nowNs)
+                if (dryCompareEnabledState) {
+                    drySpectrumAnalyzer.analyze(nowNs)
+                    compareWetSpectrumAnalyzer.analyze(nowNs)
+                }
+            },
+            0L,
+            SPECTRUM_INTERVAL_MS,
+            TimeUnit.MILLISECONDS
+        )
+    }
+
+    @Synchronized
+    fun setDryCompareEnabled(value: Boolean) {
+        if (dryCompareEnabledState == value) return
+        dryCompareEnabledState = value
+        drySpectrumAnalyzer.reset()
+        compareWetSpectrumAnalyzer.reset()
+    }
+
+    /** sink 输入格式（干声/处理后同格式）；由 AudioEffectsAudioSink.configure 调用 */
+    fun configureCompareSpectrum(sampleRate: Int, channelCount: Int, encoding: Int) {
+        drySpectrumAnalyzer.flush(sampleRate, channelCount, encoding)
+        compareWetSpectrumAnalyzer.flush(sampleRate, channelCount, encoding)
+    }
+
+    fun handleDryPcmBuffer(buffer: ByteBuffer) {
+        if (!dryCompareEnabledState || !buffer.hasRemaining()) return
+        drySpectrumAnalyzer.feed(buffer)
+    }
+
+    fun handleCompareWetPcmBuffer(buffer: ByteBuffer) {
+        if (!dryCompareEnabledState || !buffer.hasRemaining()) return
+        compareWetSpectrumAnalyzer.feed(buffer)
+    }
+
     val teeSink = object : TeeAudioProcessor.AudioBufferSink {
         override fun flush(sampleRateHz: Int, channelCount: Int, encoding: Int) {
             this@AudioReactive.sampleRate = sampleRateHz
             this@AudioReactive.channels   = max(1, channelCount)
             this@AudioReactive.encoding   = encoding
+            spectrumAnalyzer.flush(sampleRateHz, channelCount, encoding)
             emaFast = 0.0; emaSlow = 0.0; noiseEma = 0.0
             lastBeatNs = 0L
             lastBeatUpdateNs = 0L
@@ -118,11 +196,16 @@ object AudioReactive {
         effectiveVolume: Float,
         nowNs: Long
     ) {
-        if (!enabled || !buffer.hasRemaining()) return
+        if ((!enabled && !spectrumEnabledState) || !buffer.hasRemaining()) return
 
-        val rawLevel = readPcmLevel(buffer)
-        val gain = effectiveVolume.coerceIn(0f, 1f).toDouble()
-        updateReactiveEnvelope((rawLevel * gain).coerceIn(0.0, 1.0), nowNs)
+        if (enabled) {
+            val rawLevel = readPcmLevel(buffer)
+            val gain = effectiveVolume.coerceIn(0f, 1f).toDouble()
+            updateReactiveEnvelope((rawLevel * gain).coerceIn(0.0, 1.0), nowNs)
+        }
+        if (spectrumEnabledState) {
+            spectrumAnalyzer.feed(buffer)
+        }
     }
 
     private fun readPcmLevel(buffer: ByteBuffer): Double {
@@ -174,6 +257,13 @@ object AudioReactive {
         noiseEma = 0.0
         lastBeatNs = 0L
         lastBeatUpdateNs = 0L
+        spectrumEnabledState = false
+        spectrumTask?.cancel(false)
+        spectrumTask = null
+        spectrumAnalyzer.reset()
+        dryCompareEnabledState = false
+        drySpectrumAnalyzer.reset()
+        compareWetSpectrumAnalyzer.reset()
         _level.value = 0f
         _beat.value = 0f
     }

@@ -307,6 +307,11 @@
     <string name="settings_download_while_playing_desc">播放歌曲时自动下载到下载目录；默认仅在 Wi-Fi 下执行，已下载歌曲会跳过</string>
     <string name="settings_download_while_playing_allow_mobile_data">边听边下允许移动流量</string>
     <string name="settings_download_while_playing_allow_mobile_data_desc">开启后移动数据下也会自动下载，会消耗流量；建议先确认套餐余量</string>
+    <string name="settings_download_while_playing_speed_limit">边听边下限速</string>
+    <string name="settings_download_while_playing_speed_limit_desc">限制边听边下自动下载的速度，避免影响在线播放；0 表示不限速</string>
+    <string name="settings_download_while_playing_speed_limit_unlimited">不限速</string>
+    <string name="settings_download_while_playing_speed_limit_kbps">%1$d KB/s</string>
+    <string name="settings_download_while_playing_speed_limit_mbps">%1$s MB/s</string>
     <string name="settings_download_follow_playback_audio_quality_desc">开启后下载使用播放音质；关闭后可单独设置网易云下载音质</string>
     <string name="settings_download_quality_group">下载音质</string>
     <string name="settings_download_netease_audio_quality">网易云下载音质</string>

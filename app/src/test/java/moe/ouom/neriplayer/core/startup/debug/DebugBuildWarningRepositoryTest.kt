@@ -12,7 +12,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
+// DataStore 在 Android SDK < 26 时会退回 File.renameTo，Windows 上无法覆盖已存在的文件；
+// Robolectric 提供 SDK 35，才能走到 java.nio 的替换语义
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [35])
 class DebugBuildWarningRepositoryTest {
     @get:Rule
     val temporaryFolder = TemporaryFolder()

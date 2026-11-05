@@ -632,23 +632,59 @@ private fun localFileProbeState(localFilePath: String?): String {
     return "${file.length()}:${file.lastModified()}:${file.parentFile?.lastModified()}"
 }
 
-private val FAST_COVER_SCHEMES = arrayOf("http://", "https://", "content://")
+private val FAST_COVER_SCHEMES =
+    arrayOf("http://", "https://", "content://", "android.resource://")
 
 internal fun isFastCoverReference(reference: String): Boolean {
     val normalized = reference.trim()
     if (normalized.isEmpty()) return false
     if (FAST_COVER_SCHEMES.any { normalized.startsWith(it, ignoreCase = true) }) return true
+    if (normalized.looksLikeWindowsAbsolutePath()) {
+        return isExistingFile(normalized)
+    }
     return isFastUriCoverReference(normalized)
 }
 
 private fun isFastUriCoverReference(reference: String): Boolean {
+    val filePath = fileReferencePath(reference)
+    if (filePath != null) return isExistingFile(filePath)
     val uri = runCatching { reference.toUri() }.getOrNull() ?: return false
     val scheme = uri.scheme.orEmpty().lowercase()
     if (scheme.isEmpty()) return isExistingFile(reference.takeIf { it.startsWith("/") })
-    return scheme != "file" || isExistingFile(uri.path)
+    return true
 }
 
-private fun isExistingFile(path: String?): Boolean = path != null && File(path).isFile
+/**
+ * file:/D:/cover.jpg、file:///D:/cover.jpg、file:///sdcard/cover.jpg
+ * 都要还原成文件系统真实路径。
+ */
+private fun fileReferencePath(reference: String): String? {
+    if (!reference.startsWith("file:", ignoreCase = true)) return null
+    val remainder = reference.substring(FILE_SCHEME_LENGTH)
+    val path = if (remainder.startsWith("///")) remainder.substring(2) else remainder
+    val normalized = path.takeIf { it.isNotBlank() } ?: return null
+    return normalized.removeWindowsPathLeadingSlash()
+}
+
+private fun String.looksLikeWindowsAbsolutePath(): Boolean =
+    length >= 3 &&
+        this[0].isLetter() &&
+        this[1] == ':' &&
+        (this[2] == '\\' || this[2] == '/')
+
+private fun String.removeWindowsPathLeadingSlash(): String =
+    if (length >= 4 && this[0] == '/' && this[2] == ':' && this[1].isLetter()) {
+        substring(1)
+    } else {
+        this
+    }
+
+private fun isExistingFile(path: String?): Boolean {
+    val candidate = path?.trim()?.takeIf(String::isNotEmpty) ?: return false
+    return File(candidate.removeWindowsPathLeadingSlash()).isFile
+}
+
+private const val FILE_SCHEME_LENGTH = 5
 
 @Composable
 fun rememberPlaylistDisplayCoverUrl(

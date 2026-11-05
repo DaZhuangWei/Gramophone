@@ -551,21 +551,25 @@ private suspend fun createAndShareLyricCard(
             recycleBitmap(appIconBitmap)
         }
     }
-    val uri = FileProvider.getUriForFile(
-        context,
-        "${context.packageName}.fileprovider",
-        file
-    )
-    val shareText = buildLyricCardShareText(song, queue)
-    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-        type = "image/png"
-        putExtra(Intent.EXTRA_STREAM, uri)
-        putExtra(Intent.EXTRA_TEXT, shareText)
-        putExtra(Intent.EXTRA_TITLE, song.displayName())
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        clipData = ClipData.newUri(context.contentResolver, file.name, uri)
+    // FileProvider 与 startActivity 都属于 UI 侧操作，统一回到主线程，避免
+    // 图片编码的 IO 协程把分享 Intent 带上后台线程
+    withContext(Dispatchers.Main) {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
+        val shareText = buildLyricCardShareText(song, queue)
+        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "image/png"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            putExtra(Intent.EXTRA_TEXT, shareText)
+            putExtra(Intent.EXTRA_TITLE, song.displayName())
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            clipData = ClipData.newUri(context.contentResolver, file.name, uri)
+        }
+        context.startActivityOrShowUnavailable(Intent.createChooser(sendIntent, null))
     }
-    context.startActivityOrShowUnavailable(Intent.createChooser(sendIntent, null))
 }
 
 private suspend fun loadCoverBitmap(context: Context, coverUrl: String?): Bitmap? {

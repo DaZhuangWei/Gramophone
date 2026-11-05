@@ -60,6 +60,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -73,6 +74,7 @@ import moe.ouom.neriplayer.common.R as CoreCommonR
 import moe.ouom.neriplayer.core.download.GlobalDownloadManager
 import moe.ouom.neriplayer.core.player.download.network.MAX_DOWNLOAD_PARALLELISM
 import moe.ouom.neriplayer.core.player.download.network.normalizeDownloadParallelism
+import moe.ouom.neriplayer.core.player.download.transfer.AutoDownloadBandwidthLimiter
 import moe.ouom.neriplayer.data.settings.AutoSettingsSchema
 import moe.ouom.neriplayer.data.settings.autoSettingFlow
 import moe.ouom.neriplayer.data.settings.generated.AutoSettingsKeys
@@ -166,6 +168,15 @@ private fun SettingsDownloadExpandedContent(
 
         AutoSettingSpecSwitchItem(
             setting = AutoSettingsSchema.download.downloadWhilePlayingAllowMobileData,
+            enabled = downloadWhilePlaying,
+            highlightTargetId = highlightTargetId,
+            highlightPulse = highlightPulse,
+            onHighlightFinished = onHighlightFinished
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        DownloadWhilePlayingSpeedLimitSettingItem(
             enabled = downloadWhilePlaying,
             highlightTargetId = highlightTargetId,
             highlightPulse = highlightPulse,
@@ -684,6 +695,78 @@ private fun DownloadParallelismSettingItem(
                     },
                     valueRange = 1f..MAX_DOWNLOAD_PARALLELISM.toFloat(),
                     steps = MAX_DOWNLOAD_PARALLELISM - 2
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun DownloadWhilePlayingSpeedLimitSettingItem(
+    enabled: Boolean,
+    highlightTargetId: String?,
+    highlightPulse: Int,
+    onHighlightFinished: (() -> Unit)?
+) {
+    val setting = AutoSettingsSchema.download.downloadWhilePlayingSpeedLimitKbps
+    val repository = rememberAutoSettingSpecRepository()
+    val scope = rememberCoroutineScope()
+    val flow = remember(repository, setting) { repository.flow(setting) }
+    val savedValue by flow.collectAsState(initial = setting.defaultValue)
+    val normalizedValue = AutoDownloadBandwidthLimiter.normalizeSpeedLimitKbps(savedValue)
+    var sliderValue by remember { mutableFloatStateOf(normalizedValue.toFloat()) }
+
+    LaunchedEffect(normalizedValue) {
+        if (AutoDownloadBandwidthLimiter.normalizeSpeedLimitKbps(sliderValue.roundToInt()) !=
+            normalizedValue
+        ) {
+            sliderValue = normalizedValue.toFloat()
+        }
+    }
+
+    AutoSettingSpecListItem(
+        setting = setting,
+        enabled = enabled,
+        highlightTargetId = highlightTargetId,
+        highlightPulse = highlightPulse,
+        onHighlightFinished = onHighlightFinished,
+        modifier = Modifier.alpha(if (enabled) 1f else 0.5f),
+        supportingContent = {
+            val displayValue = AutoDownloadBandwidthLimiter.normalizeSpeedLimitKbps(
+                sliderValue.roundToInt()
+            )
+            val displayText = when {
+                displayValue <= 0 -> stringResource(
+                    CoreCommonR.string.settings_download_while_playing_speed_limit_unlimited
+                )
+                displayValue >= 1024 -> stringResource(
+                    CoreCommonR.string.settings_download_while_playing_speed_limit_mbps,
+                    String.format(java.util.Locale.US, "%.1f", displayValue / 1024f)
+                )
+                else -> stringResource(
+                    CoreCommonR.string.settings_download_while_playing_speed_limit_kbps,
+                    displayValue
+                )
+            }
+            Column {
+                Text(
+                    text = displayText,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                MiuixSettingsSlider(
+                    value = sliderValue,
+                    onValueChange = { value -> sliderValue = value },
+                    onValueChangeFinished = {
+                        val nextValue = AutoDownloadBandwidthLimiter.normalizeSpeedLimitKbps(
+                            sliderValue.roundToInt()
+                        )
+                        sliderValue = nextValue.toFloat()
+                        scope.launch { repository.set(setting, nextValue) }
+                    },
+                    valueRange = 0f..AutoDownloadBandwidthLimiter.MAX_SPEED_LIMIT_KBPS.toFloat(),
+                    steps = 0,
+                    enabled = enabled
                 )
             }
         }

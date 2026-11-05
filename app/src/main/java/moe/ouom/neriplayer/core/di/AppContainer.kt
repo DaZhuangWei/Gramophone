@@ -77,6 +77,7 @@ import moe.ouom.neriplayer.platform.youtube.repository.YouTubeMusicPlaybackRepos
 import moe.ouom.neriplayer.platform.youtube.api.bootstrap.YouTubePlaybackBootstrapCoordinator
 import moe.ouom.neriplayer.core.download.ManagedDownloadStorage
 import moe.ouom.neriplayer.core.player.download.AudioDownloadManager
+import moe.ouom.neriplayer.core.player.download.transfer.AutoDownloadBandwidthLimiter
 import moe.ouom.neriplayer.core.startup.app.InstrumentationTestRuntime
 import moe.ouom.neriplayer.data.listentogether.ListenTogetherPreferences
 import moe.ouom.neriplayer.data.local.playlist.LocalPlaylistRepository
@@ -610,6 +611,12 @@ object AppContainer {
                             return@collectLatest
                         }
                     }
+                    val speedLimitKbps = settingsRepo.downloadWhilePlayingSpeedLimitKbpsFlow.first()
+                    AutoDownloadBandwidthLimiter.registerAutoDownload(songKey, speedLimitKbps)
+                    NPLogger.d(
+                        "AutoDownload",
+                        "start automatic download speedLimitKbps=$speedLimitKbps song=$songKey"
+                    )
                     GlobalDownloadManager.startAutomaticDownload(application, song)
                 }
         }
