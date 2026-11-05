@@ -338,10 +338,11 @@ Compose 的动画是**时间驱动**的，不是写死帧数：
 
 ### 已产出 APK
 
-- 真机包：`D:\WorkSpace\muisc\app\Gramophone-arm64-v1.9.apk`
-- 大小：14,796,080 bytes
-- SHA256：`11E2D52AF5821BD17281D617F67A786BC9A2DF5463DD9E3D4570CC0A31C99C0A`
-- 版本：`800549f5.11052002`（arm64-v8a，Release 签名）
+- 真机包：`D:\WorkSpace\muisc\app\Gramophone-arm64-v2.1.apk`
+- 大小：14,819,152 bytes
+- SHA256：`A34FE362729E53B79146A5D4FC061E075DE0B2AD8285E4F0E6CDDFEBD9116AC6`
+- 版本：`b639ef81.11060104`（arm64-v8a，Release 签名）
+- 对应源码提交：`b639ef81`（`lite` 分支）
 - 已用 Debug 包在模拟器验证：缓存位置对话框、外部存储写入、飞行模式离线播放、断网自动跳歌
 - 播放链路未登录未验证；需要你的网易云账号扫码后测试
 
@@ -564,7 +565,7 @@ Lite Release 包名：`moe.ouom.nerilite`
 - 测试环境：
   - 全量测试必须使用 **JDK 21+**（本机 `C:\Program Files\Java\jdk-26.0.1`），否则 Robolectric 的 `@Config(sdk = [36])` 会在 JDK 17 下额外失败。
   - Release 构建继续使用 JDK 17。
-- 产物：v2.1 arm64 包见下方「已产出 APK」。
+- 产物：v2.1 arm64 包输出到 `D:\WorkSpace\muisc\app\Gramophone-arm64-v2.1.apk`，SHA256 `A34FE362729E53B79146A5D4FC061E075DE0B2AD8285E4F0E6CDDFEBD9116AC6`，版本 `b639ef81.11060104`。
 
 验证方式：
 

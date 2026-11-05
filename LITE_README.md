@@ -11,7 +11,7 @@ Gramophone 是基于 [NeriPlayer](https://github.com/cwuom/NeriPlayer) 的**网�
 
 ## 当前状态
 
-v0.1 可运行版本（Debug / Release APK 均已构建）：
+v2.1 可运行版本（Debug / Release APK 均已构建）：
 
 - 首页：网易云推荐、私人雷达、雷达歌单
 - 搜索：仅网易云
@@ -62,12 +62,13 @@ $env:ANDROID_SDK_ROOT=$env:ANDROID_HOME
 
 - Debug：`app/build/outputs/apk/debug/app-debug.apk`
 - Release：`app/build/outputs/apk/release/*.apk`
-- 已复制真机包：`D:\WorkSpace\muisc\app\Gramophone-arm64-v1.9.apk`
-  - 大小：14,796,080 bytes
-  - SHA256：`11E2D52AF5821BD17281D617F67A786BC9A2DF5463DD9E3D4570CC0A31C99C0A`
-  - 版本：`800549f5.11052002`（arm64-v8a）
+- 已复制真机包：`D:\WorkSpace\muisc\app\Gramophone-arm64-v2.1.apk`
+  - 大小：14,819,152 bytes
+  - SHA256：`A34FE362729E53B79146A5D4FC061E075DE0B2AD8285E4F0E6CDDFEBD9116AC6`
+  - 版本：`b639ef81.11060104`（arm64-v8a）
+  - 对应源码：`lite` 分支 `b639ef81`
 
-> v1.8 / v1.7 / v1.6 / v1.5 / v1.4 / v1.3 / v1.2 / v1.1 真机包与更早的 `NeriLite-arm64-v1.0.apk` 仍保留，便于回滚；日常使用请安装 v1.9。
+> v2.0 / v1.9 / v1.8 / v1.7 / v1.6 / v1.5 / v1.4 / v1.3 / v1.2 / v1.1 真机包与更早的 `NeriLite-arm64-v1.0.apk` 仍保留，便于回滚；日常使用请安装 v2.1。
 
 > 远端网易云流通常不提供位深元数据，位深只在文件或解码器给出时显示；采样率、声道数和码率会从 Media3 解码器输入格式自动补齐。
 
