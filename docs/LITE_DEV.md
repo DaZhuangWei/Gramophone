@@ -557,6 +557,7 @@ Lite Release 包名：`moe.ouom.nerilite`
 - 测试闭环（`docs/TEST_FAILURES_2026-11-05.md` 的 23 个失败）：
   - 全量 `:app:testDebugUnitTest` 从 27 failed 修到 **0 failed / 1 skipped**；`:common`、`:database`、`:model`、`:playback:logic` 全部通过。
   - `:local` 只修了与 sidecar 写入、候选检查直接相关的 8 个 Windows 用例；该模块全量仍有既有的文件事务失败，且 `LocalMediaTargetedRecoveryTest` 在 Windows 上会挂起，未纳入本次验收。
+  - `:playback:runtime` 全量在本机有既有的 Windows/协程测试失败（`PlayerManagerLocalMetadataEditRegressionTest`、`PlayerRestoredPlaybackResumeAdmissionTest` 等）；单跑 `AudioEffectsAudioSinkTest` 通过，未纳入本次验收。
   - DataStore 1.2.1 → 1.3.0；DataStore 测试改在 Robolectric SDK 35 下运行，绕开 SDK < 26 的 `File.renameTo` 在 Windows 上无法覆盖文件的问题。
   - Windows 路径兼容：`isFastCoverReference`、`resolveDownloadedCoverPath`、`isLocalImageSource`、`LocalSongSupport.normalizedLocalReference`、`LocalMediaSupport.readTextContent`、`localMediaUriCandidates`、sidecar 写入判断统一支持 `D:\...` 与 `file:/D:/...`；缺失本地封面回退远端。
   - Lite 平台预期：`libraryTabDisplayOrder` / `exploreSearchSourceDisplayOrder` 增加 `liteEdition` 参数，测试同时覆盖 Lite 与全平台分支，Lite 默认只保留本地/收藏/网易云。

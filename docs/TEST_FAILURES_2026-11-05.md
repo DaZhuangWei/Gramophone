@@ -14,7 +14,7 @@
 
 `:app:testDebugUnitTest` 最终：**3922 tests，0 failed，1 skipped**（skipped 为 Windows 不支持创建 symlink 的既有平台用例）。
 `:common` 132 / `:database` 65 / `:model` 136 / `:playback:logic` 448 tests，全部 0 failed。
-`:local` 全量仍有 36 个既有的 Windows 文件事务失败，且 `LocalMediaTargetedRecoveryTest` 在 Windows 上会挂起；本次只修了与 sidecar 写入、候选检查直接相关的 8 个用例。`:playback:runtime` 全量在本机也会挂起，单跑 `AudioEffectsAudioSinkTest` 通过。这两项不在本次验收清单内，后续如需 Windows 全绿需单独处理文件事务测试。
+`:local` 全量仍有 36 个既有的 Windows 文件事务失败，且 `LocalMediaTargetedRecoveryTest` 在 Windows 上会挂起；本次只修了与 sidecar 写入、候选检查直接相关的 8 个用例。`:playback:runtime` 全量在本机存在既有的 Windows/协程测试失败（`PlayerManagerLocalMetadataEditRegressionTest`、`PlayerRestoredPlaybackResumeAdmissionTest` 等），单跑 `AudioEffectsAudioSinkTest` 通过。这两项不在本次验收清单内，后续如需 Windows 全绿需单独处理文件事务与协程测试。
 
 实际修复与原始判断的差异：
 
